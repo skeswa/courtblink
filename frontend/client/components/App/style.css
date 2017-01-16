@@ -1,0 +1,36 @@
+
+.main {
+  flex: 1;
+  position: relative;
+}
+
+.front, .back {
+  bottom: 0;
+  display: flex;
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+.front {
+  flex-direction: column;
+  z-index: 2;
+}
+.back {
+  background: #444444;
+}
+
+.top {
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 0;
+}
+.middle {
+  align-items: flex-end;
+  flex: 1;
+}
+.bottom {
+  flex: 0 0;
+}

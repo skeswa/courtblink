@@ -1,0 +1,25 @@
+
+.main {
+  background: #ffffff;
+  border-radius: .4rem;
+  box-shadow: 0 .5rem 3rem rgba(0, 0, 0, .4);
+  box-sizing: border-box;
+  padding: 2rem;
+  position: relative;
+  margin: 0 1rem;
+  min-width: 30rem;
+  min-height: 15rem;
+  transform: translate(0) scale(1);
+  transition: transform 200ms;
+  z-index: 100;
+}
+.main__selected {
+  z-index: 101;
+  transform: translate(0) scale(1.2);
+}
+.main__offsetLeft {
+  transform: translate(-3rem) scale(1);
+}
+.main__offsetRight {
+  transform: translate(3rem) scale(1);
+}

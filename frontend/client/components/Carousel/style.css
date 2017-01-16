@@ -1,0 +1,13 @@
+
+.main {
+  display: flex;
+  flex: 1;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.cards {
+  display: flex;
+  padding: 5rem 7rem;
+}
