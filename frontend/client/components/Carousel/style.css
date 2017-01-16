@@ -16,5 +16,7 @@
 
 .cards {
   display: flex;
+  flex-grow: 1;
   padding: 5rem 7rem;
+  justify-content: center;
 }
