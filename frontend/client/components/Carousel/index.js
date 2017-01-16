@@ -1,4 +1,5 @@
 
+import classNames from 'classnames'
 import { h, Component } from 'preact'
 
 import style from './style.css'
@@ -10,17 +11,26 @@ class Carousel extends Component {
 
     this.state = {
       games: [ 1, 2, 3, 4, 5, 6 ],
+      visible: false,
       selectedGameIndex: 0,
     }
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.setState({ visible: true }), 500)
   }
 
   onGameCardClicked(selectedGameIndex) {
     this.setState({ selectedGameIndex })
   }
 
-  render(props, { games, selectedGameIndex }) {
+  render(props, { games, visible, selectedGameIndex }) {
+    const mainClassName = classNames(style.main, {
+      [style.main__visible]: visible,
+    })
+
     return (
-      <div className={style.main}>
+      <div className={mainClassName}>
         <div className={style.cards}>
           {
             games.map((game, i) => (
