@@ -28,7 +28,7 @@
   top: 0;
 }
 .middle {
-  align-items: flex-end;
+  display: flex;
   flex: 1;
 }
 .bottom {

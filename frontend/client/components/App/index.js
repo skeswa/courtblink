@@ -10,11 +10,12 @@ class App extends Component {
     return (
       <div className={style.main}>
         <div className={style.back}>
-          <Loader />
         </div>
         <div className={style.front}>
           <div className={style.top}></div>
-          <div className={style.middle}></div>
+          <div className={style.middle}>
+            <Loader />
+          </div>
           <div className={style.bottom}>
             <Carousel />
           </div>
