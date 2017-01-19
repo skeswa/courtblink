@@ -15,14 +15,14 @@ func main() {
 	}
 
 	for _, game := range scoreboard.Games {
-		if boxScore, err := nbaAPI.FetchNBABoxScore(now, game.ID); err != nil {
+		if _, err := nbaAPI.FetchNBABoxScore(now, game.ID); err != nil {
 			log.Fatalf("Failed to fetch the NBA box score: %v.\n", err)
-		} else {
-			if data, err := boxScore.MarshalJSON(); err != nil {
-				log.Println("Error serializing the box score:", err)
-			} else {
-				log.Println("Fetched the NBA box score:", string(data[:]))
-			}
 		}
+	}
+
+	if players, err := nbaAPI.FetchNBAPlayers(); err != nil {
+		log.Fatalf("Failed to fetch the NBA players list: %v.\n", err)
+	} else {
+		log.Println("Got the players list! Length:", len(players.LeaguePlayers.Players))
 	}
 }
