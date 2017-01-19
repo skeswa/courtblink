@@ -11,9 +11,42 @@ import (
 
 const (
 	apiDateFormat                 = "20060102"
+	playersAPIEndpoint            = "http://data.nba.net/data/10s/prod/v1/2016/players.json"
 	boxScoreAPIEndpointTemplate   = "http://data.nba.net/data/10s/prod/v1/%s/%s_boxscore.json"
 	scoreboardAPIEndpointTemplate = "http://data.nba.net/data/10s/prod/v1/%s/scoreboard.json"
 )
+
+// FetchNBAPlayers uses the NBA API to fetch the list of all NBA players.
+func FetchNBAPlayers() (dtos.NBAAllPlayers, error) {
+	var (
+		err        error
+		body       []byte
+		resp       *http.Response
+		allPlayers dtos.NBAAllPlayers
+	)
+
+	if resp, err = http.Get(playersAPIEndpoint); err != nil {
+		return allPlayers, fmt.Errorf(
+			"Failed to download the all players from NBA.com: %v",
+			err)
+	}
+
+	defer resp.Body.Close()
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return allPlayers, fmt.Errorf(
+			"Failed to parse the all players downloaded from NBA.com: %v",
+			err)
+	}
+
+	if err = allPlayers.UnmarshalJSON(body); err != nil {
+		return allPlayers, fmt.Errorf(
+			"Failed to unmarshal the all players downloaded from NBA.com: %v",
+			err)
+	}
+
+	return allPlayers, nil
+}
 
 // FetchNBAScoreboard uses the NBA API to fetch the scoreboard for the provided
 // date.
