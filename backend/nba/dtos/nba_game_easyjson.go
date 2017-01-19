@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, out *NBAScoreboardBroadcaster) {
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer, out *NBAGameBroadcaster) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -50,7 +50,7 @@ func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, ou
 		in.Consumed()
 	}
 }
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer, in NBAScoreboardBroadcaster) {
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Writer, in NBAGameBroadcaster) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -70,29 +70,1024 @@ func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer,
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardBroadcaster) MarshalJSON() ([]byte, error) {
+func (v NBAGameBroadcaster) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos(&w, v)
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardBroadcaster) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos(w, v)
+func (v NBAGameBroadcaster) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardBroadcaster) UnmarshalJSON(data []byte) error {
+func (v *NBAGameBroadcaster) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos(&r, v)
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardBroadcaster) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos(l, v)
+func (v *NBAGameBroadcaster) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos(l, v)
 }
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, out *NBAScoreboardTeam) {
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos1(in *jlexer.Lexer, out *NBAGameDuration) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "hours":
+			out.Hours = string(in.String())
+		case "minute":
+			out.Minute = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos1(out *jwriter.Writer, in NBAGameDuration) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"hours\":")
+	out.String(string(in.Hours))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"minute\":")
+	out.String(string(in.Minute))
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameDuration) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos1(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameDuration) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos1(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameDuration) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos1(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameDuration) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos1(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos2(in *jlexer.Lexer, out *NBAGamePeriod) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "type":
+			out.Type = int(in.Int())
+		case "current":
+			out.Current = int(in.Int())
+		case "maxRegular":
+			out.MaxRegular = int(in.Int())
+		case "isHalftime":
+			out.IsHalftime = bool(in.Bool())
+		case "isEndOfPeriod":
+			out.IsEndOfPeriod = bool(in.Bool())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos2(out *jwriter.Writer, in NBAGamePeriod) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"type\":")
+	out.Int(int(in.Type))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"current\":")
+	out.Int(int(in.Current))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"maxRegular\":")
+	out.Int(int(in.MaxRegular))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isHalftime\":")
+	out.Bool(bool(in.IsHalftime))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isEndOfPeriod\":")
+	out.Bool(bool(in.IsEndOfPeriod))
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGamePeriod) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos2(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGamePeriod) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos2(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGamePeriod) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos2(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGamePeriod) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos2(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos3(in *jlexer.Lexer, out *NBAGameDeepLink) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "iosApp":
+			out.IOS = string(in.String())
+		case "mobileApp":
+			out.Mobile = string(in.String())
+		case "androidApp":
+			out.Android = string(in.String())
+		case "desktopWeb":
+			out.Desktop = string(in.String())
+		case "broadcaster":
+			out.Broadcaster = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos3(out *jwriter.Writer, in NBAGameDeepLink) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"iosApp\":")
+	out.String(string(in.IOS))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"mobileApp\":")
+	out.String(string(in.Mobile))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"androidApp\":")
+	out.String(string(in.Android))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"desktopWeb\":")
+	out.String(string(in.Desktop))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"broadcaster\":")
+	out.String(string(in.Broadcaster))
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameDeepLink) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos3(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameDeepLink) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos3(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameDeepLink) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos3(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameDeepLink) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos3(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos4(in *jlexer.Lexer, out *NBAGameStream) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "streamId":
+			out.ID = string(in.String())
+		case "streamType":
+			out.Type = string(in.String())
+		case "isOnAir":
+			out.IsOnAir = bool(in.Bool())
+		case "duration":
+			out.Duration = int(in.Int())
+		case "isArchiveAvailToWatch":
+			out.ArchiveAvailable = bool(in.Bool())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos4(out *jwriter.Writer, in NBAGameStream) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"streamId\":")
+	out.String(string(in.ID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"streamType\":")
+	out.String(string(in.Type))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isOnAir\":")
+	out.Bool(bool(in.IsOnAir))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"duration\":")
+	out.Int(int(in.Duration))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isArchiveAvailToWatch\":")
+	out.Bool(bool(in.ArchiveAvailable))
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameStream) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos4(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameStream) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos4(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameStream) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos4(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameStream) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos4(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos5(in *jlexer.Lexer, out *NBAGameVideoDetails) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "canPurchase":
+			out.CanPurchase = bool(in.Bool())
+		case "isLeaguePass":
+			out.IsOnLeaguePass = bool(in.Bool())
+		case "isTNTOT":
+			out.IsOnTNT = bool(in.Bool())
+		case "streams":
+			if in.IsNull() {
+				in.Skip()
+				out.Streams = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.Streams = make([]NBAGameStream, 0, 1)
+				} else {
+					out.Streams = []NBAGameStream{}
+				}
+				for !in.IsDelim(']') {
+					var v1 NBAGameStream
+					(v1).UnmarshalEasyJSON(in)
+					out.Streams = append(out.Streams, v1)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "deepLink":
+			if in.IsNull() {
+				in.Skip()
+				out.DeepLinks = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.DeepLinks = make([]NBAGameDeepLink, 0, 1)
+				} else {
+					out.DeepLinks = []NBAGameDeepLink{}
+				}
+				for !in.IsDelim(']') {
+					var v2 NBAGameDeepLink
+					(v2).UnmarshalEasyJSON(in)
+					out.DeepLinks = append(out.DeepLinks, v2)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos5(out *jwriter.Writer, in NBAGameVideoDetails) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"canPurchase\":")
+	out.Bool(bool(in.CanPurchase))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isLeaguePass\":")
+	out.Bool(bool(in.IsOnLeaguePass))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isTNTOT\":")
+	out.Bool(bool(in.IsOnTNT))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"streams\":")
+	if in.Streams == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v3, v4 := range in.Streams {
+			if v3 > 0 {
+				out.RawByte(',')
+			}
+			(v4).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"deepLink\":")
+	if in.DeepLinks == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v5, v6 := range in.DeepLinks {
+			if v5 > 0 {
+				out.RawByte(',')
+			}
+			(v6).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameVideoDetails) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos5(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameVideoDetails) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos5(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameVideoDetails) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos5(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameVideoDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos5(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos6(in *jlexer.Lexer, out *NBAGameBroadcasters) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "national":
+			if in.IsNull() {
+				in.Skip()
+				out.National = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.National = make([]NBAGameBroadcaster, 0, 2)
+				} else {
+					out.National = []NBAGameBroadcaster{}
+				}
+				for !in.IsDelim(']') {
+					var v7 NBAGameBroadcaster
+					(v7).UnmarshalEasyJSON(in)
+					out.National = append(out.National, v7)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "canadian":
+			if in.IsNull() {
+				in.Skip()
+				out.Canadian = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.Canadian = make([]NBAGameBroadcaster, 0, 2)
+				} else {
+					out.Canadian = []NBAGameBroadcaster{}
+				}
+				for !in.IsDelim(']') {
+					var v8 NBAGameBroadcaster
+					(v8).UnmarshalEasyJSON(in)
+					out.Canadian = append(out.Canadian, v8)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "hTeam":
+			if in.IsNull() {
+				in.Skip()
+				out.LocalHome = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.LocalHome = make([]NBAGameBroadcaster, 0, 2)
+				} else {
+					out.LocalHome = []NBAGameBroadcaster{}
+				}
+				for !in.IsDelim(']') {
+					var v9 NBAGameBroadcaster
+					(v9).UnmarshalEasyJSON(in)
+					out.LocalHome = append(out.LocalHome, v9)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "vTeam":
+			if in.IsNull() {
+				in.Skip()
+				out.LocalAway = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.LocalAway = make([]NBAGameBroadcaster, 0, 2)
+				} else {
+					out.LocalAway = []NBAGameBroadcaster{}
+				}
+				for !in.IsDelim(']') {
+					var v10 NBAGameBroadcaster
+					(v10).UnmarshalEasyJSON(in)
+					out.LocalAway = append(out.LocalAway, v10)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos6(out *jwriter.Writer, in NBAGameBroadcasters) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"national\":")
+	if in.National == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v11, v12 := range in.National {
+			if v11 > 0 {
+				out.RawByte(',')
+			}
+			(v12).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"canadian\":")
+	if in.Canadian == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v13, v14 := range in.Canadian {
+			if v13 > 0 {
+				out.RawByte(',')
+			}
+			(v14).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"hTeam\":")
+	if in.LocalHome == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v15, v16 := range in.LocalHome {
+			if v15 > 0 {
+				out.RawByte(',')
+			}
+			(v16).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"vTeam\":")
+	if in.LocalAway == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v17, v18 := range in.LocalAway {
+			if v17 > 0 {
+				out.RawByte(',')
+			}
+			(v18).MarshalEasyJSON(out)
+		}
+		out.RawByte(']')
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameBroadcasters) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos6(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameBroadcasters) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos6(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameBroadcasters) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos6(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameBroadcasters) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos6(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos7(in *jlexer.Lexer, out *NBAGameBroadcast) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "broadcasters":
+			(out.Broadcasters).UnmarshalEasyJSON(in)
+		case "video":
+			(out.Details).UnmarshalEasyJSON(in)
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos7(out *jwriter.Writer, in NBAGameBroadcast) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"broadcasters\":")
+	(in.Broadcasters).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"video\":")
+	(in.Details).MarshalEasyJSON(out)
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameBroadcast) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos7(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameBroadcast) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos7(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameBroadcast) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos7(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameBroadcast) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos7(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos8(in *jlexer.Lexer, out *NBAGameVideoMetadata) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "broadcast":
+			(out.Broadcast).UnmarshalEasyJSON(in)
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos8(out *jwriter.Writer, in NBAGameVideoMetadata) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"broadcast\":")
+	(in.Broadcast).MarshalEasyJSON(out)
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGameVideoMetadata) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos8(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGameVideoMetadata) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos8(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGameVideoMetadata) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos8(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGameVideoMetadata) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos8(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos9(in *jlexer.Lexer, out *NBAGame) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "gameId":
+			out.ID = string(in.String())
+		case "startTimeUTC":
+			out.StartTime = string(in.String())
+		case "isStartTimeTBD":
+			out.IsStartTimeTBD = bool(in.Bool())
+		case "gameDuration":
+			(out.Duration).UnmarshalEasyJSON(in)
+		case "period":
+			(out.Period).UnmarshalEasyJSON(in)
+		case "hTeam":
+			easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in, &out.HomeTeam)
+		case "vTeam":
+			easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in, &out.AwayTeam)
+		case "watch":
+			(out.VideoMetadata).UnmarshalEasyJSON(in)
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos9(out *jwriter.Writer, in NBAGame) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"gameId\":")
+	out.String(string(in.ID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"startTimeUTC\":")
+	out.String(string(in.StartTime))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"isStartTimeTBD\":")
+	out.Bool(bool(in.IsStartTimeTBD))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"gameDuration\":")
+	(in.Duration).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"period\":")
+	(in.Period).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"hTeam\":")
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out, in.HomeTeam)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"vTeam\":")
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out, in.AwayTeam)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"watch\":")
+	(in.VideoMetadata).MarshalEasyJSON(out)
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAGame) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos9(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAGame) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos9(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAGame) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos9(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAGame) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos9(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in *jlexer.Lexer, out *NBATeam) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -141,11 +1136,11 @@ func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, o
 					}{}
 				}
 				for !in.IsDelim(']') {
-					var v1 struct {
+					var v19 struct {
 						Score string "json:\"score\""
 					}
-					easyjsonF2f895aDecode(in, &v1)
-					out.PeriodScores = append(out.PeriodScores, v1)
+					easyjson4bb17c5aDecode(in, &v19)
+					out.PeriodScores = append(out.PeriodScores, v19)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -160,7 +1155,7 @@ func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, o
 		in.Consumed()
 	}
 }
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Writer, in NBAScoreboardTeam) {
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out *jwriter.Writer, in NBATeam) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -215,41 +1210,17 @@ func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Writer
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v2, v3 := range in.PeriodScores {
-			if v2 > 0 {
+		for v20, v21 := range in.PeriodScores {
+			if v20 > 0 {
 				out.RawByte(',')
 			}
-			easyjsonF2f895aEncode(out, v3)
+			easyjson4bb17c5aEncode(out, v21)
 		}
 		out.RawByte(']')
 	}
 	out.RawByte('}')
 }
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardTeam) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos1(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardTeam) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos1(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardTeam) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos1(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardTeam) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos1(l, v)
-}
-func easyjsonF2f895aDecode(in *jlexer.Lexer, out *struct {
+func easyjson4bb17c5aDecode(in *jlexer.Lexer, out *struct {
 	Score string "json:\"score\""
 }) {
 	isTopLevel := in.IsStart()
@@ -282,7 +1253,7 @@ func easyjsonF2f895aDecode(in *jlexer.Lexer, out *struct {
 		in.Consumed()
 	}
 }
-func easyjsonF2f895aEncode(out *jwriter.Writer, in struct {
+func easyjson4bb17c5aEncode(out *jwriter.Writer, in struct {
 	Score string "json:\"score\""
 }) {
 	out.RawByte('{')
@@ -295,1086 +1266,4 @@ func easyjsonF2f895aEncode(out *jwriter.Writer, in struct {
 	out.RawString("\"score\":")
 	out.String(string(in.Score))
 	out.RawByte('}')
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos2(in *jlexer.Lexer, out *NBAScoreboardDuration) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "hours":
-			out.Hours = string(in.String())
-		case "minute":
-			out.Minute = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos2(out *jwriter.Writer, in NBAScoreboardDuration) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"hours\":")
-	out.String(string(in.Hours))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"minute\":")
-	out.String(string(in.Minute))
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardDuration) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos2(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardDuration) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos2(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardDuration) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos2(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardDuration) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos2(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos3(in *jlexer.Lexer, out *NBAScoreboardPeriod) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "type":
-			out.Type = int(in.Int())
-		case "current":
-			out.Current = int(in.Int())
-		case "maxRegular":
-			out.MaxRegular = int(in.Int())
-		case "isHalftime":
-			out.IsHalftime = bool(in.Bool())
-		case "isEndOfPeriod":
-			out.IsEndOfPeriod = bool(in.Bool())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos3(out *jwriter.Writer, in NBAScoreboardPeriod) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"type\":")
-	out.Int(int(in.Type))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"current\":")
-	out.Int(int(in.Current))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"maxRegular\":")
-	out.Int(int(in.MaxRegular))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isHalftime\":")
-	out.Bool(bool(in.IsHalftime))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isEndOfPeriod\":")
-	out.Bool(bool(in.IsEndOfPeriod))
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardPeriod) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos3(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardPeriod) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos3(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardPeriod) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos3(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardPeriod) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos3(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos4(in *jlexer.Lexer, out *NBAScoreboardDeepLink) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "iosApp":
-			out.IOS = string(in.String())
-		case "mobileApp":
-			out.Mobile = string(in.String())
-		case "androidApp":
-			out.Android = string(in.String())
-		case "desktopWeb":
-			out.Desktop = string(in.String())
-		case "broadcaster":
-			out.Broadcaster = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos4(out *jwriter.Writer, in NBAScoreboardDeepLink) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"iosApp\":")
-	out.String(string(in.IOS))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"mobileApp\":")
-	out.String(string(in.Mobile))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"androidApp\":")
-	out.String(string(in.Android))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"desktopWeb\":")
-	out.String(string(in.Desktop))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"broadcaster\":")
-	out.String(string(in.Broadcaster))
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardDeepLink) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos4(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardDeepLink) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos4(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardDeepLink) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos4(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardDeepLink) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos4(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos5(in *jlexer.Lexer, out *NBAScoreboardStream) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "streamId":
-			out.ID = string(in.String())
-		case "streamType":
-			out.Type = string(in.String())
-		case "isOnAir":
-			out.IsOnAir = bool(in.Bool())
-		case "duration":
-			out.Duration = int(in.Int())
-		case "isArchiveAvailToWatch":
-			out.ArchiveAvailable = bool(in.Bool())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos5(out *jwriter.Writer, in NBAScoreboardStream) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"streamId\":")
-	out.String(string(in.ID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"streamType\":")
-	out.String(string(in.Type))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isOnAir\":")
-	out.Bool(bool(in.IsOnAir))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"duration\":")
-	out.Int(int(in.Duration))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isArchiveAvailToWatch\":")
-	out.Bool(bool(in.ArchiveAvailable))
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardStream) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos5(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardStream) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos5(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardStream) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos5(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardStream) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos5(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos6(in *jlexer.Lexer, out *NBAScoreboardVideoDetails) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "canPurchase":
-			out.CanPurchase = bool(in.Bool())
-		case "isLeaguePass":
-			out.IsOnLeaguePass = bool(in.Bool())
-		case "isTNTOT":
-			out.IsOnTNT = bool(in.Bool())
-		case "streams":
-			if in.IsNull() {
-				in.Skip()
-				out.Streams = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.Streams = make([]NBAScoreboardStream, 0, 1)
-				} else {
-					out.Streams = []NBAScoreboardStream{}
-				}
-				for !in.IsDelim(']') {
-					var v4 NBAScoreboardStream
-					(v4).UnmarshalEasyJSON(in)
-					out.Streams = append(out.Streams, v4)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		case "deepLink":
-			if in.IsNull() {
-				in.Skip()
-				out.DeepLinks = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.DeepLinks = make([]NBAScoreboardDeepLink, 0, 1)
-				} else {
-					out.DeepLinks = []NBAScoreboardDeepLink{}
-				}
-				for !in.IsDelim(']') {
-					var v5 NBAScoreboardDeepLink
-					(v5).UnmarshalEasyJSON(in)
-					out.DeepLinks = append(out.DeepLinks, v5)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos6(out *jwriter.Writer, in NBAScoreboardVideoDetails) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"canPurchase\":")
-	out.Bool(bool(in.CanPurchase))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isLeaguePass\":")
-	out.Bool(bool(in.IsOnLeaguePass))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isTNTOT\":")
-	out.Bool(bool(in.IsOnTNT))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"streams\":")
-	if in.Streams == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v6, v7 := range in.Streams {
-			if v6 > 0 {
-				out.RawByte(',')
-			}
-			(v7).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"deepLink\":")
-	if in.DeepLinks == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v8, v9 := range in.DeepLinks {
-			if v8 > 0 {
-				out.RawByte(',')
-			}
-			(v9).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardVideoDetails) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos6(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardVideoDetails) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos6(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardVideoDetails) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos6(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardVideoDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos6(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos7(in *jlexer.Lexer, out *NBAScoreboardBroadcasters) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "national":
-			if in.IsNull() {
-				in.Skip()
-				out.National = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.National = make([]NBAScoreboardBroadcaster, 0, 2)
-				} else {
-					out.National = []NBAScoreboardBroadcaster{}
-				}
-				for !in.IsDelim(']') {
-					var v10 NBAScoreboardBroadcaster
-					(v10).UnmarshalEasyJSON(in)
-					out.National = append(out.National, v10)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		case "canadian":
-			if in.IsNull() {
-				in.Skip()
-				out.Canadian = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.Canadian = make([]NBAScoreboardBroadcaster, 0, 2)
-				} else {
-					out.Canadian = []NBAScoreboardBroadcaster{}
-				}
-				for !in.IsDelim(']') {
-					var v11 NBAScoreboardBroadcaster
-					(v11).UnmarshalEasyJSON(in)
-					out.Canadian = append(out.Canadian, v11)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		case "hTeam":
-			if in.IsNull() {
-				in.Skip()
-				out.LocalHome = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.LocalHome = make([]NBAScoreboardBroadcaster, 0, 2)
-				} else {
-					out.LocalHome = []NBAScoreboardBroadcaster{}
-				}
-				for !in.IsDelim(']') {
-					var v12 NBAScoreboardBroadcaster
-					(v12).UnmarshalEasyJSON(in)
-					out.LocalHome = append(out.LocalHome, v12)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		case "vTeam":
-			if in.IsNull() {
-				in.Skip()
-				out.LocalAway = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.LocalAway = make([]NBAScoreboardBroadcaster, 0, 2)
-				} else {
-					out.LocalAway = []NBAScoreboardBroadcaster{}
-				}
-				for !in.IsDelim(']') {
-					var v13 NBAScoreboardBroadcaster
-					(v13).UnmarshalEasyJSON(in)
-					out.LocalAway = append(out.LocalAway, v13)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos7(out *jwriter.Writer, in NBAScoreboardBroadcasters) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"national\":")
-	if in.National == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v14, v15 := range in.National {
-			if v14 > 0 {
-				out.RawByte(',')
-			}
-			(v15).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"canadian\":")
-	if in.Canadian == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v16, v17 := range in.Canadian {
-			if v16 > 0 {
-				out.RawByte(',')
-			}
-			(v17).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"hTeam\":")
-	if in.LocalHome == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v18, v19 := range in.LocalHome {
-			if v18 > 0 {
-				out.RawByte(',')
-			}
-			(v19).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"vTeam\":")
-	if in.LocalAway == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v20, v21 := range in.LocalAway {
-			if v20 > 0 {
-				out.RawByte(',')
-			}
-			(v21).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardBroadcasters) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos7(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardBroadcasters) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos7(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardBroadcasters) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos7(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardBroadcasters) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos7(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos8(in *jlexer.Lexer, out *NBAScoreboardBroadcast) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "broadcasters":
-			(out.Broadcasters).UnmarshalEasyJSON(in)
-		case "video":
-			(out.Details).UnmarshalEasyJSON(in)
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos8(out *jwriter.Writer, in NBAScoreboardBroadcast) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"broadcasters\":")
-	(in.Broadcasters).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"video\":")
-	(in.Details).MarshalEasyJSON(out)
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardBroadcast) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos8(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardBroadcast) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos8(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardBroadcast) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos8(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardBroadcast) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos8(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos9(in *jlexer.Lexer, out *NBAScoreboardVideoMetadata) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "broadcast":
-			(out.Broadcast).UnmarshalEasyJSON(in)
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos9(out *jwriter.Writer, in NBAScoreboardVideoMetadata) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"broadcast\":")
-	(in.Broadcast).MarshalEasyJSON(out)
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardVideoMetadata) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos9(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardVideoMetadata) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos9(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardVideoMetadata) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos9(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardVideoMetadata) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos9(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos10(in *jlexer.Lexer, out *NBAScoreboardGame) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "startTimeUTC":
-			out.StartTime = string(in.String())
-		case "isStartTimeTBD":
-			out.IsStartTimeTBD = bool(in.Bool())
-		case "gameDuration":
-			(out.Duration).UnmarshalEasyJSON(in)
-		case "period":
-			(out.Period).UnmarshalEasyJSON(in)
-		case "hTeam":
-			(out.HomeTeam).UnmarshalEasyJSON(in)
-		case "vTeam":
-			(out.AwayTeam).UnmarshalEasyJSON(in)
-		case "watch":
-			(out.VideoMetadata).UnmarshalEasyJSON(in)
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos10(out *jwriter.Writer, in NBAScoreboardGame) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"startTimeUTC\":")
-	out.String(string(in.StartTime))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"isStartTimeTBD\":")
-	out.Bool(bool(in.IsStartTimeTBD))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"gameDuration\":")
-	(in.Duration).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"period\":")
-	(in.Period).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"hTeam\":")
-	(in.HomeTeam).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"vTeam\":")
-	(in.AwayTeam).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"watch\":")
-	(in.VideoMetadata).MarshalEasyJSON(out)
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboardGame) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos10(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboardGame) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos10(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboardGame) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos10(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboardGame) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos10(l, v)
-}
-func easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos11(in *jlexer.Lexer, out *NBAScoreboard) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "games":
-			if in.IsNull() {
-				in.Skip()
-				out.Games = nil
-			} else {
-				in.Delim('[')
-				if !in.IsDelim(']') {
-					out.Games = make([]NBAScoreboardGame, 0, 1)
-				} else {
-					out.Games = []NBAScoreboardGame{}
-				}
-				for !in.IsDelim(']') {
-					var v22 NBAScoreboardGame
-					(v22).UnmarshalEasyJSON(in)
-					out.Games = append(out.Games, v22)
-					in.WantComma()
-				}
-				in.Delim(']')
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos11(out *jwriter.Writer, in NBAScoreboard) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"games\":")
-	if in.Games == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
-		out.RawString("null")
-	} else {
-		out.RawByte('[')
-		for v23, v24 := range in.Games {
-			if v23 > 0 {
-				out.RawByte(',')
-			}
-			(v24).MarshalEasyJSON(out)
-		}
-		out.RawByte(']')
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v NBAScoreboard) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos11(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v NBAScoreboard) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonF2f895aEncodeGithubComSkeswaEnbiyayBackendDtos11(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *NBAScoreboard) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos11(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *NBAScoreboard) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonF2f895aDecodeGithubComSkeswaEnbiyayBackendDtos11(l, v)
 }
