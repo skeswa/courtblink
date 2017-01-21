@@ -39,7 +39,8 @@ func NewStore() (*Store, error) {
 	}, nil
 }
 
-func (s *Store) getSplashData() dtos.SplashData {
+// GetSplashData gets the latest splash data.
+func (s *Store) GetSplashData() dtos.SplashData {
 	if len(s.latestScoreboard.Games) <= 0 {
 		return dtos.SplashData{}
 	}
