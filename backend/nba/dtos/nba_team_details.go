@@ -18,9 +18,9 @@ type NBALeagueTeams struct {
 //
 // easyjson:json
 type NBATeamDetails struct {
-	ID             string `json:"teamID"`
+	ID             string `json:"teamId"`
 	City           string `json:"city"`
-	TriCode        string `json:"triCode"`
+	TriCode        string `json:"tricode"`
 	FullName       string `json:"fullName"`
 	Nickname       string `json:"nickname"`
 	Division       string `json:"divName"`

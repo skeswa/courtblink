@@ -17,7 +17,98 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer, out *NBAPlayerDetails) {
+func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer, out *NBAPlayerDraftDetails) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "teamId":
+			out.TeamID = string(in.String())
+		case "pickNum":
+			out.PickNumber = string(in.String())
+		case "roundNum":
+			out.RoundNumber = string(in.String())
+		case "seasonYear":
+			out.Year = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Writer, in NBAPlayerDraftDetails) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"teamId\":")
+	out.String(string(in.TeamID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"pickNum\":")
+	out.String(string(in.PickNumber))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"roundNum\":")
+	out.String(string(in.RoundNumber))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"seasonYear\":")
+	out.String(string(in.Year))
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v NBAPlayerDraftDetails) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v NBAPlayerDraftDetails) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *NBAPlayerDraftDetails) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *NBAPlayerDraftDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(l, v)
+}
+func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos1(in *jlexer.Lexer, out *NBAPlayerDetails) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -63,7 +154,7 @@ func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer
 		case "country":
 			out.Country = string(in.String())
 		case "draft":
-			easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos1(in, &out.DraftDetails)
+			(out.DraftDetails).UnmarshalEasyJSON(in)
 		default:
 			in.SkipRecursive()
 		}
@@ -74,7 +165,7 @@ func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer
 		in.Consumed()
 	}
 }
-func easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Writer, in NBAPlayerDetails) {
+func easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos1(out *jwriter.Writer, in NBAPlayerDetails) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -161,99 +252,32 @@ func easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Wri
 	}
 	first = false
 	out.RawString("\"draft\":")
-	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos1(out, in.DraftDetails)
+	(in.DraftDetails).MarshalEasyJSON(out)
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
 func (v NBAPlayerDetails) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(&w, v)
+	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v NBAPlayerDetails) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos(w, v)
+	easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *NBAPlayerDetails) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(&r, v)
+	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *NBAPlayerDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos(l, v)
-}
-func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos1(in *jlexer.Lexer, out *NBAPlayerDraftDetails) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "teamId":
-			out.TeamID = string(in.String())
-		case "pickNum":
-			out.PickNumber = string(in.String())
-		case "roundNum":
-			out.RoundNumber = string(in.String())
-		case "seasonYear":
-			out.Year = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson1df274c0EncodeGithubComSkeswaEnbiyayBackendNbaDtos1(out *jwriter.Writer, in NBAPlayerDraftDetails) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"teamId\":")
-	out.String(string(in.TeamID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"pickNum\":")
-	out.String(string(in.PickNumber))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"roundNum\":")
-	out.String(string(in.RoundNumber))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"seasonYear\":")
-	out.String(string(in.Year))
-	out.RawByte('}')
+	easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos1(l, v)
 }
 func easyjson1df274c0DecodeGithubComSkeswaEnbiyayBackendNbaDtos2(in *jlexer.Lexer, out *NBALeaguePlayers) {
 	isTopLevel := in.IsStart()

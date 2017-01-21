@@ -8,7 +8,8 @@ type GameDetails struct {
 	HomeTeamName                       string `json:"1.1"`
 	HomeTeamCity                       string `json:"1.2"`
 	HomeTeamSplashURL                  string `json:"1.3"`
-	HomeTeamSplashColor                string `json:"1.4"`
+	HomeTeamSplashPrimaryColor         string `json:"1.4.1"`
+	HomeTeamSplashSecondaryColor       string `json:"1.4.2"`
 	HomeTeamPointsLeaderID             string `json:"1.5.1"`
 	HomeTeamPointsLeaderName           string `json:"1.5.2"`
 	HomeTeamPointsLeaderJerseyNumber   string `json:"1.5.3"`
@@ -22,7 +23,8 @@ type GameDetails struct {
 	AwayTeamName                       string `json:"2.1"`
 	AwayTeamCity                       string `json:"2.2"`
 	AwayTeamSplashURL                  string `json:"2.3"`
-	AwayTeamSplashColor                string `json:"2.4"`
+	AwayTeamSplashPrimaryColor         string `json:"2.4.1"`
+	AwayTeamSplashSecondaryColor       string `json:"2.4.2"`
 	AwayTeamPointsLeaderID             string `json:"2.5.1"`
 	AwayTeamPointsLeaderName           string `json:"2.5.2"`
 	AwayTeamPointsLeaderJerseyNumber   string `json:"2.5.3"`

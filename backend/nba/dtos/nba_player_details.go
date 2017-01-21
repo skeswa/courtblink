@@ -34,6 +34,9 @@ type NBAPlayerDetails struct {
 	DraftDetails NBAPlayerDraftDetails `json:"draft"`
 }
 
+// NBAPlayerDraftDetails represents a player collection object from the NBA API.
+//
+// easyjson:json
 type NBAPlayerDraftDetails struct {
 	TeamID      string `json:"teamId"`
 	PickNumber  string `json:"pickNum"`

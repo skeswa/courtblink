@@ -26,7 +26,7 @@ func FetchNBATeams() (dtos.NBAAllTeams, error) {
 		allTeams dtos.NBAAllTeams
 	)
 
-	if resp, err = http.Get(playersAPIEndpoint); err != nil {
+	if resp, err = http.Get(teamsAPIEndpoint); err != nil {
 		return allTeams, fmt.Errorf(
 			"Failed to download the all players from NBA.com: %v",
 			err)

@@ -15,5 +15,6 @@ type TeamColorDetails struct {
 	League string `json:"league"`
 	Colors struct {
 		Hex []string `json:"hex"`
+		RGB []string `json:"rgb"`
 	} `json:"colors"`
 }

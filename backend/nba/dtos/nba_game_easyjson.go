@@ -996,9 +996,9 @@ func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos9(in *jlexer.Lexe
 		case "period":
 			(out.Period).UnmarshalEasyJSON(in)
 		case "hTeam":
-			(out.HomeTeam).UnmarshalEasyJSON(in)
+			easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in, &out.HomeTeam)
 		case "vTeam":
-			(out.AwayTeam).UnmarshalEasyJSON(in)
+			easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in, &out.AwayTeam)
 		case "watch":
 			(out.VideoMetadata).UnmarshalEasyJSON(in)
 		default:
@@ -1056,13 +1056,13 @@ func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos9(out *jwriter.Wr
 	}
 	first = false
 	out.RawString("\"hTeam\":")
-	(in.HomeTeam).MarshalEasyJSON(out)
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out, in.HomeTeam)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
 	out.RawString("\"vTeam\":")
-	(in.AwayTeam).MarshalEasyJSON(out)
+	easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out, in.AwayTeam)
 	if !first {
 		out.RawByte(',')
 	}
@@ -1094,4 +1094,184 @@ func (v *NBAGame) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *NBAGame) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos9(l, v)
+}
+func easyjson4bb17c5aDecodeGithubComSkeswaEnbiyayBackendNbaDtos10(in *jlexer.Lexer, out *NBATeam) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "teamId":
+			out.ID = string(in.String())
+		case "win":
+			out.Win = string(in.String())
+		case "loss":
+			out.Loss = string(in.String())
+		case "score":
+			out.Score = string(in.String())
+		case "triCode":
+			out.Tricode = string(in.String())
+		case "seriesWin":
+			out.SeriesWin = string(in.String())
+		case "seriesLoss":
+			out.SeriesLoss = string(in.String())
+		case "linescore":
+			if in.IsNull() {
+				in.Skip()
+				out.PeriodScores = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.PeriodScores = make([]struct {
+						Score string "json:\"score\""
+					}, 0, 4)
+				} else {
+					out.PeriodScores = []struct {
+						Score string "json:\"score\""
+					}{}
+				}
+				for !in.IsDelim(']') {
+					var v19 struct {
+						Score string "json:\"score\""
+					}
+					easyjson4bb17c5aDecode(in, &v19)
+					out.PeriodScores = append(out.PeriodScores, v19)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncodeGithubComSkeswaEnbiyayBackendNbaDtos10(out *jwriter.Writer, in NBATeam) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"teamId\":")
+	out.String(string(in.ID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"win\":")
+	out.String(string(in.Win))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"loss\":")
+	out.String(string(in.Loss))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"score\":")
+	out.String(string(in.Score))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"triCode\":")
+	out.String(string(in.Tricode))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"seriesWin\":")
+	out.String(string(in.SeriesWin))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"seriesLoss\":")
+	out.String(string(in.SeriesLoss))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"linescore\":")
+	if in.PeriodScores == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v20, v21 := range in.PeriodScores {
+			if v20 > 0 {
+				out.RawByte(',')
+			}
+			easyjson4bb17c5aEncode(out, v21)
+		}
+		out.RawByte(']')
+	}
+	out.RawByte('}')
+}
+func easyjson4bb17c5aDecode(in *jlexer.Lexer, out *struct {
+	Score string "json:\"score\""
+}) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "score":
+			out.Score = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson4bb17c5aEncode(out *jwriter.Writer, in struct {
+	Score string "json:\"score\""
+}) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"score\":")
+	out.String(string(in.Score))
+	out.RawByte('}')
 }

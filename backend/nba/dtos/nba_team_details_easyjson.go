@@ -36,11 +36,11 @@ func easyjson2c6098b8DecodeGithubComSkeswaEnbiyayBackendNbaDtos(in *jlexer.Lexer
 			continue
 		}
 		switch key {
-		case "teamID":
+		case "teamId":
 			out.ID = string(in.String())
 		case "city":
 			out.City = string(in.String())
-		case "triCode":
+		case "tricode":
 			out.TriCode = string(in.String())
 		case "fullName":
 			out.FullName = string(in.String())
@@ -72,7 +72,7 @@ func easyjson2c6098b8EncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Wri
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"teamID\":")
+	out.RawString("\"teamId\":")
 	out.String(string(in.ID))
 	if !first {
 		out.RawByte(',')
@@ -84,7 +84,7 @@ func easyjson2c6098b8EncodeGithubComSkeswaEnbiyayBackendNbaDtos(out *jwriter.Wri
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"triCode\":")
+	out.RawString("\"tricode\":")
 	out.String(string(in.TriCode))
 	if !first {
 		out.RawByte(',')

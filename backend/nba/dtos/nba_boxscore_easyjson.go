@@ -1315,6 +1315,8 @@ func easyjsonDf4150e7DecodeGithubComSkeswaEnbiyayBackendNbaDtos8(in *jlexer.Lexe
 		switch key {
 		case "gameId":
 			out.ID = string(in.String())
+		case "clock":
+			out.Clock = string(in.String())
 		case "startTimeUTC":
 			out.StartTime = string(in.String())
 		case "isStartTimeTBD":
@@ -1349,6 +1351,12 @@ func easyjsonDf4150e7EncodeGithubComSkeswaEnbiyayBackendNbaDtos8(out *jwriter.Wr
 	first = false
 	out.RawString("\"gameId\":")
 	out.String(string(in.ID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"clock\":")
+	out.String(string(in.Clock))
 	if !first {
 		out.RawByte(',')
 	}

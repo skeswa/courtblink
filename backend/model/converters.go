@@ -3,9 +3,28 @@ package model
 import (
 	"fmt"
 
+	colorDTOs "github.com/skeswa/enbiyay/backend/colors/dtos"
 	"github.com/skeswa/enbiyay/backend/dtos"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 )
+
+const (
+	defaultPrimaryColor   = "#666666"
+	defaultSecondaryColor = "#222222"
+)
+
+// convertTeamColorToColors extracts the client-presentable colors for a team.
+func convertTeamColorToColors(teamColors colorDTOs.TeamColorDetails) (primary, secondary string) {
+	if len(teamColors.Colors.Hex) > 1 {
+		return normalizeHexColor(teamColors.Colors.Hex[0]), normalizeHexColor(teamColors.Colors.Hex[1])
+	}
+
+	if len(teamColors.Colors.RGB) > 1 {
+		return normalizeRGBColor(teamColors.Colors.RGB[0]), normalizeRGBColor(teamColors.Colors.RGB[1])
+	}
+
+	return defaultPrimaryColor, defaultSecondaryColor
+}
 
 // convertNBAGameToGameSummary turns an NBA game DTO into a game summary DTO.
 func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
@@ -65,10 +84,16 @@ func convertNBAGameToGameDetails(
 		panic(fmt.Sprintf("No such away team colors exist: %v", game.AwayTeam.ID))
 	}
 
+	var (
+		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(homeTeamColors)
+		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(awayTeamColors)
+	)
+
 	details.HomeTeamName = homeTeam.FullName
 	details.HomeTeamCity = homeTeam.City
 	details.HomeTeamSplashURL = teamSplashPictureURL(game)
-	details.HomeTeamSplashColor = homeTeamColors.Colors.Hex[0]
+	details.HomeTeamSplashPrimaryColor = homeTeamPrimaryColor
+	details.HomeTeamSplashSecondaryColor = homeTeamSecondaryColor
 	if boxScoreExists && len(boxScore.Stats.HomeTeamStats.Leaders.PointsLeader.Players) > 0 {
 		playerID = boxScore.Stats.HomeTeamStats.Leaders.PointsLeader.Players[0].ID
 		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
@@ -109,7 +134,8 @@ func convertNBAGameToGameDetails(
 	details.AwayTeamName = awayTeam.FullName
 	details.AwayTeamCity = awayTeam.City
 	details.AwayTeamSplashURL = teamSplashPictureURL(game)
-	details.AwayTeamSplashColor = awayTeamColors.Colors.Hex[0]
+	details.AwayTeamSplashPrimaryColor = awayTeamPrimaryColor
+	details.AwayTeamSplashSecondaryColor = awayTeamSecondaryColor
 	if boxScoreExists && len(boxScore.Stats.AwayTeamStats.Leaders.PointsLeader.Players) > 0 {
 		playerID = boxScore.Stats.AwayTeamStats.Leaders.PointsLeader.Players[0].ID
 		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)

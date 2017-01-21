@@ -102,6 +102,7 @@ func (v *TeamColorDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
 }
 func easyjsonEbf570e8Decode(in *jlexer.Lexer, out *struct {
 	Hex []string "json:\"hex\""
+	RGB []string "json:\"rgb\""
 }) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
@@ -140,6 +141,25 @@ func easyjsonEbf570e8Decode(in *jlexer.Lexer, out *struct {
 				}
 				in.Delim(']')
 			}
+		case "rgb":
+			if in.IsNull() {
+				in.Skip()
+				out.RGB = nil
+			} else {
+				in.Delim('[')
+				if !in.IsDelim(']') {
+					out.RGB = make([]string, 0, 4)
+				} else {
+					out.RGB = []string{}
+				}
+				for !in.IsDelim(']') {
+					var v2 string
+					v2 = string(in.String())
+					out.RGB = append(out.RGB, v2)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -152,6 +172,7 @@ func easyjsonEbf570e8Decode(in *jlexer.Lexer, out *struct {
 }
 func easyjsonEbf570e8Encode(out *jwriter.Writer, in struct {
 	Hex []string "json:\"hex\""
+	RGB []string "json:\"rgb\""
 }) {
 	out.RawByte('{')
 	first := true
@@ -165,11 +186,28 @@ func easyjsonEbf570e8Encode(out *jwriter.Writer, in struct {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v2, v3 := range in.Hex {
-			if v2 > 0 {
+		for v3, v4 := range in.Hex {
+			if v3 > 0 {
 				out.RawByte(',')
 			}
-			out.String(string(v3))
+			out.String(string(v4))
+		}
+		out.RawByte(']')
+	}
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"rgb\":")
+	if in.RGB == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v5, v6 := range in.RGB {
+			if v5 > 0 {
+				out.RawByte(',')
+			}
+			out.String(string(v6))
 		}
 		out.RawByte(']')
 	}
@@ -206,9 +244,9 @@ func easyjsonEbf570e8DecodeGithubComSkeswaEnbiyayBackendColorsDtos1(in *jlexer.L
 					out.TeamColors = []TeamColorDetails{}
 				}
 				for !in.IsDelim(']') {
-					var v4 TeamColorDetails
-					(v4).UnmarshalEasyJSON(in)
-					out.TeamColors = append(out.TeamColors, v4)
+					var v7 TeamColorDetails
+					(v7).UnmarshalEasyJSON(in)
+					out.TeamColors = append(out.TeamColors, v7)
 					in.WantComma()
 				}
 				in.Delim(']')
@@ -236,11 +274,11 @@ func easyjsonEbf570e8EncodeGithubComSkeswaEnbiyayBackendColorsDtos1(out *jwriter
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v5, v6 := range in.TeamColors {
-			if v5 > 0 {
+		for v8, v9 := range in.TeamColors {
+			if v8 > 0 {
 				out.RawByte(',')
 			}
-			(v6).MarshalEasyJSON(out)
+			(v9).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
 	}

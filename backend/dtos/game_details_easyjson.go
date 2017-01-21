@@ -42,8 +42,10 @@ func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.HomeTeamCity = string(in.String())
 		case "1.3":
 			out.HomeTeamSplashURL = string(in.String())
-		case "1.4":
-			out.HomeTeamSplashColor = string(in.String())
+		case "1.4.1":
+			out.HomeTeamSplashPrimaryColor = string(in.String())
+		case "1.4.2":
+			out.HomeTeamSplashSecondaryColor = string(in.String())
 		case "1.5.1":
 			out.HomeTeamPointsLeaderID = string(in.String())
 		case "1.5.2":
@@ -68,8 +70,10 @@ func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.AwayTeamCity = string(in.String())
 		case "2.3":
 			out.AwayTeamSplashURL = string(in.String())
-		case "2.4":
-			out.AwayTeamSplashColor = string(in.String())
+		case "2.4.1":
+			out.AwayTeamSplashPrimaryColor = string(in.String())
+		case "2.4.2":
+			out.AwayTeamSplashSecondaryColor = string(in.String())
 		case "2.5.1":
 			out.AwayTeamPointsLeaderID = string(in.String())
 		case "2.5.2":
@@ -124,8 +128,14 @@ func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.4\":")
-	out.String(string(in.HomeTeamSplashColor))
+	out.RawString("\"1.4.1\":")
+	out.String(string(in.HomeTeamSplashPrimaryColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1.4.2\":")
+	out.String(string(in.HomeTeamSplashSecondaryColor))
 	if !first {
 		out.RawByte(',')
 	}
@@ -202,8 +212,14 @@ func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4\":")
-	out.String(string(in.AwayTeamSplashColor))
+	out.RawString("\"2.4.1\":")
+	out.String(string(in.AwayTeamSplashPrimaryColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"2.4.2\":")
+	out.String(string(in.AwayTeamSplashSecondaryColor))
 	if !first {
 		out.RawByte(',')
 	}
