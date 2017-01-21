@@ -6,5 +6,5 @@ package dtos
 type LiveGameStats struct {
 	Period        int    `json:"1"`
 	Channel       string `json:"2"`
-	TimeRemaining int    `json:"3"`
+	TimeRemaining string `json:"3"`
 }

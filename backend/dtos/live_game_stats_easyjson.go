@@ -41,7 +41,7 @@ func easyjsonEa1a6751DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 		case "2":
 			out.Channel = string(in.String())
 		case "3":
-			out.TimeRemaining = int(in.Int())
+			out.TimeRemaining = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -73,7 +73,7 @@ func easyjsonEa1a6751EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 	}
 	first = false
 	out.RawString("\"3\":")
-	out.Int(int(in.TimeRemaining))
+	out.String(string(in.TimeRemaining))
 	out.RawByte('}')
 }
 

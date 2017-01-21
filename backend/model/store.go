@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 
+	"github.com/skeswa/enbiyay/backend/dtos"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 )
 
@@ -36,4 +37,29 @@ func NewStore() (*Store, error) {
 		teamColorCache:   teamColorCache,
 		latestScoreboard: scoreboard,
 	}, nil
+}
+
+func (s *Store) getSplashData() dtos.SplashData {
+	if len(s.latestScoreboard.Games) <= 0 {
+		return dtos.SplashData{}
+	}
+
+	var (
+		gameSummaries    []dtos.GameSummary
+		firstGameDetails = convertNBAGameToGameDetails(
+			s.latestScoreboard.Games[0],
+			s.teamCache,
+			s.playerCache,
+			s.boxScoreCache,
+			s.teamColorCache)
+	)
+
+	for _, game := range s.latestScoreboard.Games {
+		gameSummaries = append(gameSummaries, convertNBAGameToGameSummary(game))
+	}
+
+	return dtos.SplashData{
+		FirstGameDetails: &firstGameDetails,
+		Games:            gameSummaries,
+	}
 }

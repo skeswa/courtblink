@@ -40,15 +40,15 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.ID = string(in.String())
 		case "1.2":
 			easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.LiveGameStats)
-		case "2.2":
+		case "2.1":
 			out.HomeTeamWins = int(in.Int())
-		case "2.3":
+		case "2.2":
 			out.HomeTeamScore = int(in.Int())
-		case "2.4":
+		case "2.3":
 			out.HomeTeamLosses = int(in.Int())
+		case "2.4":
+			out.HomeTeamTeamID = string(in.String())
 		case "2.5":
-			out.HomeTeamLogoID = string(in.String())
-		case "2.6":
 			out.HomeTeamTriCode = string(in.String())
 		case "3.1":
 			out.AwayTeamWins = int(in.Int())
@@ -57,7 +57,7 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 		case "3.3":
 			out.AwayTeamLosses = int(in.Int())
 		case "3.4":
-			out.AwayTeamLogoID = string(in.String())
+			out.AwayTeamTeamID = string(in.String())
 		case "3.5":
 			out.AwayTeamTriCode = string(in.String())
 		default:
@@ -90,31 +90,31 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.2\":")
+	out.RawString("\"2.1\":")
 	out.Int(int(in.HomeTeamWins))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.3\":")
+	out.RawString("\"2.2\":")
 	out.Int(int(in.HomeTeamScore))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4\":")
+	out.RawString("\"2.3\":")
 	out.Int(int(in.HomeTeamLosses))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5\":")
-	out.String(string(in.HomeTeamLogoID))
+	out.RawString("\"2.4\":")
+	out.String(string(in.HomeTeamTeamID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6\":")
+	out.RawString("\"2.5\":")
 	out.String(string(in.HomeTeamTriCode))
 	if !first {
 		out.RawByte(',')
@@ -139,7 +139,7 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 	}
 	first = false
 	out.RawString("\"3.4\":")
-	out.String(string(in.AwayTeamLogoID))
+	out.String(string(in.AwayTeamTeamID))
 	if !first {
 		out.RawByte(',')
 	}
@@ -196,7 +196,7 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, 
 		case "2":
 			out.Channel = string(in.String())
 		case "3":
-			out.TimeRemaining = int(in.Int())
+			out.TimeRemaining = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -228,6 +228,6 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Write
 	}
 	first = false
 	out.RawString("\"3\":")
-	out.Int(int(in.TimeRemaining))
+	out.String(string(in.TimeRemaining))
 	out.RawByte('}')
 }

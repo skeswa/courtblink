@@ -36,98 +36,58 @@ func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			continue
 		}
 		switch key {
-		case "2.1":
+		case "1.1":
 			out.HomeTeamName = string(in.String())
-		case "2.2":
+		case "1.2":
 			out.HomeTeamCity = string(in.String())
-		case "2.3":
+		case "1.3":
 			out.HomeTeamSplashURL = string(in.String())
-		case "2.4.1":
+		case "1.4":
+			out.HomeTeamSplashColor = string(in.String())
+		case "1.5.1":
 			out.HomeTeamPointsLeaderID = string(in.String())
-		case "2.4.2":
+		case "1.5.2":
 			out.HomeTeamPointsLeaderName = string(in.String())
-		case "2.4.3":
-			out.HomeTeamPointsLeaderMinutes = string(in.String())
-		case "2.4.4":
-			out.HomeTeamPointsLeaderJerseyName = string(in.String())
-		case "2.5.1":
+		case "1.5.3":
+			out.HomeTeamPointsLeaderJerseyNumber = string(in.String())
+		case "1.6.1":
 			out.HomeTeamAssistsLeaderID = string(in.String())
-		case "2.5.2":
+		case "1.6.2":
 			out.HomeTeamAssistsLeaderName = string(in.String())
-		case "2.5.3":
-			out.HomeTeamAssistsLeaderMinutes = string(in.String())
-		case "2.5.4":
+		case "1.6.3":
 			out.HomeTeamAssistsLeaderJerseyNumber = string(in.String())
-		case "2.6.1":
+		case "1.7.1":
 			out.HomeTeamReboundsLeaderID = string(in.String())
-		case "2.6.2":
+		case "1.7.2":
 			out.HomeTeamReboundsLeaderName = string(in.String())
-		case "2.6.3":
-			out.HomeTeamReboundsLeaderMinutes = string(in.String())
-		case "2.6.4":
-			out.HomeTeamReboundsLeaderJerseyName = string(in.String())
-		case "2.7.1":
-			out.HomeTeamBlocksLeaderID = string(in.String())
-		case "2.7.2":
-			out.HomeTeamBlocksLeaderName = string(in.String())
-		case "2.7.3":
-			out.HomeTeamBlocksLeaderMinutes = string(in.String())
-		case "2.7.4":
-			out.HomeTeamBlocksLeaderJerseyName = string(in.String())
-		case "2.8.1":
-			out.HomeTeamStealsLeaderID = string(in.String())
-		case "2.8.2":
-			out.HomeTeamStealsLeaderName = string(in.String())
-		case "2.8.3":
-			out.HomeTeamStealsLeaderMinutes = string(in.String())
-		case "2.8.4":
-			out.HomeTeamStealsLeaderJerseyName = string(in.String())
-		case "3.1":
+		case "1.7.3":
+			out.HomeTeamReboundsLeaderJerseyNumber = string(in.String())
+		case "2.1":
 			out.AwayTeamName = string(in.String())
-		case "3.2":
+		case "2.2":
 			out.AwayTeamCity = string(in.String())
-		case "3.3":
+		case "2.3":
 			out.AwayTeamSplashURL = string(in.String())
-		case "3.4.1":
+		case "2.4":
+			out.AwayTeamSplashColor = string(in.String())
+		case "2.5.1":
 			out.AwayTeamPointsLeaderID = string(in.String())
-		case "3.4.2":
+		case "2.5.2":
 			out.AwayTeamPointsLeaderName = string(in.String())
-		case "3.4.3":
-			out.AwayTeamPointsLeaderMinutes = string(in.String())
-		case "3.4.4":
-			out.AwayTeamPointsLeaderJerseyName = string(in.String())
-		case "3.5.1":
+		case "2.5.3":
+			out.AwayTeamPointsLeaderJerseyNumber = string(in.String())
+		case "2.6.1":
 			out.AwayTeamAssistsLeaderID = string(in.String())
-		case "3.5.2":
+		case "2.6.2":
 			out.AwayTeamAssistsLeaderName = string(in.String())
-		case "3.5.3":
-			out.AwayTeamAssistsLeaderMinutes = string(in.String())
-		case "3.5.4":
+		case "2.6.3":
 			out.AwayTeamAssistsLeaderJerseyNumber = string(in.String())
-		case "3.6.1":
+		case "2.7.1":
 			out.AwayTeamReboundsLeaderID = string(in.String())
-		case "3.6.2":
+		case "2.7.2":
 			out.AwayTeamReboundsLeaderName = string(in.String())
-		case "3.6.3":
-			out.AwayTeamReboundsLeaderMinutes = string(in.String())
-		case "3.6.4":
-			out.AwayTeamReboundsLeaderJerseyName = string(in.String())
-		case "3.7.1":
-			out.AwayTeamBlocksLeaderID = string(in.String())
-		case "3.7.2":
-			out.AwayTeamBlocksLeaderName = string(in.String())
-		case "3.7.3":
-			out.AwayTeamBlocksLeaderMinutes = string(in.String())
-		case "3.7.4":
-			out.AwayTeamBlocksLeaderJerseyName = string(in.String())
-		case "3.8.1":
-			out.AwayTeamStealsLeaderID = string(in.String())
-		case "3.8.2":
-			out.AwayTeamStealsLeaderName = string(in.String())
-		case "3.8.3":
-			out.AwayTeamStealsLeaderMinutes = string(in.String())
-		case "3.8.4":
-			out.AwayTeamStealsLeaderJerseyName = string(in.String())
+		case "2.7.3":
+			out.AwayTeamReboundsLeaderJerseyNumber = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -146,278 +106,158 @@ func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.1\":")
+	out.RawString("\"1.1\":")
 	out.String(string(in.HomeTeamName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.2\":")
+	out.RawString("\"1.2\":")
 	out.String(string(in.HomeTeamCity))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.3\":")
+	out.RawString("\"1.3\":")
 	out.String(string(in.HomeTeamSplashURL))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4.1\":")
+	out.RawString("\"1.4\":")
+	out.String(string(in.HomeTeamSplashColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1.5.1\":")
 	out.String(string(in.HomeTeamPointsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4.2\":")
+	out.RawString("\"1.5.2\":")
 	out.String(string(in.HomeTeamPointsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4.3\":")
-	out.String(string(in.HomeTeamPointsLeaderMinutes))
+	out.RawString("\"1.5.3\":")
+	out.String(string(in.HomeTeamPointsLeaderJerseyNumber))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.4.4\":")
-	out.String(string(in.HomeTeamPointsLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.5.1\":")
+	out.RawString("\"1.6.1\":")
 	out.String(string(in.HomeTeamAssistsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5.2\":")
+	out.RawString("\"1.6.2\":")
 	out.String(string(in.HomeTeamAssistsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5.3\":")
-	out.String(string(in.HomeTeamAssistsLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.5.4\":")
+	out.RawString("\"1.6.3\":")
 	out.String(string(in.HomeTeamAssistsLeaderJerseyNumber))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.1\":")
+	out.RawString("\"1.7.1\":")
 	out.String(string(in.HomeTeamReboundsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.2\":")
+	out.RawString("\"1.7.2\":")
 	out.String(string(in.HomeTeamReboundsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.3\":")
-	out.String(string(in.HomeTeamReboundsLeaderMinutes))
+	out.RawString("\"1.7.3\":")
+	out.String(string(in.HomeTeamReboundsLeaderJerseyNumber))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.4\":")
-	out.String(string(in.HomeTeamReboundsLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.1\":")
-	out.String(string(in.HomeTeamBlocksLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.2\":")
-	out.String(string(in.HomeTeamBlocksLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.3\":")
-	out.String(string(in.HomeTeamBlocksLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.4\":")
-	out.String(string(in.HomeTeamBlocksLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.8.1\":")
-	out.String(string(in.HomeTeamStealsLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.8.2\":")
-	out.String(string(in.HomeTeamStealsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.8.3\":")
-	out.String(string(in.HomeTeamStealsLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.8.4\":")
-	out.String(string(in.HomeTeamStealsLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.1\":")
+	out.RawString("\"2.1\":")
 	out.String(string(in.AwayTeamName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.2\":")
+	out.RawString("\"2.2\":")
 	out.String(string(in.AwayTeamCity))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.3\":")
+	out.RawString("\"2.3\":")
 	out.String(string(in.AwayTeamSplashURL))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.4.1\":")
+	out.RawString("\"2.4\":")
+	out.String(string(in.AwayTeamSplashColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"2.5.1\":")
 	out.String(string(in.AwayTeamPointsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.4.2\":")
+	out.RawString("\"2.5.2\":")
 	out.String(string(in.AwayTeamPointsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.4.3\":")
-	out.String(string(in.AwayTeamPointsLeaderMinutes))
+	out.RawString("\"2.5.3\":")
+	out.String(string(in.AwayTeamPointsLeaderJerseyNumber))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.4.4\":")
-	out.String(string(in.AwayTeamPointsLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.5.1\":")
+	out.RawString("\"2.6.1\":")
 	out.String(string(in.AwayTeamAssistsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.5.2\":")
+	out.RawString("\"2.6.2\":")
 	out.String(string(in.AwayTeamAssistsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.5.3\":")
-	out.String(string(in.AwayTeamAssistsLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.5.4\":")
+	out.RawString("\"2.6.3\":")
 	out.String(string(in.AwayTeamAssistsLeaderJerseyNumber))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.6.1\":")
+	out.RawString("\"2.7.1\":")
 	out.String(string(in.AwayTeamReboundsLeaderID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.6.2\":")
+	out.RawString("\"2.7.2\":")
 	out.String(string(in.AwayTeamReboundsLeaderName))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"3.6.3\":")
-	out.String(string(in.AwayTeamReboundsLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.6.4\":")
-	out.String(string(in.AwayTeamReboundsLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.7.1\":")
-	out.String(string(in.AwayTeamBlocksLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.7.2\":")
-	out.String(string(in.AwayTeamBlocksLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.7.3\":")
-	out.String(string(in.AwayTeamBlocksLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.7.4\":")
-	out.String(string(in.AwayTeamBlocksLeaderJerseyName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.8.1\":")
-	out.String(string(in.AwayTeamStealsLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.8.2\":")
-	out.String(string(in.AwayTeamStealsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.8.3\":")
-	out.String(string(in.AwayTeamStealsLeaderMinutes))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.8.4\":")
-	out.String(string(in.AwayTeamStealsLeaderJerseyName))
+	out.RawString("\"2.7.3\":")
+	out.String(string(in.AwayTeamReboundsLeaderJerseyNumber))
 	out.RawByte('}')
 }
 

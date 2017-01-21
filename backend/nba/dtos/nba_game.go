@@ -5,6 +5,7 @@ package dtos
 // easyjson:json
 type NBAGame struct {
 	ID             string               `json:"gameId"`
+	Clock          string               `json:"clock"`
 	StartTime      string               `json:"startTimeUTC"`
 	IsStartTimeTBD bool                 `json:"isStartTimeTBD"`
 	Duration       NBAGameDuration      `json:"gameDuration"`
