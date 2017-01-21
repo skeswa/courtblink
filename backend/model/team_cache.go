@@ -26,7 +26,7 @@ func (cache TeamCache) FindTeamByName(
 
 // BuildTeamCache takes the all players DTO and turns it into a map that
 // references players by their IDs.
-func BuildTeamCache(allTeams nbaDTOs.NBAAllTeams) TeamCache {
+func BuildTeamCache(allTeams *nbaDTOs.NBAAllTeams) *TeamCache {
 	var (
 		idToTeam   = make(map[string]nbaDTOs.NBATeamDetails)
 		nameToTeam = make(map[string]nbaDTOs.NBATeamDetails)
@@ -37,5 +37,5 @@ func BuildTeamCache(allTeams nbaDTOs.NBAAllTeams) TeamCache {
 		nameToTeam[team.FullName] = team
 	}
 
-	return TeamCache{idToTeam: idToTeam, nameToTeam: nameToTeam}
+	return &TeamCache{idToTeam: idToTeam, nameToTeam: nameToTeam}
 }

@@ -6,21 +6,21 @@ import nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 type PlayerCache map[string]nbaDTOs.NBAPlayerDetails
 
 // FindPlayerByID finds a player by the given id.
-func (cache PlayerCache) FindPlayerByID(
+func (cache *PlayerCache) FindPlayerByID(
 	playerID string,
 ) (nbaDTOs.NBAPlayerDetails, bool) {
-	player, exists := cache[playerID]
+	player, exists := (*cache)[playerID]
 	return player, exists
 }
 
 // BuildPlayerCache takes the all players DTO and turns it into a map that
 // references players by their IDs.
-func BuildPlayerCache(allPlayers nbaDTOs.NBAAllPlayers) PlayerCache {
-	cache := make(map[string]nbaDTOs.NBAPlayerDetails)
+func BuildPlayerCache(allPlayers *nbaDTOs.NBAAllPlayers) *PlayerCache {
+	cache := PlayerCache(make(map[string]nbaDTOs.NBAPlayerDetails))
 
 	for _, player := range allPlayers.LeaguePlayers.Players {
 		cache[player.ID] = player
 	}
 
-	return PlayerCache(cache)
+	return &cache
 }
