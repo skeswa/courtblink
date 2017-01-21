@@ -90,6 +90,7 @@ func fetchInitialStoreData() (
 			&killed2)
 	}
 
+	errorChan = make(chan error)
 	for !killed2 {
 		select {
 		case result := <-boxScoreChan:

@@ -23,6 +23,8 @@ func NewStore() (*Store, error) {
 		return nil, fmt.Errorf("Failed to create a new store: %v", err)
 	}
 
+	fmt.Println("NewStore", teams, players)
+
 	var (
 		teamCache      = BuildTeamCache(teams)
 		playerCache    = BuildPlayerCache(players)
