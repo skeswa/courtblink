@@ -11,10 +11,43 @@ import (
 
 const (
 	apiDateFormat                 = "20060102"
+	teamsAPIEndpoint              = "http://data.nba.net/data/10s/prod/v1/2016/teams.json"
 	playersAPIEndpoint            = "http://data.nba.net/data/10s/prod/v1/2016/players.json"
 	boxScoreAPIEndpointTemplate   = "http://data.nba.net/data/10s/prod/v1/%s/%s_boxscore.json"
 	scoreboardAPIEndpointTemplate = "http://data.nba.net/data/10s/prod/v1/%s/scoreboard.json"
 )
+
+// FetchNBATeams uses the NBA API to fetch the list of all NBA teams.
+func FetchNBATeams() (dtos.NBAAllTeams, error) {
+	var (
+		err      error
+		body     []byte
+		resp     *http.Response
+		allTeams dtos.NBAAllTeams
+	)
+
+	if resp, err = http.Get(playersAPIEndpoint); err != nil {
+		return allTeams, fmt.Errorf(
+			"Failed to download the all players from NBA.com: %v",
+			err)
+	}
+
+	defer resp.Body.Close()
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return allTeams, fmt.Errorf(
+			"Failed to parse the all players downloaded from NBA.com: %v",
+			err)
+	}
+
+	if err = allTeams.UnmarshalJSON(body); err != nil {
+		return allTeams, fmt.Errorf(
+			"Failed to unmarshal the all players downloaded from NBA.com: %v",
+			err)
+	}
+
+	return allTeams, nil
+}
 
 // FetchNBAPlayers uses the NBA API to fetch the list of all NBA players.
 func FetchNBAPlayers() (dtos.NBAAllPlayers, error) {
