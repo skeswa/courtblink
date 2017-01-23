@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/skeswa/enbiyay/backend/dtos"
 	nbaAPI "github.com/skeswa/enbiyay/backend/nba/api"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 )
@@ -127,42 +126,4 @@ func (s *Store) GetSplashDataJSON() ([]byte, error) {
 	s.lock.RUnlock()
 
 	return splashDataJSON, nil
-}
-
-// extractSplashDataJSON gets the splash data from the provided scoreboard and
-// caches and returns the JSON-serialized form of the aforesaid data.
-func extractSplashDataJSON(
-	scoreboard *nbaDTOs.NBAScoreboard,
-	teamCache *TeamCache,
-	playerCache *PlayerCache,
-	boxScoreCache *BoxScoreCache,
-	teamColorCache *TeamColorCache,
-) ([]byte, error) {
-	games := scoreboard.Games
-	gameSummaries := make([]dtos.GameSummary, len(games))
-	for i, game := range games {
-		gameSummaries[i] = convertNBAGameToGameSummary(game)
-	}
-
-	var firstGameDetails *dtos.GameDetails
-	if len(games) > 0 {
-		details, err := convertNBAGameToGameDetails(
-			games[0],
-			teamCache,
-			playerCache,
-			boxScoreCache,
-			teamColorCache)
-		if err != nil {
-			errors.Wrap(err, "failed extract spalsh data JSON")
-		}
-
-		firstGameDetails = &details
-	}
-
-	splashData := dtos.SplashData{
-		Games:            gameSummaries,
-		FirstGameDetails: firstGameDetails,
-	}
-
-	return splashData.MarshalJSON()
 }

@@ -27,7 +27,8 @@ func fetchInitialStoreData() (
 		teamColors *teamColorsDTOs.AllTeamColorDetails
 		scoreboard *nbaDTOs.NBAScoreboard
 
-		now            = time.Now()
+		// Don't move on to the next day until 10am.
+		now            = time.Now().Add(-10 * time.Hour)
 		killed1        = false
 		errorChan      = make(chan error)
 		teamsChan      = make(chan nbaDTOs.NBAAllTeams)

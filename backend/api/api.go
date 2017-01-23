@@ -19,4 +19,8 @@ func Listen(store *model.Store, port int) {
 			ctx.Error(errorRouteDoesNotExist, fasthttp.StatusNotFound)
 		}
 	})
+	log.Fatalf(
+		"API could not service requests on port %d "+
+			"due to the port being unavailable.\n",
+		port)
 }
