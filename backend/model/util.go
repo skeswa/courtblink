@@ -119,28 +119,45 @@ func extractStatLeaders(
 			continue
 		}
 
-		leader := convertBoxScorePlayerStatsToGameLeader(
-			playerStatLine,
-			playerCache)
 		if isPointsLeader {
-			pointsLeader = leader
+			pointsLeader = convertBoxScorePlayerStatsToGameLeader(
+				playerStatLine,
+				playerCache)
 			pointsLeader.StatValue = playerStatLine.Points
+
+			pointsLeaderSortKey = playerStatLine.SortKey.Points
 		}
 		if isAssistsLeader {
-			assistsLeader = leader
+			assistsLeader = convertBoxScorePlayerStatsToGameLeader(
+				playerStatLine,
+				playerCache)
 			assistsLeader.StatValue = playerStatLine.Assists
+
+			assistsLeaderSortKey = playerStatLine.SortKey.Assists
 		}
 		if isReboundsLeader {
-			reboundsLeader = leader
+			reboundsLeader = convertBoxScorePlayerStatsToGameLeader(
+				playerStatLine,
+				playerCache)
 			reboundsLeader.StatValue = playerStatLine.TotalRebounds
+
+			reboundsLeaderSortKey = playerStatLine.SortKey.TotalRebounds
 		}
 		if isStealsLeader {
-			stealsLeader = leader
+			stealsLeader = convertBoxScorePlayerStatsToGameLeader(
+				playerStatLine,
+				playerCache)
 			stealsLeader.StatValue = playerStatLine.Steals
+
+			stealsLeaderSortKey = playerStatLine.SortKey.Steals
 		}
 		if isBlocksLeader {
-			blocksLeader = leader
+			blocksLeader = convertBoxScorePlayerStatsToGameLeader(
+				playerStatLine,
+				playerCache)
 			blocksLeader.StatValue = playerStatLine.Blocks
+
+			blocksLeaderSortKey = playerStatLine.SortKey.Blocks
 		}
 	}
 
