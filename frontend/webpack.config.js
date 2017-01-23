@@ -65,6 +65,10 @@ module.exports = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
       },
     }),
+    new webpack.ProvidePlugin({
+      'Promise': 'promise-polyfill',
+      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+    }),
     new ExtractTextPlugin('style.css', { allChunks: true }),
   ],
   devServer: {

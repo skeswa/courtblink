@@ -32,6 +32,8 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "preact": "^7.1.0"
+    "preact": "^7.1.0",
+    "promise-polyfill": "^6.0.2",
+    "whatwg-fetch": "^2.0.2"
   }
 }
