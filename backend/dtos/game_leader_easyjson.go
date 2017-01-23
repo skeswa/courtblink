@@ -41,8 +41,10 @@ func easyjsonDabaa7ccDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 		case "2":
 			out.Name = string(in.String())
 		case "3":
-			out.StatValue = string(in.String())
+			out.Minutes = string(in.String())
 		case "4":
+			out.StatValue = string(in.String())
+		case "5":
 			out.JerseyNumber = string(in.String())
 		default:
 			in.SkipRecursive()
@@ -75,12 +77,18 @@ func easyjsonDabaa7ccEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 	}
 	first = false
 	out.RawString("\"3\":")
-	out.String(string(in.StatValue))
+	out.String(string(in.Minutes))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
 	out.RawString("\"4\":")
+	out.String(string(in.StatValue))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"5\":")
 	out.String(string(in.JerseyNumber))
 	out.RawByte('}')
 }
