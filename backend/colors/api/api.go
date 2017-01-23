@@ -1,10 +1,10 @@
 package api
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/pkg/errors"
 	"github.com/skeswa/enbiyay/backend/colors/dtos"
 )
 
@@ -26,23 +26,23 @@ func FetchTeamColors() (dtos.AllTeamColorDetails, error) {
 	)
 
 	if resp, err = http.Get(teamColorsAPIEndpoint); err != nil {
-		return allTeamColors, fmt.Errorf(
-			"Failed to download the team colors from github: %v",
-			err)
+		return allTeamColors, errors.Wrap(
+			err,
+			"failed to download the team colors from github")
 	}
 
 	defer resp.Body.Close()
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return allTeamColors, fmt.Errorf(
-			"Failed to parse the team colors from github: %v",
-			err)
+		return allTeamColors, errors.Wrap(
+			err,
+			"failed to parse the team colors from github")
 	}
 
 	if err = allTeamColors.UnmarshalJSON(wrapPayload(body)); err != nil {
-		return allTeamColors, fmt.Errorf(
-			"Failed to unmarshal the team colors from github: %v",
-			err)
+		return allTeamColors, errors.Wrap(
+			err,
+			"failed to unmarshal the team colors from github")
 	}
 
 	return allTeamColors, nil

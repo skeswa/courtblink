@@ -1,9 +1,9 @@
 package model
 
 import (
-	"fmt"
 	"time"
 
+	"github.com/pkg/errors"
 	teamColorsAPI "github.com/skeswa/enbiyay/backend/colors/api"
 	teamColorsDTOs "github.com/skeswa/enbiyay/backend/colors/dtos"
 	nbaAPI "github.com/skeswa/enbiyay/backend/nba/api"
@@ -68,51 +68,24 @@ func fetchInitialStoreData() (
 			close(scoreboardChan)
 		}
 		if err != nil {
-			return nil, nil, nil, nil, nil, fmt.Errorf(
-				"Failed to fetch initial store data: %v",
-				err)
+			return nil, nil, nil, nil, nil, errors.Wrap(
+				err,
+				"failed to fetch initial store data")
 		}
 	}
 
-	var (
-		boxScores []nbaDTOs.NBABoxScore
-
-		killed2      = false
-		boxScoreChan = make(chan nbaDTOs.NBABoxScore)
-	)
-
-	for _, game := range scoreboard.Games {
-		go fetchBoxScore(
-			now,
-			game.ID,
-			boxScoreChan,
-			errorChan,
-			&killed2)
-	}
-
-	errorChan = make(chan error)
-	for !killed2 {
-		select {
-		case result := <-boxScoreChan:
-			boxScores = append(boxScores, result)
-		case result := <-errorChan:
-			err = result
-		}
-
-		if err != nil ||
-			(len(boxScores) >= len(scoreboard.Games)) {
-			killed2 = true
-			close(errorChan)
-			close(boxScoreChan)
-		}
-		if err != nil {
-			return nil, nil, nil, nil, nil, fmt.Errorf(
-				"Failed to fetch initial store data: %v",
-				err)
-		}
+	boxScores, err := fetchBoxScores(now, scoreboard)
+	if err != nil {
+		return nil, nil, nil, nil, nil, errors.Wrap(
+			err,
+			"failed to fetch initial store data")
 	}
 
 	return teams, players, teamColors, scoreboard, boxScores, nil
+}
+
+func fetchStoreUpdateData() {
+
 }
 
 // fetchTeams is an asynchronous wrapper for FetchNBATeams(...).
@@ -180,6 +153,55 @@ func fetchBoxScore(
 			resultChan <- boxScore
 		}
 	}
+}
+
+// fetchBoxScores fetches all the box scores for the provided scoreboard in
+// parallel.
+func fetchBoxScores(
+	date time.Time,
+	scoreboard *nbaDTOs.NBAScoreboard,
+) ([]nbaDTOs.NBABoxScore, error) {
+	var (
+		err       error
+		boxScores []nbaDTOs.NBABoxScore
+
+		killed2      = false
+		errorChan    = make(chan error)
+		boxScoreChan = make(chan nbaDTOs.NBABoxScore)
+	)
+
+	for _, game := range scoreboard.Games {
+		go fetchBoxScore(
+			date,
+			game.ID,
+			boxScoreChan,
+			errorChan,
+			&killed2)
+	}
+
+	errorChan = make(chan error)
+	for !killed2 {
+		select {
+		case result := <-boxScoreChan:
+			boxScores = append(boxScores, result)
+		case result := <-errorChan:
+			err = result
+		}
+
+		if err != nil ||
+			(len(boxScores) >= len(scoreboard.Games)) {
+			killed2 = true
+			close(errorChan)
+			close(boxScoreChan)
+		}
+		if err != nil {
+			return boxScores, errors.Wrap(
+				err,
+				"failed to fetch box scores")
+		}
+	}
+
+	return boxScores, nil
 }
 
 // fetchTeamColors is an asynchronous wrapper for FetchTeamColors(...).

@@ -46,9 +46,9 @@ func extractBroadcastChannel(game nbaDTOs.NBAGame) string {
 	}
 }
 
-// teamSplashPictureURL gets the splash picture URL for a game.
-func teamSplashPictureURL(game nbaDTOs.NBAGame) string {
-	return fmt.Sprintf(splashPictureURLTemplate, game.ID)
+// teamSplashPictureURL gets the splash picture URL for a team by team id.
+func teamSplashPictureURL(teamID string) string {
+	return fmt.Sprintf(splashPictureURLTemplate, teamID)
 }
 
 // composeFullName concatenates a first name with a last name.

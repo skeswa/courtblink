@@ -1,26 +1,35 @@
 package model
 
 import (
-	"fmt"
+	"sync"
+	"time"
 
+	"github.com/pkg/errors"
 	"github.com/skeswa/enbiyay/backend/dtos"
+	nbaAPI "github.com/skeswa/enbiyay/backend/nba/api"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 )
 
+// storeUpdateInterval = how often the store queries the NBA API for fresh data.
+const storeUpdateInterval = 2 * time.Minute
+
 // Store encapsulates all data that will be eventually served to the frontend.
 type Store struct {
-	teamCache        *TeamCache
-	playerCache      *PlayerCache
-	boxScoreCache    *BoxScoreCache
-	teamColorCache   *TeamColorCache
-	latestScoreboard *nbaDTOs.NBAScoreboard
+	lock                 *sync.RWMutex
+	teamCache            *TeamCache
+	playerCache          *PlayerCache
+	boxScoreCache        *BoxScoreCache
+	teamColorCache       *TeamColorCache
+	timeLastUpdated      time.Time
+	latestScoreboard     *nbaDTOs.NBAScoreboard
+	latestSplashDataJSON []byte
 }
 
 // NewStore creates a new Store.
 func NewStore() (*Store, error) {
 	teams, players, teamColors, scoreboard, boxScores, err := fetchInitialStoreData()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to create a new store: %v", err)
+		return nil, errors.Wrap(err, "failed to create a new store")
 	}
 
 	var (
@@ -28,39 +37,128 @@ func NewStore() (*Store, error) {
 		playerCache    = BuildPlayerCache(players)
 		boxScoreCache  = BuildBoxScoreCache(boxScores)
 		teamColorCache = BuildTeamColorCache(teamCache, teamColors)
+
+		store = Store{
+			lock:             &sync.RWMutex{},
+			teamCache:        teamCache,
+			playerCache:      playerCache,
+			boxScoreCache:    boxScoreCache,
+			teamColorCache:   teamColorCache,
+			latestScoreboard: scoreboard,
+		}
 	)
 
-	return &Store{
-		teamCache:        teamCache,
-		playerCache:      playerCache,
-		boxScoreCache:    boxScoreCache,
-		teamColorCache:   teamColorCache,
-		latestScoreboard: scoreboard,
-	}, nil
+	splashDataJSON, err := extractSplashDataJSON(
+		scoreboard,
+		teamCache,
+		playerCache,
+		boxScoreCache,
+		teamColorCache)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create a new store")
+	}
+
+	store.timeLastUpdated = time.Now()
+	store.latestSplashDataJSON = splashDataJSON
+
+	return &store, nil
 }
 
-// GetSplashData gets the latest splash data.
-func (s *Store) GetSplashData() dtos.SplashData {
-	if len(s.latestScoreboard.Games) <= 0 {
-		return dtos.SplashData{}
-	}
-
+// update refreshes the data in the store that changes often.
+func (s *Store) update() error {
 	var (
-		gameSummaries    []dtos.GameSummary
-		firstGameDetails = convertNBAGameToGameDetails(
-			s.latestScoreboard.Games[0],
-			s.teamCache,
-			s.playerCache,
-			s.boxScoreCache,
-			s.teamColorCache)
+		now             = time.Now()
+		scoreboard, err = nbaAPI.FetchNBAScoreboard(now)
 	)
 
-	for _, game := range s.latestScoreboard.Games {
-		gameSummaries = append(gameSummaries, convertNBAGameToGameSummary(game))
+	if err != nil {
+		return errors.Wrap(err, "failed to update the store's scoreboard")
 	}
 
-	return dtos.SplashData{
-		FirstGameDetails: &firstGameDetails,
-		Games:            gameSummaries,
+	boxScores, err := fetchBoxScores(now, &scoreboard)
+	if err != nil {
+		return errors.Wrap(err, "failed to update the store's box scores")
 	}
+
+	s.lock.RLock()
+	teamCache := s.teamCache
+	playerCache := s.playerCache
+	boxScoreCache := s.boxScoreCache
+	teamColorCache := s.teamColorCache
+	s.lock.RUnlock()
+
+	s.boxScoreCache.Update(boxScores)
+
+	splashDataJSON, err := extractSplashDataJSON(
+		&scoreboard,
+		teamCache,
+		playerCache,
+		boxScoreCache,
+		teamColorCache)
+	if err != nil {
+		return errors.Wrap(err, "failed to update the store's splash data json")
+	}
+
+	s.lock.Lock()
+	s.latestScoreboard = &scoreboard
+	s.timeLastUpdated = now
+	s.latestSplashDataJSON = splashDataJSON
+	s.lock.Unlock()
+
+	return nil
+}
+
+// GetSplashDataJSON fetches the JSON-serialized form of the latest splash data
+// available in the store.
+func (s *Store) GetSplashDataJSON() ([]byte, error) {
+	s.lock.RLock()
+	now := time.Now()
+	timeLastUpdated := s.timeLastUpdated
+	s.lock.RUnlock()
+
+	if now.After(timeLastUpdated.Add(storeUpdateInterval)) {
+		if err := s.update(); err != nil {
+			return nil, errors.Wrap(err, "failed update store to extract splash data")
+		}
+	}
+
+	s.lock.RLock()
+	splashDataJSON := s.latestSplashDataJSON
+	s.lock.RUnlock()
+
+	return splashDataJSON, nil
+}
+
+// extractSplashDataJSON gets the splash data from the provided scoreboard and
+// caches and returns the JSON-serialized form of the aforesaid data.
+func extractSplashDataJSON(
+	scoreboard *nbaDTOs.NBAScoreboard,
+	teamCache *TeamCache,
+	playerCache *PlayerCache,
+	boxScoreCache *BoxScoreCache,
+	teamColorCache *TeamColorCache,
+) ([]byte, error) {
+	games := scoreboard.Games
+	gameSummaries := make([]dtos.GameSummary, len(games))
+	for i, game := range games {
+		gameSummaries[i] = convertNBAGameToGameSummary(game)
+	}
+
+	var firstGameDetails *dtos.GameDetails
+	if len(games) > 0 {
+		details := convertNBAGameToGameDetails(
+			games[0],
+			teamCache,
+			playerCache,
+			boxScoreCache,
+			teamColorCache)
+		firstGameDetails = &details
+	}
+
+	splashData := dtos.SplashData{
+		Games:            gameSummaries,
+		FirstGameDetails: firstGameDetails,
+	}
+
+	return splashData.MarshalJSON()
 }

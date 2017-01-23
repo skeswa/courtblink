@@ -91,7 +91,7 @@ func convertNBAGameToGameDetails(
 
 	details.HomeTeamName = homeTeam.FullName
 	details.HomeTeamCity = homeTeam.City
-	details.HomeTeamSplashURL = teamSplashPictureURL(game)
+	details.HomeTeamSplashURL = teamSplashPictureURL(homeTeam.ID)
 	details.HomeTeamSplashPrimaryColor = homeTeamPrimaryColor
 	details.HomeTeamSplashSecondaryColor = homeTeamSecondaryColor
 	if boxScoreExists && len(boxScore.Stats.HomeTeamStats.Leaders.PointsLeader.Players) > 0 {
@@ -133,7 +133,7 @@ func convertNBAGameToGameDetails(
 
 	details.AwayTeamName = awayTeam.FullName
 	details.AwayTeamCity = awayTeam.City
-	details.AwayTeamSplashURL = teamSplashPictureURL(game)
+	details.AwayTeamSplashURL = teamSplashPictureURL(awayTeam.ID)
 	details.AwayTeamSplashPrimaryColor = awayTeamPrimaryColor
 	details.AwayTeamSplashSecondaryColor = awayTeamSecondaryColor
 	if boxScoreExists && len(boxScore.Stats.AwayTeamStats.Leaders.PointsLeader.Players) > 0 {
