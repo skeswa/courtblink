@@ -2,9 +2,11 @@ package model
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
+	"github.com/skeswa/enbiyay/backend/dtos"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
 )
 
@@ -68,4 +70,79 @@ func normalizeHexColor(hexColor string) string {
 func normalizeRGBColor(rgbColor string) string {
 	parts := strings.Split(strings.TrimSpace(rgbColor), " ")
 	return fmt.Sprintf(rgbColorTemplate, parts[0], parts[1], parts[2])
+}
+
+// extractStatLeaders gets the statistical leaders of a game from the box score.
+func extractStatLeaders(
+	teamID string,
+	playerStatLines []nbaDTOs.NBABoxScorePlayerStats,
+	playerCache *PlayerCache,
+) (
+	pointsLeader dtos.GameLeader,
+	assistsLeader dtos.GameLeader,
+	reboundsLeader dtos.GameLeader,
+	stealsLeader dtos.GameLeader,
+	blocksLeader dtos.GameLeader,
+) {
+	if len(playerStatLines) < 1 {
+		return
+	}
+
+	var (
+		pointsLeaderSortKey   = math.MaxInt32
+		assistsLeaderSortKey  = math.MaxInt32
+		reboundsLeaderSortKey = math.MaxInt32
+		stealsLeaderSortKey   = math.MaxInt32
+		blocksLeaderSortKey   = math.MaxInt32
+	)
+
+	for _, playerStatLine := range playerStatLines {
+		if playerStatLine.TeamID != teamID {
+			continue
+		}
+
+		var (
+			isPointsLeader   = playerStatLine.SortKey.Points < pointsLeaderSortKey
+			isAssistsLeader  = playerStatLine.SortKey.Assists < assistsLeaderSortKey
+			isReboundsLeader = playerStatLine.SortKey.TotalRebounds <
+				reboundsLeaderSortKey
+			isStealsLeader = playerStatLine.SortKey.Steals < stealsLeaderSortKey
+			isBlocksLeader = playerStatLine.SortKey.Blocks < blocksLeaderSortKey
+			isLeader       = isPointsLeader ||
+				isAssistsLeader ||
+				isReboundsLeader ||
+				isStealsLeader ||
+				isBlocksLeader
+		)
+
+		if !isLeader {
+			continue
+		}
+
+		leader := convertBoxScorePlayerStatsToGameLeader(
+			playerStatLine,
+			playerCache)
+		if isPointsLeader {
+			pointsLeader = leader
+			pointsLeader.StatValue = playerStatLine.Points
+		}
+		if isAssistsLeader {
+			assistsLeader = leader
+			assistsLeader.StatValue = playerStatLine.Assists
+		}
+		if isReboundsLeader {
+			reboundsLeader = leader
+			reboundsLeader.StatValue = playerStatLine.TotalRebounds
+		}
+		if isStealsLeader {
+			stealsLeader = leader
+			stealsLeader.StatValue = playerStatLine.Steals
+		}
+		if isBlocksLeader {
+			blocksLeader = leader
+			blocksLeader.StatValue = playerStatLine.Blocks
+		}
+	}
+
+	return
 }

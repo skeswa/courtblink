@@ -5,33 +5,25 @@ package dtos
 //
 // easyjson:json
 type GameDetails struct {
-	HomeTeamName                       string `json:"1.1"`
-	HomeTeamCity                       string `json:"1.2"`
-	HomeTeamSplashURL                  string `json:"1.3"`
-	HomeTeamSplashPrimaryColor         string `json:"1.4.1"`
-	HomeTeamSplashSecondaryColor       string `json:"1.4.2"`
-	HomeTeamPointsLeaderID             string `json:"1.5.1"`
-	HomeTeamPointsLeaderName           string `json:"1.5.2"`
-	HomeTeamPointsLeaderJerseyNumber   string `json:"1.5.3"`
-	HomeTeamAssistsLeaderID            string `json:"1.6.1"`
-	HomeTeamAssistsLeaderName          string `json:"1.6.2"`
-	HomeTeamAssistsLeaderJerseyNumber  string `json:"1.6.3"`
-	HomeTeamReboundsLeaderID           string `json:"1.7.1"`
-	HomeTeamReboundsLeaderName         string `json:"1.7.2"`
-	HomeTeamReboundsLeaderJerseyNumber string `json:"1.7.3"`
+	HomeTeamName                 string     `json:"1.1"`
+	HomeTeamCity                 string     `json:"1.2"`
+	HomeTeamSplashURL            string     `json:"1.3"`
+	HomeTeamSplashPrimaryColor   string     `json:"1.4.1"`
+	HomeTeamSplashSecondaryColor string     `json:"1.4.2"`
+	HomeTeamPointsLeader         GameLeader `json:"1.5"`
+	HomeTeamAssistsLeader        GameLeader `json:"1.6"`
+	HomeTeamReboundsLeader       GameLeader `json:"1.7"`
+	HomeTeamStealsLeader         GameLeader `json:"1.8"`
+	HomeTeamBlocksLeader         GameLeader `json:"1.9"`
 
-	AwayTeamName                       string `json:"2.1"`
-	AwayTeamCity                       string `json:"2.2"`
-	AwayTeamSplashURL                  string `json:"2.3"`
-	AwayTeamSplashPrimaryColor         string `json:"2.4.1"`
-	AwayTeamSplashSecondaryColor       string `json:"2.4.2"`
-	AwayTeamPointsLeaderID             string `json:"2.5.1"`
-	AwayTeamPointsLeaderName           string `json:"2.5.2"`
-	AwayTeamPointsLeaderJerseyNumber   string `json:"2.5.3"`
-	AwayTeamAssistsLeaderID            string `json:"2.6.1"`
-	AwayTeamAssistsLeaderName          string `json:"2.6.2"`
-	AwayTeamAssistsLeaderJerseyNumber  string `json:"2.6.3"`
-	AwayTeamReboundsLeaderID           string `json:"2.7.1"`
-	AwayTeamReboundsLeaderName         string `json:"2.7.2"`
-	AwayTeamReboundsLeaderJerseyNumber string `json:"2.7.3"`
+	AwayTeamName                 string     `json:"2.1"`
+	AwayTeamCity                 string     `json:"2.2"`
+	AwayTeamSplashURL            string     `json:"2.3"`
+	AwayTeamSplashPrimaryColor   string     `json:"2.4.1"`
+	AwayTeamSplashSecondaryColor string     `json:"2.4.2"`
+	AwayTeamPointsLeader         GameLeader `json:"2.5"`
+	AwayTeamAssistsLeader        GameLeader `json:"2.6"`
+	AwayTeamReboundsLeader       GameLeader `json:"2.7"`
+	AwayTeamStealsLeader         GameLeader `json:"2.8"`
+	AwayTeamBlocksLeader         GameLeader `json:"2.9"`
 }

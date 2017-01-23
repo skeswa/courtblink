@@ -146,12 +146,16 @@ func extractSplashDataJSON(
 
 	var firstGameDetails *dtos.GameDetails
 	if len(games) > 0 {
-		details := convertNBAGameToGameDetails(
+		details, err := convertNBAGameToGameDetails(
 			games[0],
 			teamCache,
 			playerCache,
 			boxScoreCache,
 			teamColorCache)
+		if err != nil {
+			errors.Wrap(err, "failed extract spalsh data JSON")
+		}
+
 		firstGameDetails = &details
 	}
 

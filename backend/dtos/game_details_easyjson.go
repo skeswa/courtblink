@@ -46,24 +46,16 @@ func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.HomeTeamSplashPrimaryColor = string(in.String())
 		case "1.4.2":
 			out.HomeTeamSplashSecondaryColor = string(in.String())
-		case "1.5.1":
-			out.HomeTeamPointsLeaderID = string(in.String())
-		case "1.5.2":
-			out.HomeTeamPointsLeaderName = string(in.String())
-		case "1.5.3":
-			out.HomeTeamPointsLeaderJerseyNumber = string(in.String())
-		case "1.6.1":
-			out.HomeTeamAssistsLeaderID = string(in.String())
-		case "1.6.2":
-			out.HomeTeamAssistsLeaderName = string(in.String())
-		case "1.6.3":
-			out.HomeTeamAssistsLeaderJerseyNumber = string(in.String())
-		case "1.7.1":
-			out.HomeTeamReboundsLeaderID = string(in.String())
-		case "1.7.2":
-			out.HomeTeamReboundsLeaderName = string(in.String())
-		case "1.7.3":
-			out.HomeTeamReboundsLeaderJerseyNumber = string(in.String())
+		case "1.5":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.HomeTeamPointsLeader)
+		case "1.6":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.HomeTeamAssistsLeader)
+		case "1.7":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.HomeTeamReboundsLeader)
+		case "1.8":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.HomeTeamStealsLeader)
+		case "1.9":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.HomeTeamBlocksLeader)
 		case "2.1":
 			out.AwayTeamName = string(in.String())
 		case "2.2":
@@ -74,24 +66,16 @@ func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.AwayTeamSplashPrimaryColor = string(in.String())
 		case "2.4.2":
 			out.AwayTeamSplashSecondaryColor = string(in.String())
-		case "2.5.1":
-			out.AwayTeamPointsLeaderID = string(in.String())
-		case "2.5.2":
-			out.AwayTeamPointsLeaderName = string(in.String())
-		case "2.5.3":
-			out.AwayTeamPointsLeaderJerseyNumber = string(in.String())
-		case "2.6.1":
-			out.AwayTeamAssistsLeaderID = string(in.String())
-		case "2.6.2":
-			out.AwayTeamAssistsLeaderName = string(in.String())
-		case "2.6.3":
-			out.AwayTeamAssistsLeaderJerseyNumber = string(in.String())
-		case "2.7.1":
-			out.AwayTeamReboundsLeaderID = string(in.String())
-		case "2.7.2":
-			out.AwayTeamReboundsLeaderName = string(in.String())
-		case "2.7.3":
-			out.AwayTeamReboundsLeaderJerseyNumber = string(in.String())
+		case "2.5":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.AwayTeamPointsLeader)
+		case "2.6":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.AwayTeamAssistsLeader)
+		case "2.7":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.AwayTeamReboundsLeader)
+		case "2.8":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.AwayTeamStealsLeader)
+		case "2.9":
+			easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.AwayTeamBlocksLeader)
 		default:
 			in.SkipRecursive()
 		}
@@ -140,56 +124,32 @@ func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.5.1\":")
-	out.String(string(in.HomeTeamPointsLeaderID))
+	out.RawString("\"1.5\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.HomeTeamPointsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.5.2\":")
-	out.String(string(in.HomeTeamPointsLeaderName))
+	out.RawString("\"1.6\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.HomeTeamAssistsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.5.3\":")
-	out.String(string(in.HomeTeamPointsLeaderJerseyNumber))
+	out.RawString("\"1.7\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.HomeTeamReboundsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.6.1\":")
-	out.String(string(in.HomeTeamAssistsLeaderID))
+	out.RawString("\"1.8\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.HomeTeamStealsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.6.2\":")
-	out.String(string(in.HomeTeamAssistsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"1.6.3\":")
-	out.String(string(in.HomeTeamAssistsLeaderJerseyNumber))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"1.7.1\":")
-	out.String(string(in.HomeTeamReboundsLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"1.7.2\":")
-	out.String(string(in.HomeTeamReboundsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"1.7.3\":")
-	out.String(string(in.HomeTeamReboundsLeaderJerseyNumber))
+	out.RawString("\"1.9\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.HomeTeamBlocksLeader)
 	if !first {
 		out.RawByte(',')
 	}
@@ -224,56 +184,32 @@ func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5.1\":")
-	out.String(string(in.AwayTeamPointsLeaderID))
+	out.RawString("\"2.5\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.AwayTeamPointsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5.2\":")
-	out.String(string(in.AwayTeamPointsLeaderName))
+	out.RawString("\"2.6\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.AwayTeamAssistsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.5.3\":")
-	out.String(string(in.AwayTeamPointsLeaderJerseyNumber))
+	out.RawString("\"2.7\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.AwayTeamReboundsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.1\":")
-	out.String(string(in.AwayTeamAssistsLeaderID))
+	out.RawString("\"2.8\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.AwayTeamStealsLeader)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.6.2\":")
-	out.String(string(in.AwayTeamAssistsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.6.3\":")
-	out.String(string(in.AwayTeamAssistsLeaderJerseyNumber))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.1\":")
-	out.String(string(in.AwayTeamReboundsLeaderID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.2\":")
-	out.String(string(in.AwayTeamReboundsLeaderName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7.3\":")
-	out.String(string(in.AwayTeamReboundsLeaderJerseyNumber))
+	out.RawString("\"2.9\":")
+	easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.AwayTeamBlocksLeader)
 	out.RawByte('}')
 }
 
@@ -299,4 +235,71 @@ func (v *GameDetails) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GameDetails) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos(l, v)
+}
+func easyjsonAceadd55DecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, out *GameLeader) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "1":
+			out.ID = string(in.String())
+		case "2":
+			out.Name = string(in.String())
+		case "3":
+			out.StatValue = string(in.String())
+		case "4":
+			out.JerseyNumber = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonAceadd55EncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Writer, in GameLeader) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1\":")
+	out.String(string(in.ID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"2\":")
+	out.String(string(in.Name))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"3\":")
+	out.String(string(in.StatValue))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"4\":")
+	out.String(string(in.JerseyNumber))
+	out.RawByte('}')
 }

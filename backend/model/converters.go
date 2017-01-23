@@ -9,18 +9,25 @@ import (
 )
 
 const (
+	unknownPlayerName     = "Unknown Player"
+	unkownJerseyNumber    = "??"
 	defaultPrimaryColor   = "#666666"
 	defaultSecondaryColor = "#222222"
 )
 
 // convertTeamColorToColors extracts the client-presentable colors for a team.
-func convertTeamColorToColors(teamColors colorDTOs.TeamColorDetails) (primary, secondary string) {
+func convertTeamColorToColors(teamColors colorDTOs.TeamColorDetails) (
+	primary string,
+	secondary string,
+) {
 	if len(teamColors.Colors.Hex) > 1 {
-		return normalizeHexColor(teamColors.Colors.Hex[0]), normalizeHexColor(teamColors.Colors.Hex[1])
+		return normalizeHexColor(teamColors.Colors.Hex[0]),
+			normalizeHexColor(teamColors.Colors.Hex[1])
 	}
 
 	if len(teamColors.Colors.RGB) > 1 {
-		return normalizeRGBColor(teamColors.Colors.RGB[0]), normalizeRGBColor(teamColors.Colors.RGB[1])
+		return normalizeRGBColor(teamColors.Colors.RGB[0]),
+			normalizeRGBColor(teamColors.Colors.RGB[1])
 	}
 
 	return defaultPrimaryColor, defaultSecondaryColor
@@ -57,36 +64,62 @@ func convertNBAGameToGameDetails(
 	playerCache *PlayerCache,
 	boxScoreCache *BoxScoreCache,
 	teamColorCache *TeamColorCache,
-) dtos.GameDetails {
+) (dtos.GameDetails, error) {
 	var (
-		details            dtos.GameDetails
-		playerID           string
-		playerDetails      nbaDTOs.NBAPlayerDetails
-		playerDetailsExist bool
+		details dtos.GameDetails
 
-		homeTeam, homeTeamExists            = teamCache.FindTeamByID(game.HomeTeam.ID)
-		awayTeam, awayTeamExists            = teamCache.FindTeamByID(game.AwayTeam.ID)
-		homeTeamColors, homeTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(game.HomeTeam.ID)
-		awayTeamColors, awayTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(game.AwayTeam.ID)
-		boxScore, boxScoreExists            = boxScoreCache.FindBoxScoreByGameID(game.ID)
+		homeTeam, homeTeamExists = teamCache.FindTeamByID(
+			game.HomeTeam.ID)
+		awayTeam, awayTeamExists = teamCache.FindTeamByID(
+			game.AwayTeam.ID)
+		homeTeamColors, homeTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
+			game.HomeTeam.ID)
+		awayTeamColors, awayTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
+			game.AwayTeam.ID)
+		boxScore, _ = boxScoreCache.FindBoxScoreByGameID(
+			game.ID)
 	)
 
 	if !homeTeamExists {
-		panic(fmt.Sprintf("No such home team exists: %v", game.HomeTeam.ID))
+		return details,
+			fmt.Errorf("no such home team exists for team %v", game.HomeTeam.ID)
 	}
 	if !awayTeamExists {
-		panic(fmt.Sprintf("No such away team exists: %v", game.AwayTeam.ID))
+		return details,
+			fmt.Errorf("no such away team exists for team %v", game.AwayTeam.ID)
 	}
 	if !homeTeamColorsExist {
-		panic(fmt.Sprintf("No such home team colors exist: %v", game.HomeTeam.ID))
+		return details,
+			fmt.Errorf("no such home team colors exist for team %v", game.HomeTeam.ID)
 	}
 	if !awayTeamColorsExist {
-		panic(fmt.Sprintf("No such away team colors exist: %v", game.AwayTeam.ID))
+		return details,
+			fmt.Errorf("no such away team colors exist for team %v", game.AwayTeam.ID)
 	}
 
 	var (
-		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(homeTeamColors)
-		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(awayTeamColors)
+		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(
+			homeTeamColors)
+		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(
+			awayTeamColors)
+
+		homeTeamPointsLeader,
+		homeTeamAssistsLeader,
+		homeTeamReboundsLeader,
+		homeTeamStealsLeader,
+		homeTeamBlocksLeader = extractStatLeaders(
+			homeTeam.ID,
+			boxScore.Stats.ActivePlayers,
+			playerCache)
+
+		awayTeamPointsLeader,
+		awayTeamAssistsLeader,
+		awayTeamReboundsLeader,
+		awayTeamStealsLeader,
+		awayTeamBlocksLeader = extractStatLeaders(
+			awayTeam.ID,
+			boxScore.Stats.ActivePlayers,
+			playerCache)
 	)
 
 	details.HomeTeamName = homeTeam.FullName
@@ -94,84 +127,50 @@ func convertNBAGameToGameDetails(
 	details.HomeTeamSplashURL = teamSplashPictureURL(homeTeam.ID)
 	details.HomeTeamSplashPrimaryColor = homeTeamPrimaryColor
 	details.HomeTeamSplashSecondaryColor = homeTeamSecondaryColor
-	if boxScoreExists && len(boxScore.Stats.HomeTeamStats.Leaders.PointsLeader.Players) > 0 {
-		playerID = boxScore.Stats.HomeTeamStats.Leaders.PointsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
-		}
-		details.HomeTeamPointsLeaderID = playerID
-		details.HomeTeamPointsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.HomeTeamPointsLeaderJerseyNumber = playerDetails.JerseyNumber
-	}
-	if boxScoreExists && len(boxScore.Stats.HomeTeamStats.Leaders.AssistsLeader.Players) > 0 {
-		playerID = boxScore.Stats.HomeTeamStats.Leaders.AssistsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
-		}
-		details.HomeTeamAssistsLeaderID = playerID
-		details.HomeTeamAssistsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.HomeTeamAssistsLeaderJerseyNumber = playerDetails.JerseyNumber
-	}
-	if boxScoreExists && len(boxScore.Stats.HomeTeamStats.Leaders.ReboundsLeader.Players) > 0 {
-		playerID = boxScore.Stats.HomeTeamStats.Leaders.ReboundsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
-		}
-		details.HomeTeamReboundsLeaderID = playerID
-		details.HomeTeamReboundsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.HomeTeamReboundsLeaderJerseyNumber = playerDetails.JerseyNumber
-	}
+	details.HomeTeamPointsLeader = homeTeamPointsLeader
+	details.HomeTeamAssistsLeader = homeTeamAssistsLeader
+	details.HomeTeamReboundsLeader = homeTeamReboundsLeader
+	details.HomeTeamStealsLeader = homeTeamStealsLeader
+	details.HomeTeamBlocksLeader = homeTeamBlocksLeader
 
 	details.AwayTeamName = awayTeam.FullName
 	details.AwayTeamCity = awayTeam.City
 	details.AwayTeamSplashURL = teamSplashPictureURL(awayTeam.ID)
 	details.AwayTeamSplashPrimaryColor = awayTeamPrimaryColor
 	details.AwayTeamSplashSecondaryColor = awayTeamSecondaryColor
-	if boxScoreExists && len(boxScore.Stats.AwayTeamStats.Leaders.PointsLeader.Players) > 0 {
-		playerID = boxScore.Stats.AwayTeamStats.Leaders.PointsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
+	details.AwayTeamPointsLeader = awayTeamPointsLeader
+	details.AwayTeamAssistsLeader = awayTeamAssistsLeader
+	details.AwayTeamReboundsLeader = awayTeamReboundsLeader
+	details.AwayTeamStealsLeader = awayTeamStealsLeader
+	details.AwayTeamBlocksLeader = awayTeamBlocksLeader
+
+	return details, nil
+}
+
+// convertBoxScorePlayerStatsToGameLeader turns an NBA player statline into a
+// game leader DTO.
+func convertBoxScorePlayerStatsToGameLeader(
+	boxScorePlayerStats nbaDTOs.NBABoxScorePlayerStats,
+	playerCache *PlayerCache,
+) dtos.GameLeader {
+	playerDetails, exists := playerCache.FindPlayerByID(
+		boxScorePlayerStats.PlayerID)
+
+	if exists {
+		return dtos.GameLeader{
+			ID: boxScorePlayerStats.PlayerID,
+			Name: composeFullName(
+				playerDetails.FirstName,
+				playerDetails.LastName),
+			Minutes:      boxScorePlayerStats.Minutes,
+			JerseyNumber: playerDetails.JerseyNumber,
 		}
-		details.AwayTeamPointsLeaderID = playerID
-		details.AwayTeamPointsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.AwayTeamPointsLeaderJerseyNumber = playerDetails.JerseyNumber
-	}
-	if boxScoreExists && len(boxScore.Stats.AwayTeamStats.Leaders.AssistsLeader.Players) > 0 {
-		playerID = boxScore.Stats.AwayTeamStats.Leaders.AssistsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
-		}
-		details.AwayTeamAssistsLeaderID = playerID
-		details.AwayTeamAssistsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.AwayTeamAssistsLeaderJerseyNumber = playerDetails.JerseyNumber
-	}
-	if boxScoreExists && len(boxScore.Stats.AwayTeamStats.Leaders.ReboundsLeader.Players) > 0 {
-		playerID = boxScore.Stats.AwayTeamStats.Leaders.ReboundsLeader.Players[0].ID
-		playerDetails, playerDetailsExist = playerCache.FindPlayerByID(playerID)
-		if !playerDetailsExist {
-			panic(fmt.Sprintf("No such player details exist: %v", playerID))
-		}
-		details.AwayTeamReboundsLeaderID = playerID
-		details.AwayTeamReboundsLeaderName = composeFullName(
-			playerDetails.FirstName,
-			playerDetails.LastName)
-		details.AwayTeamReboundsLeaderJerseyNumber = playerDetails.JerseyNumber
 	}
 
-	return details
+	return dtos.GameLeader{
+		ID:           boxScorePlayerStats.PlayerID,
+		Name:         unknownPlayerName,
+		Minutes:      boxScorePlayerStats.Minutes,
+		JerseyNumber: unkownJerseyNumber,
+	}
 }
