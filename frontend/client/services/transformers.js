@@ -1,5 +1,5 @@
 
-function transformSplashData(splashData) {
+export function transformSplashData(splashData) {
   if (!splashData) return null
 
   return {
