@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"time"
 
 	colorDTOs "github.com/skeswa/enbiyay/backend/colors/dtos"
 	"github.com/skeswa/enbiyay/backend/dtos"
@@ -35,6 +36,12 @@ func convertTeamColorToColors(teamColors colorDTOs.TeamColorDetails) (
 
 // convertNBAGameToGameSummary turns an NBA game DTO into a game summary DTO.
 func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
+	startTimeTBD := game.IsStartTimeTBD
+	startTime, err := time.Parse(time.RFC3339, game.StartTime)
+	if err != nil && !startTimeTBD {
+		startTimeTBD = true
+	}
+
 	return dtos.GameSummary{
 		ID: game.ID,
 		LiveGameStats: dtos.LiveGameStats{
@@ -42,6 +49,8 @@ func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
 			Channel:       extractBroadcastChannel(game),
 			TimeRemaining: game.Clock,
 		},
+		GameStartTime:    int(startTime.Unix()),
+		GameStartTimeTBD: startTimeTBD,
 
 		HomeTeamWins:    confidentAtoi(game.HomeTeam.Win),
 		HomeTeamScore:   confidentAtoi(game.HomeTeam.Score),

@@ -39,7 +39,11 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 		case "1.1":
 			out.ID = string(in.String())
 		case "1.2":
-			easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.LiveGameStats)
+			(out.LiveGameStats).UnmarshalEasyJSON(in)
+		case "1.3":
+			out.GameStartTime = int(in.Int())
+		case "1.4":
+			out.GameStartTimeTBD = bool(in.Bool())
 		case "2.1":
 			out.HomeTeamWins = int(in.Int())
 		case "2.2":
@@ -85,7 +89,19 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 	}
 	first = false
 	out.RawString("\"1.2\":")
-	easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.LiveGameStats)
+	(in.LiveGameStats).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1.3\":")
+	out.Int(int(in.GameStartTime))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1.4\":")
+	out.Bool(bool(in.GameStartTimeTBD))
 	if !first {
 		out.RawByte(',')
 	}
@@ -171,63 +187,4 @@ func (v *GameSummary) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GameSummary) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(l, v)
-}
-func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, out *LiveGameStats) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "1":
-			out.Period = int(in.Int())
-		case "2":
-			out.Channel = string(in.String())
-		case "3":
-			out.TimeRemaining = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Writer, in LiveGameStats) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"1\":")
-	out.Int(int(in.Period))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2\":")
-	out.String(string(in.Channel))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3\":")
-	out.String(string(in.TimeRemaining))
-	out.RawByte('}')
 }

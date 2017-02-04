@@ -3,7 +3,7 @@
   display: flex;
   flex: 1;
   max-width: 100%;
-  opacity: 0.01;
+  opacity: 0;
   overflow-x: auto;
   overflow-y: hidden;
   transform: scale(0.99) translateY(1rem);

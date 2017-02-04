@@ -4,6 +4,8 @@
   border-radius: .4rem;
   box-shadow: 0 .5rem 3rem rgba(0, 0, 0, .4);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   padding: 2rem;
   position: relative;
   margin: 0 1rem;
@@ -22,4 +24,40 @@
 }
 .main__offsetRight {
   transform: translate(3rem) scale(1);
+}
+
+.top {
+  color: #66737C;
+  font-size: 1.5rem;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.bottom {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.teamInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.teamRecord {
+  text-align: center;
+}
+
+.teamRecordPart {
+  color: #66737C;
+  font-size: 1.3rem;
+}
+.teamRecordPart:last-child {
+  margin-left: 0.8rem;
+}
+
+.teamRecordLabel {
+  color: #41494e;
+  font-size: 1.2rem;
+  margin-left: 0.1rem;
 }

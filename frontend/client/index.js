@@ -1,33 +1,36 @@
 
 import { h, render } from 'preact'
 
-import App from 'components/App'
+import App from 'containers/App'
 import style from './index.css'
-import Store from 'store'
 import { fetchSplashData } from 'services'
-
-// Store key constants.
-const STORE_KEY_GAMES = 'games'
-const STORE_KEY_BOX_SCORES = 'boxScores'
-const STORE_KEY_SPLASH_ERROR = 'splashError'
-const STORE_KEY_SPLASH_LOADED = 'splashLoaded'
+import { Store, Provider, Constants as StoreConstants } from 'store'
 
 // Enables React devtools.
 if (process.env.NODE_ENV === 'development') {
   require('preact/devtools')
 }
 
+// Create a new store.
+const store = new Store({
+  [StoreConstants.GAMES]: [],
+  [StoreConstants.BOX_SCORES]: [],
+  [StoreConstants.SPLASH_LOADED]: false,
+})
+
 // Fetch the splash data.
 fetchSplashData()
   .then(splashData => {
-    Store.update(STORE_KEY_SPLASH_LOADED, true)
-    Store.update(STORE_KEY_GAMES, splashData.games)
-    Store.update(
-      STORE_KEY_BOX_SCORES,
+    store.update(StoreConstants.SPLASH_LOADED, true)
+    store.update(StoreConstants.GAMES, splashData.games)
+    store.update(
+      StoreConstants.BOX_SCORES,
       splashData.firstGameDetails ? [splashData.firstGameDetails] : [])
   })
-  .catch(err => Store.update(STORE_KEY_SPLASH_ERROR, err))
+  .catch(err => store.update(StoreConstants.SPLASH_ERROR, err))
 
-const mainEl = document.getElementsByTagName('main')[0]
-const BoundApp = Store.bind(App, STORE_KEY_SPLASH_LOADED)
-render(<BoundApp />, mainEl)
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementsByTagName('main')[0])

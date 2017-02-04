@@ -5,8 +5,10 @@ package dtos
 //
 // easyjson:json
 type GameSummary struct {
-	ID            string        `json:"1.1"`
-	LiveGameStats LiveGameStats `json:"1.2"`
+	ID               string        `json:"1.1"`
+	LiveGameStats    LiveGameStats `json:"1.2"`
+	GameStartTime    int           `json:"1.3"`
+	GameStartTimeTBD bool          `json:"1.4"`
 
 	HomeTeamWins    int    `json:"2.1"`
 	HomeTeamScore   int    `json:"2.2"`
