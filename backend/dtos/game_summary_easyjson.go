@@ -44,6 +44,8 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			out.GameStartTime = int(in.Int())
 		case "1.4":
 			out.GameStartTimeTBD = bool(in.Bool())
+		case "1.5":
+			out.Finished = bool(in.Bool())
 		case "2.1":
 			out.HomeTeamWins = int(in.Int())
 		case "2.2":
@@ -102,6 +104,12 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 	first = false
 	out.RawString("\"1.4\":")
 	out.Bool(bool(in.GameStartTimeTBD))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1.5\":")
+	out.Bool(bool(in.Finished))
 	if !first {
 		out.RawByte(',')
 	}

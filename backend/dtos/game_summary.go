@@ -9,6 +9,7 @@ type GameSummary struct {
 	LiveGameStats    LiveGameStats `json:"1.2"`
 	GameStartTime    int           `json:"1.3"`
 	GameStartTimeTBD bool          `json:"1.4"`
+	Finished         bool          `json:"1.5"`
 
 	HomeTeamWins    int    `json:"2.1"`
 	HomeTeamScore   int    `json:"2.2"`

@@ -17,7 +17,8 @@
 }
 
 .circlePath {
-  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+  animation: dash 1.5s ease-in-out infinite;
+  stroke: #ffffff;
   stroke-dasharray: 1, 200;
   stroke-dashoffset: 0;
   stroke-linecap: round;
@@ -41,18 +42,5 @@
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -124px;
-  }
-}
-
-@keyframes color {
-  100%,
-  0% {
-    stroke: #ffffff;
-  }
-  33% {
-    stroke: #ed174c; /* NBA Red */
-  }
-  67% {
-    stroke: #006bb6; /* NBA Blue */
   }
 }

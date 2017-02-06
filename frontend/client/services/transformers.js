@@ -20,8 +20,9 @@ function transformGameSummary(gameSummary) {
   return {
     'id': gameSummary['1.1'],
     'liveGameStats': transformLiveGameStats(gameSummary['1.2']),
-    'startTime': gameSummary['1.3'],
+    'startTime': gameSummary['1.3'] ? gameSummary['1.3'] * 1000 : null,
     'startTimeTBD': gameSummary['1.4'],
+    'finished': gameSummary['1.5'],
 
     'homeTeamWins': gameSummary['2.1'],
     'homeTeamScore': gameSummary['2.2'],

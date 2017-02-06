@@ -12,3 +12,25 @@ export function arraysEqual(a, b) {
 
   return true
 }
+
+export function periodToString(period) {
+  switch (period) {
+    case 1:
+      return '1st'
+    case 2:
+      return '2nd'
+    case 3:
+      return '3rd'
+    default:
+      return `${period}th`
+  }
+}
+
+export function gameStartTimeToString(gameStartTime) {
+  const date = new Date(gameStartTime)
+  const hours24 = date.getHours()
+  const hours12 = hours24 > 12 ? hours24 - 12 : hours24
+  const minutes = date.getMinutes()
+  const suffix = hours24 > 12 ? 'PM' : 'AM'
+  return `${hours12}:${minutes} ${suffix}`
+}

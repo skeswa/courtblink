@@ -51,6 +51,7 @@ func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
 		},
 		GameStartTime:    int(startTime.Unix()),
 		GameStartTimeTBD: startTimeTBD,
+		Finished:         len(game.Clock) == 0,
 
 		HomeTeamWins:    confidentAtoi(game.HomeTeam.Win),
 		HomeTeamScore:   confidentAtoi(game.HomeTeam.Score),
