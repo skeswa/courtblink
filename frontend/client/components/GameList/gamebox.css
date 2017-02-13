@@ -1,0 +1,91 @@
+
+.main {
+  border-bottom: .1rem solid rgba(255, 255, 255, .2);
+  position: relative;
+  transform: translateY(0);
+  transition: background 250ms, transform 250ms ease-in-out;
+}
+.main__selected {
+  background: #fff;
+}
+.main__displaced {
+  transform: translateY(18rem);
+}
+
+.gameInfo {
+  height: 12.9444rem;
+}
+
+.primaryGameInfo {
+  display: flex;
+  position: relative;
+  z-index: 101;
+}
+
+.teamStatuses {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.teamStatus {
+  align-items: center;
+  display: flex;
+}
+.teamStatus:last-child {
+  margin-top: .5rem;
+}
+
+.teamIcon {
+  height: 4rem;
+  width: 4rem;
+}
+
+.teamTriCode {
+  letter-spacing: .1rem;
+}
+
+.teamTriCode,
+.teamScore {
+  color: rgba(255, 255, 255, .8);
+  font-family: 'Roboto', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin-left: 1rem;
+  text-shadow: 0 .1rem .3rem rgba(0, 0, 0, 0.4);
+  transition: color 250ms;
+}
+.main__selected .teamTriCode,
+.main__selected .teamScore {
+  color: rgba(0, 0, 0, .8);
+}
+
+.secondaryGameInfo {
+  display: flex;
+  opacity: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+  transition: opacity 250ms ease-in-out;
+}
+.main__selected .secondaryGameInfo {
+  opacity: 1;
+}
+
+.gameLeaders {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  transform: translateY(-18rem);
+  transition: transform 250ms ease-in-out;
+}
+.main__selected .gameLeaders {
+  transform: translateY(0);
+}
+
+.teamLeaders {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+}

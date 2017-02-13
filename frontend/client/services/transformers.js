@@ -4,7 +4,6 @@ export function transformSplashData(splashData) {
 
   return {
     'games': transformSplashDataGames(splashData['1']),
-    'firstGameDetails': transformGameDetails(splashData['2']),
   }
 }
 
@@ -23,18 +22,35 @@ function transformGameSummary(gameSummary) {
     'startTime': gameSummary['1.3'] ? gameSummary['1.3'] * 1000 : null,
     'startTimeTBD': gameSummary['1.4'],
     'finished': gameSummary['1.5'],
+    'notStarted': gameSummary['1.6'],
 
     'homeTeamWins': gameSummary['2.1'],
     'homeTeamScore': gameSummary['2.2'],
     'homeTeamLosses': gameSummary['2.3'],
     'homeTeamTeamId': gameSummary['2.4'],
     'homeTeamTriCode': gameSummary['2.5'],
+    'homeTeamName': gameSummary['2.6'],
+    'homeTeamCity': gameSummary['2.7'],
+    'homeTeamSplashUrl': gameSummary['2.8'],
+    'homeTeamSplashPrimaryColor': gameSummary['2.9'],
+    'homeTeamSplashSecondaryColor': gameSummary['2.10'],
+    'homeTeamPointsLeader': transformGameLeader(gameSummary['2.11']),
+    'homeTeamAssistsLeader': transformGameLeader(gameSummary['2.12']),
+    'homeTeamReboundsLeader': transformGameLeader(gameSummary['2.13']),
 
     'awayTeamWins': gameSummary['3.1'],
     'awayTeamScore': gameSummary['3.2'],
     'awayTeamLosses': gameSummary['3.3'],
     'awayTeamTeamId': gameSummary['3.4'],
     'awayTeamTriCode': gameSummary['3.5'],
+    'awayTeamName': gameSummary['3.6'],
+    'awayTeamCity': gameSummary['3.7'],
+    'awayTeamSplashUrl': gameSummary['3.8'],
+    'awayTeamSplashPrimaryColor': gameSummary['3.9'],
+    'awayTeamSplashSecondaryColor': gameSummary['3.10'],
+    'awayTeamPointsLeader': transformGameLeader(gameSummary['3.11']),
+    'awayTeamAssistsLeader': transformGameLeader(gameSummary['3.12']),
+    'awayTeamReboundsLeader': transformGameLeader(gameSummary['3.13']),
   }
 }
 
@@ -45,34 +61,6 @@ function transformLiveGameStats(liveGameStats) {
     'period': liveGameStats['1'],
     'channel': liveGameStats['2'],
     'timeRemaining': liveGameStats['3'],
-  }
-}
-
-function transformGameDetails(gameDetails) {
-  if (!gameDetails) return null
-
-  return {
-    'homeTeamName': gameDetails['1.1'],
-    'homeTeamCity': gameDetails['1.2'],
-    'homeTeamSplashUrl': gameDetails['1.3'],
-    'homeTeamSplashPrimaryColor': gameDetails['1.4.1'],
-    'homeTeamSplashSecondaryColor': gameDetails['1.4.2'],
-    'homeTeamPointsLeader': transformGameLeader(gameDetails['1.5']),
-    'homeTeamAssistsLeader': transformGameLeader(gameDetails['1.6']),
-    'homeTeamReboundsLeader': transformGameLeader(gameDetails['1.7']),
-    'homeTeamStealsLeader': transformGameLeader(gameDetails['1.8']),
-    'homeTeamBlocksLeader': transformGameLeader(gameDetails['1.9']),
-
-    'awayTeamName': gameDetails['2.1'],
-    'awayTeamCity': gameDetails['2.2'],
-    'awayTeamSplashUrl': gameDetails['2.3'],
-    'awayTeamSplashPrimaryColor': gameDetails['2.4.1'],
-    'awayTeamSplashSecondaryColor': gameDetails['2.4.2'],
-    'awayTeamPointsLeader': transformGameLeader(gameDetails['2.5']),
-    'awayTeamAssistsLeader': transformGameLeader(gameDetails['2.6']),
-    'awayTeamReboundsLeader': transformGameLeader(gameDetails['2.7']),
-    'awayTeamStealsLeader': transformGameLeader(gameDetails['2.8']),
-    'awayTeamBlocksLeader': transformGameLeader(gameDetails['2.9']),
   }
 }
 

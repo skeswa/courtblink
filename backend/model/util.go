@@ -82,30 +82,28 @@ func extractSplashDataJSON(
 	boxScoreCache *BoxScoreCache,
 	teamColorCache *TeamColorCache,
 ) ([]byte, error) {
-	games := scoreboard.Games
-	gameSummaries := make([]dtos.GameSummary, len(games))
-	for i, game := range games {
-		gameSummaries[i] = convertNBAGameToGameSummary(game)
-	}
+	var (
+		games         = scoreboard.Games
+		gameSummaries []dtos.GameSummary
+	)
 
-	var firstGameDetails *dtos.GameDetails
-	if len(games) > 0 {
-		details, err := convertNBAGameToGameDetails(
-			games[0],
+	for _, game := range games {
+		gameSummary, err := convertNBAGameToGameSummary(
+			game,
 			teamCache,
 			playerCache,
 			boxScoreCache,
 			teamColorCache)
+
 		if err != nil {
-			errors.Wrap(err, "failed extract spalsh data JSON")
+			return nil, errors.Wrap(err, "failed to convert an NBA game into a game summary DTO")
 		}
 
-		firstGameDetails = &details
+		gameSummaries = append(gameSummaries, gameSummary)
 	}
 
 	splashData := dtos.SplashData{
-		Games:            gameSummaries,
-		FirstGameDetails: firstGameDetails,
+		Games: gameSummaries,
 	}
 
 	return splashData.MarshalJSON()

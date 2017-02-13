@@ -1,6 +1,8 @@
 
 .main {
   flex: 1;
+  min-width: 40rem;
+  overflow: hidden;
   position: relative;
 }
 
@@ -14,10 +16,13 @@
   z-index: 1;
 }
 .front {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  flex-direction: column;
   z-index: 2;
 }
 .back {
   background-color: #222;
+  filter: blur(10px) brightness(.8);
   transform: scale(1.1);
 }
 

@@ -8,11 +8,14 @@ class StoreWrapper extends Component {
     this.boundKeys_ = boundKeys
     this.subscriptions_ = []
     this.wrappedComponent_ = wrappedComponent
+    this.revisionOfLastUpdate_ = -1
   }
 
   componentDidMount() {
     if (!this || !this.context || !this.context.store) {
-      throw new Error('could not subscribe to the Store: the Store was not available from the component context')
+      throw new Error(
+        'could not subscribe to the Store: the Store was not available from ' +
+        'the component context')
     }
 
     const store = this.context.store
@@ -22,7 +25,7 @@ class StoreWrapper extends Component {
     for (let i = 0; i < boundKeys.length; i++) {
       subscriptions.push(store.storeEmitter_.addListener(
         boundKeys[i],
-        forceUpdate))
+        ::this.onStoreDataChanged_))
     }
 
     this.subscriptions_ = subscriptions
@@ -36,6 +39,20 @@ class StoreWrapper extends Component {
 
       this.subscriptions_ = null
     }
+  }
+
+  onStoreDataChanged_() {
+    const currentRevision = this.context.store.revision_
+    const revisionOfLastUpdate = this.revisionOfLastUpdate_
+
+    if (revisionOfLastUpdate >= currentRevision) {
+      console.log('skip', revisionOfLastUpdate, currentRevision)
+      return
+    }
+    console.log('no skip', revisionOfLastUpdate, currentRevision)
+
+    this.revisionOfLastUpdate_ = currentRevision
+    this.forceUpdate()
   }
 
   render() {

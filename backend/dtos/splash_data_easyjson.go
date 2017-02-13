@@ -55,16 +55,6 @@ func easyjsonCd224756DecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 				}
 				in.Delim(']')
 			}
-		case "2":
-			if in.IsNull() {
-				in.Skip()
-				out.FirstGameDetails = nil
-			} else {
-				if out.FirstGameDetails == nil {
-					out.FirstGameDetails = new(GameDetails)
-				}
-				(*out.FirstGameDetails).UnmarshalEasyJSON(in)
-			}
 		default:
 			in.SkipRecursive()
 		}
@@ -95,16 +85,6 @@ func easyjsonCd224756EncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 			(v3).MarshalEasyJSON(out)
 		}
 		out.RawByte(']')
-	}
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2\":")
-	if in.FirstGameDetails == nil {
-		out.RawString("null")
-	} else {
-		(*in.FirstGameDetails).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }

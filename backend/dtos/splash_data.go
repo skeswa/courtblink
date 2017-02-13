@@ -4,6 +4,5 @@ package dtos
 //
 // easyjson:json
 type SplashData struct {
-	Games            []GameSummary `json:"1"`
-	FirstGameDetails *GameDetails  `json:"2"`
+	Games []GameSummary `json:"1"`
 }

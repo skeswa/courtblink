@@ -7,12 +7,6 @@ import GameCard from 'components/GameCard'
 import { arraysEqual } from 'util'
 
 class Carousel extends Component {
-  constructor() {
-    super()
-
-    this.state = { selectedGameIndex: -1 }
-  }
-
   componentDidMount() {
     setTimeout(() => this.setState({ visible: true }), 500)
   }
@@ -29,12 +23,16 @@ class Carousel extends Component {
   }
 
   onGameCardClicked(selectedGameIndex) {
-    this.setState({ selectedGameIndex })
+    const { onGameCardSelected } = this.props
+
+    if (onGameCardSelected) {
+      onGameCardSelected(selectedGameIndex)
+    }
   }
 
-  render({ games, visible }, { selectedGameIndex }) {
+  render({ games, visible, selectedGameIndex }) {
     const mainClassName = classNames(style.main, {
-      [style.main__visible]: visible,
+      [style.main__visible]: visible && selectedGameIndex >= 0,
     })
 
     return (

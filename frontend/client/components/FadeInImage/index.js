@@ -2,11 +2,9 @@
 import classNames from 'classnames'
 import { h, Component } from 'preact'
 
-import style from './style.css'
+import style from './index.css'
 
-const TEAM_ICON_URL_PREFIX = '//i.cdn.turner.com/nba/nba/assets/logos/teams/secondary/web'
-
-class TeamIcon extends Component {
+class FadeInImage extends Component {
   constructor(props) {
     super(props)
 
@@ -17,19 +15,18 @@ class TeamIcon extends Component {
     if (!this.state.loaded) this.setState({ loaded: true })
   }
 
-  render({ triCode }, { loaded }) {
-    const iconURL = `${TEAM_ICON_URL_PREFIX}/${triCode}.svg`
+  render({ src }, { loaded }) {
     const mainClassName = classNames(style.main, {
       [style.main__visible]: loaded,
     })
-    const backgroundImage = `url(${iconURL})`
+    const backgroundImage = `url(${src})`
 
     return (
       <div className={mainClassName} style={{ backgroundImage }}>
         {
           !loaded
             ? <img
-                src={iconURL}
+                src={src}
                 onLoad={::this.onLoad}
                 className={style.loader} />
             : null
@@ -39,4 +36,4 @@ class TeamIcon extends Component {
   }
 }
 
-export default TeamIcon
+export default FadeInImage

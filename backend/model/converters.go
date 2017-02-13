@@ -35,9 +35,71 @@ func convertTeamColorToColors(teamColors colorDTOs.TeamColorDetails) (
 }
 
 // convertNBAGameToGameSummary turns an NBA game DTO into a game summary DTO.
-func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
-	startTimeTBD := game.IsStartTimeTBD
-	startTime, err := time.Parse(time.RFC3339, game.StartTime)
+func convertNBAGameToGameSummary(
+	game nbaDTOs.NBAGame,
+	teamCache *TeamCache,
+	playerCache *PlayerCache,
+	boxScoreCache *BoxScoreCache,
+	teamColorCache *TeamColorCache,
+) (dtos.GameSummary, error) {
+	var (
+		homeTeam, homeTeamExists = teamCache.FindTeamByID(
+			game.HomeTeam.ID)
+		awayTeam, awayTeamExists = teamCache.FindTeamByID(
+			game.AwayTeam.ID)
+		homeTeamColors, homeTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
+			game.HomeTeam.ID)
+		awayTeamColors, awayTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
+			game.AwayTeam.ID)
+		boxScore, _ = boxScoreCache.FindBoxScoreByGameID(
+			game.ID)
+		startTimeTBD = game.IsStartTimeTBD
+	)
+
+	if !homeTeamExists {
+		return dtos.GameSummary{},
+			fmt.Errorf("no such home team exists for team %v", game.HomeTeam.ID)
+	}
+	if !awayTeamExists {
+		return dtos.GameSummary{},
+			fmt.Errorf("no such away team exists for team %v", game.AwayTeam.ID)
+	}
+	if !homeTeamColorsExist {
+		return dtos.GameSummary{},
+			fmt.Errorf("no such home team colors exist for team %v", game.HomeTeam.ID)
+	}
+	if !awayTeamColorsExist {
+		return dtos.GameSummary{},
+			fmt.Errorf("no such away team colors exist for team %v", game.AwayTeam.ID)
+	}
+
+	var (
+		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(
+			homeTeamColors)
+		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(
+			awayTeamColors)
+
+		homeTeamPointsLeader,
+		homeTeamAssistsLeader,
+		homeTeamReboundsLeader,
+		_,
+		_ = extractStatLeaders(
+			homeTeam.ID,
+			boxScore.Stats.ActivePlayers,
+			playerCache)
+
+		awayTeamPointsLeader,
+		awayTeamAssistsLeader,
+		awayTeamReboundsLeader,
+		_,
+		_ = extractStatLeaders(
+			awayTeam.ID,
+			boxScore.Stats.ActivePlayers,
+			playerCache)
+
+		startTime, err = time.Parse(time.RFC3339, game.StartTime)
+	)
+
 	if err != nil && !startTimeTBD {
 		startTimeTBD = true
 	}
@@ -51,110 +113,37 @@ func convertNBAGameToGameSummary(game nbaDTOs.NBAGame) dtos.GameSummary {
 		},
 		GameStartTime:    int(startTime.Unix()),
 		GameStartTimeTBD: startTimeTBD,
-		Finished:         len(game.Clock) == 0,
+		Finished:         startTime.Before(time.Now()) && len(game.Clock) == 0 && game.Period.Current > 3,
+		NotStarted:       startTime.After(time.Now()),
 
-		HomeTeamWins:    confidentAtoi(game.HomeTeam.Win),
-		HomeTeamScore:   confidentAtoi(game.HomeTeam.Score),
-		HomeTeamLosses:  confidentAtoi(game.HomeTeam.Loss),
-		HomeTeamTeamID:  game.HomeTeam.ID,
-		HomeTeamTriCode: game.HomeTeam.Tricode,
+		HomeTeamWins:                 confidentAtoi(game.HomeTeam.Win),
+		HomeTeamScore:                confidentAtoi(game.HomeTeam.Score),
+		HomeTeamLosses:               confidentAtoi(game.HomeTeam.Loss),
+		HomeTeamTeamID:               game.HomeTeam.ID,
+		HomeTeamTriCode:              game.HomeTeam.Tricode,
+		HomeTeamName:                 homeTeam.FullName,
+		HomeTeamCity:                 homeTeam.City,
+		HomeTeamSplashURL:            teamSplashPictureURL(homeTeam.ID),
+		HomeTeamSplashPrimaryColor:   homeTeamPrimaryColor,
+		HomeTeamSplashSecondaryColor: homeTeamSecondaryColor,
+		HomeTeamPointsLeader:         homeTeamPointsLeader,
+		HomeTeamAssistsLeader:        homeTeamAssistsLeader,
+		HomeTeamReboundsLeader:       homeTeamReboundsLeader,
 
-		AwayTeamWins:    confidentAtoi(game.AwayTeam.Win),
-		AwayTeamScore:   confidentAtoi(game.AwayTeam.Score),
-		AwayTeamLosses:  confidentAtoi(game.AwayTeam.Loss),
-		AwayTeamTeamID:  game.AwayTeam.ID,
-		AwayTeamTriCode: game.AwayTeam.Tricode,
-	}
-}
-
-// convertNBAGameToGameDetails turns an NBA game dto into a game details DTO.
-func convertNBAGameToGameDetails(
-	game nbaDTOs.NBAGame,
-	teamCache *TeamCache,
-	playerCache *PlayerCache,
-	boxScoreCache *BoxScoreCache,
-	teamColorCache *TeamColorCache,
-) (dtos.GameDetails, error) {
-	var (
-		details dtos.GameDetails
-
-		homeTeam, homeTeamExists = teamCache.FindTeamByID(
-			game.HomeTeam.ID)
-		awayTeam, awayTeamExists = teamCache.FindTeamByID(
-			game.AwayTeam.ID)
-		homeTeamColors, homeTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
-			game.HomeTeam.ID)
-		awayTeamColors, awayTeamColorsExist = teamColorCache.FindTeamColorsByTeamID(
-			game.AwayTeam.ID)
-		boxScore, _ = boxScoreCache.FindBoxScoreByGameID(
-			game.ID)
-	)
-
-	if !homeTeamExists {
-		return details,
-			fmt.Errorf("no such home team exists for team %v", game.HomeTeam.ID)
-	}
-	if !awayTeamExists {
-		return details,
-			fmt.Errorf("no such away team exists for team %v", game.AwayTeam.ID)
-	}
-	if !homeTeamColorsExist {
-		return details,
-			fmt.Errorf("no such home team colors exist for team %v", game.HomeTeam.ID)
-	}
-	if !awayTeamColorsExist {
-		return details,
-			fmt.Errorf("no such away team colors exist for team %v", game.AwayTeam.ID)
-	}
-
-	var (
-		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(
-			homeTeamColors)
-		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(
-			awayTeamColors)
-
-		homeTeamPointsLeader,
-		homeTeamAssistsLeader,
-		homeTeamReboundsLeader,
-		homeTeamStealsLeader,
-		homeTeamBlocksLeader = extractStatLeaders(
-			homeTeam.ID,
-			boxScore.Stats.ActivePlayers,
-			playerCache)
-
-		awayTeamPointsLeader,
-		awayTeamAssistsLeader,
-		awayTeamReboundsLeader,
-		awayTeamStealsLeader,
-		awayTeamBlocksLeader = extractStatLeaders(
-			awayTeam.ID,
-			boxScore.Stats.ActivePlayers,
-			playerCache)
-	)
-
-	details.HomeTeamName = homeTeam.FullName
-	details.HomeTeamCity = homeTeam.City
-	details.HomeTeamSplashURL = teamSplashPictureURL(homeTeam.ID)
-	details.HomeTeamSplashPrimaryColor = homeTeamPrimaryColor
-	details.HomeTeamSplashSecondaryColor = homeTeamSecondaryColor
-	details.HomeTeamPointsLeader = homeTeamPointsLeader
-	details.HomeTeamAssistsLeader = homeTeamAssistsLeader
-	details.HomeTeamReboundsLeader = homeTeamReboundsLeader
-	details.HomeTeamStealsLeader = homeTeamStealsLeader
-	details.HomeTeamBlocksLeader = homeTeamBlocksLeader
-
-	details.AwayTeamName = awayTeam.FullName
-	details.AwayTeamCity = awayTeam.City
-	details.AwayTeamSplashURL = teamSplashPictureURL(awayTeam.ID)
-	details.AwayTeamSplashPrimaryColor = awayTeamPrimaryColor
-	details.AwayTeamSplashSecondaryColor = awayTeamSecondaryColor
-	details.AwayTeamPointsLeader = awayTeamPointsLeader
-	details.AwayTeamAssistsLeader = awayTeamAssistsLeader
-	details.AwayTeamReboundsLeader = awayTeamReboundsLeader
-	details.AwayTeamStealsLeader = awayTeamStealsLeader
-	details.AwayTeamBlocksLeader = awayTeamBlocksLeader
-
-	return details, nil
+		AwayTeamWins:                 confidentAtoi(game.AwayTeam.Win),
+		AwayTeamScore:                confidentAtoi(game.AwayTeam.Score),
+		AwayTeamLosses:               confidentAtoi(game.AwayTeam.Loss),
+		AwayTeamTeamID:               game.AwayTeam.ID,
+		AwayTeamTriCode:              game.AwayTeam.Tricode,
+		AwayTeamName:                 awayTeam.FullName,
+		AwayTeamCity:                 awayTeam.City,
+		AwayTeamSplashURL:            teamSplashPictureURL(awayTeam.ID),
+		AwayTeamSplashPrimaryColor:   awayTeamPrimaryColor,
+		AwayTeamSplashSecondaryColor: awayTeamSecondaryColor,
+		AwayTeamPointsLeader:         awayTeamPointsLeader,
+		AwayTeamAssistsLeader:        awayTeamAssistsLeader,
+		AwayTeamReboundsLeader:       awayTeamReboundsLeader,
+	}, nil
 }
 
 // convertBoxScorePlayerStatsToGameLeader turns an NBA player statline into a
