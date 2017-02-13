@@ -32,7 +32,6 @@ class GameBox extends Component {
   }
 
   render({ game, selected, displaced }) {
-    console.log('game', game)
     const className = classNames(
       style.main,
       {

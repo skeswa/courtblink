@@ -46,10 +46,8 @@ class StoreWrapper extends Component {
     const revisionOfLastUpdate = this.revisionOfLastUpdate_
 
     if (revisionOfLastUpdate >= currentRevision) {
-      console.log('skip', revisionOfLastUpdate, currentRevision)
       return
     }
-    console.log('no skip', revisionOfLastUpdate, currentRevision)
 
     this.revisionOfLastUpdate_ = currentRevision
     this.forceUpdate()

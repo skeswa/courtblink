@@ -3,6 +3,7 @@ import { h, Component } from 'preact'
 
 import style from './index.css'
 import GameBox from './gamebox'
+import CyclingBackground from 'components/CyclingBackground'
 
 class GameList extends Component {
   renderGameBoxes(games, selectedGame, onSelectedGameChanged) {
@@ -27,13 +28,9 @@ class GameList extends Component {
   render({ games, selectedGame, onSelectedGameChanged }) {
     return (
       <div className={style.main}>
-        <div
-          className={style.back}
-          style={
-            selectedGame
-            ? { backgroundImage: `url(${selectedGame.homeTeamSplashUrl})` }
-            : null
-          } />
+        <div className={style.back}>
+          <CyclingBackground blurred={true} src={selectedGame.homeTeamSplashUrl} />
+        </div>
         <div className={style.front}>
           {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}
         </div>

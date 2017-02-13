@@ -16,10 +16,6 @@
 .front {
   z-index: 2;
 }
-.back {
-  background-color: #222;
-  transform: scale(1.1);
-}
 
 .left {
   display: flex;

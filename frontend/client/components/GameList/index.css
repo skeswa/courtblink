@@ -20,11 +20,6 @@
   flex-direction: column;
   z-index: 2;
 }
-.back {
-  background-color: #222;
-  filter: blur(10px) brightness(.8);
-  transform: scale(1.1);
-}
 
 .left {
   display: flex;

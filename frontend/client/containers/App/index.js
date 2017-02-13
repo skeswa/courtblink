@@ -4,6 +4,7 @@ import { h, Component } from 'preact'
 import style from './style.css'
 import Loader from 'components/Loader'
 import GameList from 'components/GameList'
+import CyclingBackground from 'components/CyclingBackground'
 import { subscribe, Constants as StoreConstants } from 'store'
 
 class App extends Component {
@@ -22,13 +23,9 @@ class App extends Component {
 
     return (
       <div className={style.main}>
-        <div
-          className={style.back}
-          style={
-            selectedGame
-            ? { backgroundImage: `url(${selectedGame.homeTeamSplashUrl})` }
-            : null
-          } />
+        <div className={style.back}>
+          <CyclingBackground src={selectedGame.homeTeamSplashUrl} />
+        </div>
         <div className={style.front}>
           <div className={style.left}>
             <GameList
