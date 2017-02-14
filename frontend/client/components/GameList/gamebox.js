@@ -17,16 +17,81 @@ class GameBox extends Component {
   renderLeaders(game) {
     return (
       <div className={style.gameLeaders}>
-        <div className={style.teamLeaders} style={{ backgroundColor: game.awayTeamSplashPrimaryColor }}>
-          <Leader playerId={game.awayTeamPointsLeader.id} statType="PTS" statValue={game.awayTeamPointsLeader.statValue} />
-          <Leader playerId={game.awayTeamReboundsLeader.id} statType="REB" statValue={game.awayTeamReboundsLeader.statValue} />
-          <Leader playerId={game.awayTeamAssistsLeader.id} statType="AST" statValue={game.awayTeamAssistsLeader.statValue} />
+        <div
+          style={{ backgroundColor: game.awayTeamSplashPrimaryColor }}
+          className={style.teamLeaders}>
+          <Leader
+            statType="PTS"
+            playerId={game.awayTeamPointsLeader.id}
+            statValue={game.awayTeamPointsLeader.statValue} />
+          <Leader
+            statType="REB"
+            playerId={game.awayTeamReboundsLeader.id}
+            statValue={game.awayTeamReboundsLeader.statValue} />
+          <Leader
+            statType="AST"
+            playerId={game.awayTeamAssistsLeader.id}
+            statValue={game.awayTeamAssistsLeader.statValue} />
         </div>
-        <div className={style.teamLeaders} style={{ backgroundColor: game.homeTeamSplashPrimaryColor }}>
-          <Leader playerId={game.homeTeamPointsLeader.id} statType="PTS" statValue={game.homeTeamPointsLeader.statValue} />
-          <Leader playerId={game.homeTeamReboundsLeader.id} statType="REB" statValue={game.homeTeamReboundsLeader.statValue} />
-          <Leader playerId={game.homeTeamAssistsLeader.id} statType="AST" statValue={game.homeTeamAssistsLeader.statValue} />
+        <div
+          style={{ backgroundColor: game.homeTeamSplashPrimaryColor }}
+          className={style.teamLeaders}>
+          <Leader
+            statType="PTS"
+            playerId={game.homeTeamPointsLeader.id}
+            statValue={game.homeTeamPointsLeader.statValue} />
+          <Leader
+            statType="REB"
+            playerId={game.homeTeamReboundsLeader.id}
+            statValue={game.homeTeamReboundsLeader.statValue} />
+          <Leader
+            statType="AST"
+            playerId={game.homeTeamAssistsLeader.id}
+            statValue={game.homeTeamAssistsLeader.statValue} />
         </div>
+      </div>
+    )
+  }
+
+  renderTeamStatus(triCode, color, score, selected, started) {
+    return (
+      <div className={style.teamStatus}>
+        <div className={style.teamIcon}>
+          <NBAImage type="team" id={triCode} />
+        </div>
+        <div
+          className={style.teamTriCode}
+          style={selected ? { color } : null}>
+          {triCode}
+        </div>
+        {
+          started
+            ? <div className={style.teamScore}>{score}</div>
+            : null
+        }
+      </div>
+    )
+  }
+
+  renderTeamStatuses(game, selected) {
+    return (
+      <div className={style.teamStatuses}>
+        {
+          this.renderTeamStatus(
+            game.awayTeamTriCode,
+            game.awayTeamSplashPrimaryColor,
+            game.awayTeamScore,
+            selected,
+            !game.notStarted)
+        }
+        {
+          this.renderTeamStatus(
+            game.homeTeamTriCode,
+            game.homeTeamSplashPrimaryColor,
+            game.homeTeamScore,
+            selected,
+            !game.notStarted)
+        }
       </div>
     )
   }
@@ -44,42 +109,11 @@ class GameBox extends Component {
       <div className={className} onClick={::this.onSelection}>
         <div className={style.gameInfo}>
           <div className={style.primaryGameInfo}>
-            <div className={style.teamStatuses}>
-              <div className={style.teamStatus}>
-                <div className={style.teamIcon}>
-                  <NBAImage type="team" id={game.awayTeamTriCode} />
-                </div>
-                <div
-                  className={style.teamTriCode}
-                  style={
-                    selected
-                      ? { color: game.awayTeamSplashPrimaryColor }
-                      : null
-                  }>
-                  {game.awayTeamTriCode}
-                </div>
-                <div className={style.teamScore}>{game.awayTeamScore}</div>
-              </div>
-              <div className={style.teamStatus}>
-                <div className={style.teamIcon}>
-                  <NBAImage type="team" id={game.homeTeamTriCode} />
-                </div>
-                <div
-                  className={style.teamTriCode}
-                  style={
-                    selected
-                      ? { color: game.homeTeamSplashPrimaryColor }
-                      : null
-                  }>
-                  {game.homeTeamTriCode}
-                </div>
-                <div className={style.teamScore}>{game.homeTeamScore}</div>
-              </div>
-            </div>
+            {this.renderTeamStatuses(game, selected)}
           </div>
           <div className={style.secondaryGameInfo}>
             {
-              !(game.notStarted)
+              !game.notStarted
                 ? this.renderLeaders(game)
                 : null
             }

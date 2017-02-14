@@ -11,9 +11,7 @@ class CyclingBackground extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      layers: []
-    }
+    this.state = { layers: [], onFirstBackgroundLoadedInvoked: false }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -26,7 +24,9 @@ class CyclingBackground extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.layers !== nextState.layers
+    return (this.state.layers !== nextState.layers)
+      || (this.props.blurred !== nextProps.blurred)
+      || (this.props.onFirstBackgroundLoaded !== nextProps.onFirstBackgroundLoaded)
   }
 
   clearHiddenShieldLayers() {
@@ -77,6 +77,13 @@ class CyclingBackground extends Component {
   }
 
   hideShieldLayers() {
+    // Call props.onFirstBackgroundLoaded if not called yet.
+    if (!this.state.onFirstBackgroundLoadedInvoked
+        && this.props.onFirstBackgroundLoaded) {
+      this.props.onFirstBackgroundLoaded()
+      this.setState({ onFirstBackgroundLoadedInvoked: true })
+    }
+
     // Keep track of all the shield layers we're hiding.
     const newlyHiddenLayers = []
 
