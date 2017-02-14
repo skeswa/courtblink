@@ -29,7 +29,9 @@ class GameList extends Component {
     return (
       <div className={style.main}>
         <div className={style.back}>
-          <CyclingBackground blurred={true} src={selectedGame.homeTeamSplashUrl} />
+          <CyclingBackground
+            src={selectedGame.homeTeamSplashUrl}
+            blurred={true} />
         </div>
         <div className={style.front}>
           {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}

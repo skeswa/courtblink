@@ -4,6 +4,11 @@ import colorDTOs "github.com/skeswa/enbiyay/backend/colors/dtos"
 
 const nbaTeamColorLeague = "nba"
 
+var nbaTeamNameExceptions = map[string]string{
+	"Los Angeles Clippers": "LA Clippers",
+	"Los Angeles Lakers":   "L.A. Lakers",
+}
+
 // TeamColorCache is a cache for current NBA team colors.
 type TeamColorCache map[string]colorDTOs.TeamColorDetails
 
@@ -25,7 +30,13 @@ func BuildTeamColorCache(
 
 	for _, teamColorDetails := range allTeamColors.TeamColors {
 		if teamColorDetails.League == nbaTeamColorLeague {
-			if team, exists := teamCache.FindTeamByName(teamColorDetails.Name); exists {
+			colorTeamName := teamColorDetails.Name
+			colorTeamNameException, isException := nbaTeamNameExceptions[colorTeamName]
+			if isException {
+				colorTeamName = colorTeamNameException
+			}
+
+			if team, exists := teamCache.FindTeamByName(colorTeamName); exists {
 				cache[team.ID] = teamColorDetails
 			}
 		}

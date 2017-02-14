@@ -4,7 +4,7 @@ import { h, Component } from 'preact'
 import style from './style.css'
 
 class Loader extends Component {
-  render(props) {
+  render() {
     return (
       <div className={style.main}>
         <svg class={style.circle} viewBox="25 25 50 50">

@@ -3,7 +3,7 @@
   border-bottom: .1rem solid rgba(255, 255, 255, .2);
   position: relative;
   transform: translateY(0);
-  transition: background 250ms, transform 250ms ease-in-out;
+  transition: background 400ms, transform 400ms ease-in-out;
 }
 .main__selected {
   background: #fff;
@@ -54,7 +54,7 @@
   font-weight: 700;
   margin-left: 1rem;
   text-shadow: 0 .1rem .3rem rgba(0, 0, 0, 0.4);
-  transition: color 250ms;
+  transition: color 400ms;
 }
 .main__selected .teamTriCode,
 .main__selected .teamScore {
@@ -67,7 +67,7 @@
   overflow: hidden;
   position: relative;
   z-index: 100;
-  transition: opacity 250ms ease-in-out;
+  transition: opacity 400ms ease-in-out;
 }
 .main__selected .secondaryGameInfo {
   opacity: 1;
@@ -78,7 +78,7 @@
   flex: 1;
   flex-direction: column;
   transform: translateY(-18rem);
-  transition: transform 250ms ease-in-out;
+  transition: transform 400ms ease-in-out;
 }
 .main__selected .gameLeaders {
   transform: translateY(0);
