@@ -5,6 +5,8 @@ import { h, Component } from 'preact'
 import style from './index.css'
 import Loader from 'components/Loader'
 
+// Used to prevent DOM thrash.
+const DOM_ADJUSTMENT_PADDING_MS = 100
 const FADE_ANIMATION_DURATION_MS = 400
 
 class CyclingBackground extends Component {
@@ -19,14 +21,17 @@ class CyclingBackground extends Component {
     const { src: currentSrc } = this.props
 
     if (nextSrc && nextSrc !== currentSrc) {
-      this.cycleBackground(nextSrc)
+      setTimeout(
+        this.cycleBackground.bind(this, nextSrc),
+        FADE_ANIMATION_DURATION_MS)
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return (this.state.layers !== nextState.layers)
       || (this.props.blurred !== nextProps.blurred)
-      || (this.props.onFirstBackgroundLoaded !== nextProps.onFirstBackgroundLoaded)
+      || (this.props.onFirstBackgroundLoaded
+          !== nextProps.onFirstBackgroundLoaded)
   }
 
   clearHiddenShieldLayers() {
@@ -112,7 +117,7 @@ class CyclingBackground extends Component {
 
   loadImage(src, callback) {
     const img = new Image()
-    img.onload = callback
+    img.onload = () => setTimeout(callback, DOM_ADJUSTMENT_PADDING_MS)
     img.src = src
   }
 
