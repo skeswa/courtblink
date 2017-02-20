@@ -26,8 +26,6 @@ class App extends Component {
   render() {
     const {
       [StoreConstants.GAMES]: games,
-      [StoreConstants.BOX_SCORES]: boxScores,
-      [StoreConstants.SPLASH_ERROR]: splashError,
       [StoreConstants.SPLASH_LOADED]: splashLoaded,
       [StoreConstants.SELECTED_GAME]: selectedGame,
     } = this.props.storeData

@@ -20,7 +20,6 @@ class StoreWrapper extends Component {
 
     const store = this.context.store
     const boundKeys = this.boundKeys_
-    const forceUpdate = this.forceUpdate.bind(this)
     const subscriptions = []
     for (let i = 0; i < boundKeys.length; i++) {
       subscriptions.push(store.storeEmitter_.addListener(

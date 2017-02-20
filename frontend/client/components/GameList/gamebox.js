@@ -5,7 +5,6 @@ import { h, Component } from 'preact'
 import style from './gamebox.css'
 import Leader from './leader'
 import NBAImage from 'components/NBAImage'
-import { extractLocalTeamName } from 'util'
 
 class GameBox extends Component {
   onSelection() {
