@@ -17,7 +17,8 @@
 
 .front {
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   z-index: 2;
 }
 
@@ -32,4 +33,14 @@
 .right {
   display: flex;
   flex: 1;
+}
+
+.heading {
+  flex: 0 0;
+  min-height: 6rem;
+}
+
+.gameBoxes {
+  flex: 1;
+  overflow-y: auto;
 }

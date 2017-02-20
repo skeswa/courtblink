@@ -38,7 +38,10 @@ class GameList extends Component {
             blurred={true} />
         </div>
         <div className={style.front}>
-          {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}
+          <div className={style.heading}></div>
+          <div className={style.gameBoxes}>
+            {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}
+          </div>
         </div>
       </div>
     )
