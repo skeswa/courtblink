@@ -22,6 +22,7 @@ const store = new Store({
 // Fetch the splash data.
 fetchSplashData()
   .then(splashData => {
+    console.log('splashData', splashData)
     store.update({
       [StoreConstants.SPLASH_LOADED]: true,
       [StoreConstants.GAMES]: splashData.games,

@@ -17,6 +17,7 @@
 }
 
 .primaryGameInfo {
+  cursor: pointer;
   display: flex;
   position: relative;
   z-index: 101;
@@ -89,4 +90,11 @@
   box-sizing: border-box;
   display: flex;
   justify-content: space-around;
+}
+
+.teamRecords {
+  background: #fff;
+  border-top: .1rem solid rgba(0, 0, 0, .1);
+  display: flex;
+  flex: 1;
 }

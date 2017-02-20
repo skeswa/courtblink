@@ -30,7 +30,11 @@ class GameList extends Component {
       <div className={style.main}>
         <div className={style.back}>
           <CyclingBackground
-            src={selectedGame.homeTeamSplashUrl}
+            src={
+              selectedGame && selectedGame.homeTeamStatus
+                  ? selectedGame.homeTeamStatus.splashUrl
+                  : null
+            }
             blurred={true} />
         </div>
         <div className={style.front}>

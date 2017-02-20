@@ -2,10 +2,12 @@ package model
 
 import (
 	"fmt"
+	"hash/fnv"
 	"math"
 	"strconv"
 	"strings"
 
+	"github.com/lucasb-eyer/go-colorful"
 	"github.com/pkg/errors"
 	"github.com/skeswa/enbiyay/backend/dtos"
 	nbaDTOs "github.com/skeswa/enbiyay/backend/nba/dtos"
@@ -194,4 +196,20 @@ func extractStatLeaders(
 	}
 
 	return
+}
+
+// hashOf returns an int hash of the provided string. The has will be a number
+// [0, max].
+func hashOf(s string, max int) int {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return int(h.Sum32()) % max
+}
+
+// stringToColor turns a string into two complementary hex color strings.
+func stringToColors(s string) (string, string) {
+	primaryHue := hashOf(s, 360)
+	secondaryHue := (primaryHue + 180) % 360
+	return colorful.Hsv(float64(primaryHue), float64(0.8), float64(0.4)).Hex(),
+		colorful.Hsv(float64(secondaryHue), float64(0.8), float64(0.4)).Hex()
 }

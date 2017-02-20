@@ -8,10 +8,18 @@ const NBAImage = props => {
   let imageURL
   switch (props.type) {
     case 'team':
-      imageURL = `//i.cdn.turner.com/nba/nba/assets/logos/teams/secondary/web/${props.id}.svg`
+      switch (props.id) {
+        case 'EST':
+        case 'WST':
+          imageURL = `https://i.cdn.turner.com/nba/nba/assets/logos/tentpoles/${(new Date()).getFullYear()}/${props.id}.svg`
+          break
+        default:
+          imageURL = `https://i.cdn.turner.com/nba/nba/assets/logos/teams/secondary/web/${props.id}.svg`
+          break
+      }
       break
     case 'player':
-      imageURL = `//ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${props.id}.png`
+      imageURL = `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${props.id}.png`
       break
     default:
       return null

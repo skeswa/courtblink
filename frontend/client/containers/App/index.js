@@ -42,7 +42,11 @@ class App extends Component {
         </div>
         <div className={style.back}>
           <CyclingBackground
-            src={selectedGame.homeTeamSplashUrl}
+            src={
+              selectedGame && selectedGame.homeTeamStatus
+                  ? selectedGame.homeTeamStatus.splashUrl
+                  : null
+            }
             onFirstBackgroundLoaded={::this.onBackgroundLoaded} />
         </div>
         <div className={style.front}>

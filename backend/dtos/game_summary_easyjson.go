@@ -4,6 +4,7 @@ package dtos
 
 import (
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -36,70 +37,22 @@ func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(in *jlexer.Lexer, o
 			continue
 		}
 		switch key {
-		case "1.1":
+		case "1":
 			out.ID = string(in.String())
-		case "1.2":
-			(out.LiveGameStats).UnmarshalEasyJSON(in)
-		case "1.3":
+		case "2":
+			easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in, &out.LiveGameStats)
+		case "3":
 			out.GameStartTime = int(in.Int())
-		case "1.4":
+		case "4":
 			out.GameStartTimeTBD = bool(in.Bool())
-		case "1.5":
+		case "5":
 			out.Finished = bool(in.Bool())
-		case "1.6":
+		case "6":
 			out.NotStarted = bool(in.Bool())
-		case "2.1":
-			out.HomeTeamWins = int(in.Int())
-		case "2.2":
-			out.HomeTeamScore = int(in.Int())
-		case "2.3":
-			out.HomeTeamLosses = int(in.Int())
-		case "2.4":
-			out.HomeTeamTeamID = string(in.String())
-		case "2.5":
-			out.HomeTeamTriCode = string(in.String())
-		case "2.6":
-			out.HomeTeamName = string(in.String())
-		case "2.7":
-			out.HomeTeamCity = string(in.String())
-		case "2.8":
-			out.HomeTeamSplashURL = string(in.String())
-		case "2.9":
-			out.HomeTeamSplashPrimaryColor = string(in.String())
-		case "2.10":
-			out.HomeTeamSplashSecondaryColor = string(in.String())
-		case "2.11":
-			(out.HomeTeamPointsLeader).UnmarshalEasyJSON(in)
-		case "2.12":
-			(out.HomeTeamAssistsLeader).UnmarshalEasyJSON(in)
-		case "2.13":
-			(out.HomeTeamReboundsLeader).UnmarshalEasyJSON(in)
-		case "3.1":
-			out.AwayTeamWins = int(in.Int())
-		case "3.2":
-			out.AwayTeamScore = int(in.Int())
-		case "3.3":
-			out.AwayTeamLosses = int(in.Int())
-		case "3.4":
-			out.AwayTeamTeamID = string(in.String())
-		case "3.5":
-			out.AwayTeamTriCode = string(in.String())
-		case "3.6":
-			out.AwayTeamName = string(in.String())
-		case "3.7":
-			out.AwayTeamCity = string(in.String())
-		case "3.8":
-			out.AwayTeamSplashURL = string(in.String())
-		case "3.9":
-			out.AwayTeamSplashPrimaryColor = string(in.String())
-		case "3.10":
-			out.AwayTeamSplashSecondaryColor = string(in.String())
-		case "3.11":
-			(out.AwayTeamPointsLeader).UnmarshalEasyJSON(in)
-		case "3.12":
-			(out.AwayTeamAssistsLeader).UnmarshalEasyJSON(in)
-		case "3.13":
-			(out.AwayTeamReboundsLeader).UnmarshalEasyJSON(in)
+		case "7":
+			easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos2(in, &out.HomeTeamStatus)
+		case "8":
+			easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos2(in, &out.AwayTeamStatus)
 		default:
 			in.SkipRecursive()
 		}
@@ -118,194 +71,50 @@ func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos(out *jwriter.Writer
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.1\":")
+	out.RawString("\"1\":")
 	out.String(string(in.ID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.2\":")
-	(in.LiveGameStats).MarshalEasyJSON(out)
+	out.RawString("\"2\":")
+	easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos1(out, in.LiveGameStats)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.3\":")
+	out.RawString("\"3\":")
 	out.Int(int(in.GameStartTime))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.4\":")
+	out.RawString("\"4\":")
 	out.Bool(bool(in.GameStartTimeTBD))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.5\":")
+	out.RawString("\"5\":")
 	out.Bool(bool(in.Finished))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"1.6\":")
+	out.RawString("\"6\":")
 	out.Bool(bool(in.NotStarted))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.1\":")
-	out.Int(int(in.HomeTeamWins))
+	out.RawString("\"7\":")
+	easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos2(out, in.HomeTeamStatus)
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"2.2\":")
-	out.Int(int(in.HomeTeamScore))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.3\":")
-	out.Int(int(in.HomeTeamLosses))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.4\":")
-	out.String(string(in.HomeTeamTeamID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.5\":")
-	out.String(string(in.HomeTeamTriCode))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.6\":")
-	out.String(string(in.HomeTeamName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.7\":")
-	out.String(string(in.HomeTeamCity))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.8\":")
-	out.String(string(in.HomeTeamSplashURL))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.9\":")
-	out.String(string(in.HomeTeamSplashPrimaryColor))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.10\":")
-	out.String(string(in.HomeTeamSplashSecondaryColor))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.11\":")
-	(in.HomeTeamPointsLeader).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.12\":")
-	(in.HomeTeamAssistsLeader).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"2.13\":")
-	(in.HomeTeamReboundsLeader).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.1\":")
-	out.Int(int(in.AwayTeamWins))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.2\":")
-	out.Int(int(in.AwayTeamScore))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.3\":")
-	out.Int(int(in.AwayTeamLosses))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.4\":")
-	out.String(string(in.AwayTeamTeamID))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.5\":")
-	out.String(string(in.AwayTeamTriCode))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.6\":")
-	out.String(string(in.AwayTeamName))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.7\":")
-	out.String(string(in.AwayTeamCity))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.8\":")
-	out.String(string(in.AwayTeamSplashURL))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.9\":")
-	out.String(string(in.AwayTeamSplashPrimaryColor))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.10\":")
-	out.String(string(in.AwayTeamSplashSecondaryColor))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.11\":")
-	(in.AwayTeamPointsLeader).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.12\":")
-	(in.AwayTeamAssistsLeader).MarshalEasyJSON(out)
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"3.13\":")
-	(in.AwayTeamReboundsLeader).MarshalEasyJSON(out)
+	out.RawString("\"8\":")
+	easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos2(out, in.AwayTeamStatus)
 	out.RawByte('}')
 }
 
@@ -331,4 +140,202 @@ func (v *GameSummary) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GameSummary) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos(l, v)
+}
+func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos2(in *jlexer.Lexer, out *GameTeamStatus) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "1":
+			out.Wins = int(in.Int())
+		case "2":
+			out.Score = int(in.Int())
+		case "3":
+			out.Losses = int(in.Int())
+		case "4":
+			out.TeamID = string(in.String())
+		case "5":
+			out.TriCode = string(in.String())
+		case "6":
+			out.Name = string(in.String())
+		case "7":
+			out.City = string(in.String())
+		case "8":
+			out.SplashURL = string(in.String())
+		case "9":
+			out.SplashPrimaryColor = string(in.String())
+		case "10":
+			out.SplashSecondaryColor = string(in.String())
+		case "11":
+			(out.PointsLeader).UnmarshalEasyJSON(in)
+		case "12":
+			(out.AssistsLeader).UnmarshalEasyJSON(in)
+		case "13":
+			(out.ReboundsLeader).UnmarshalEasyJSON(in)
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos2(out *jwriter.Writer, in GameTeamStatus) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1\":")
+	out.Int(int(in.Wins))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"2\":")
+	out.Int(int(in.Score))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"3\":")
+	out.Int(int(in.Losses))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"4\":")
+	out.String(string(in.TeamID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"5\":")
+	out.String(string(in.TriCode))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"6\":")
+	out.String(string(in.Name))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"7\":")
+	out.String(string(in.City))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"8\":")
+	out.String(string(in.SplashURL))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"9\":")
+	out.String(string(in.SplashPrimaryColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"10\":")
+	out.String(string(in.SplashSecondaryColor))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"11\":")
+	(in.PointsLeader).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"12\":")
+	(in.AssistsLeader).MarshalEasyJSON(out)
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"13\":")
+	(in.ReboundsLeader).MarshalEasyJSON(out)
+	out.RawByte('}')
+}
+func easyjson861ee97bDecodeGithubComSkeswaEnbiyayBackendDtos1(in *jlexer.Lexer, out *LiveGameStats) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "1":
+			out.Period = int(in.Int())
+		case "2":
+			out.Channel = string(in.String())
+		case "3":
+			out.TimeRemaining = string(in.String())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson861ee97bEncodeGithubComSkeswaEnbiyayBackendDtos1(out *jwriter.Writer, in LiveGameStats) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"1\":")
+	out.Int(int(in.Period))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"2\":")
+	out.String(string(in.Channel))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"3\":")
+	out.String(string(in.TimeRemaining))
+	out.RawByte('}')
 }

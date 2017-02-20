@@ -14,46 +14,49 @@ class GameBox extends Component {
     }
   }
 
-  renderLeaders(game) {
+  renderRecords(game) {
     return (
-      <div className={style.gameLeaders}>
-        <div
-          style={{ backgroundColor: game.awayTeamSplashPrimaryColor }}
-          className={style.teamLeaders}>
-          <Leader
-            statType="PTS"
-            playerId={game.awayTeamPointsLeader.id}
-            statValue={game.awayTeamPointsLeader.statValue} />
-          <Leader
-            statType="REB"
-            playerId={game.awayTeamReboundsLeader.id}
-            statValue={game.awayTeamReboundsLeader.statValue} />
-          <Leader
-            statType="AST"
-            playerId={game.awayTeamAssistsLeader.id}
-            statValue={game.awayTeamAssistsLeader.statValue} />
-        </div>
-        <div
-          style={{ backgroundColor: game.homeTeamSplashPrimaryColor }}
-          className={style.teamLeaders}>
-          <Leader
-            statType="PTS"
-            playerId={game.homeTeamPointsLeader.id}
-            statValue={game.homeTeamPointsLeader.statValue} />
-          <Leader
-            statType="REB"
-            playerId={game.homeTeamReboundsLeader.id}
-            statValue={game.homeTeamReboundsLeader.statValue} />
-          <Leader
-            statType="AST"
-            playerId={game.homeTeamAssistsLeader.id}
-            statValue={game.homeTeamAssistsLeader.statValue} />
-        </div>
+      <div className={style.teamRecords}>
       </div>
     )
   }
 
-  renderTeamStatus(triCode, color, score, selected, started) {
+  renderTeamLeaders({
+    primaryColor,
+    pointsLeader,
+    assistsLeader,
+    reboundsLeader,
+  }) {
+    return (
+      <div
+        style={{ backgroundColor: primaryColor }}
+        className={style.teamLeaders}>
+        <Leader
+          statType="PTS"
+          playerId={pointsLeader.id}
+          statValue={pointsLeader.statValue} />
+        <Leader
+          statType="REB"
+          playerId={reboundsLeader.id}
+          statValue={reboundsLeader.statValue} />
+        <Leader
+          statType="AST"
+          playerId={assistsLeader.id}
+          statValue={assistsLeader.statValue} />
+      </div>
+    )
+  }
+
+  renderLeaders({ homeTeamStatus, awayTeamStatus }) {
+    return (
+      <div className={style.gameLeaders}>
+        {this.renderTeamLeaders(awayTeamStatus)}
+        {this.renderTeamLeaders(homeTeamStatus)}
+      </div>
+    )
+  }
+
+  renderTeamStatus({ triCode, primaryColor, score }, selected, started) {
     return (
       <div className={style.teamStatus}>
         <div className={style.teamIcon}>
@@ -61,7 +64,7 @@ class GameBox extends Component {
         </div>
         <div
           className={style.teamTriCode}
-          style={selected ? { color } : null}>
+          style={selected ? { color: primaryColor } : null}>
           {triCode}
         </div>
         {
@@ -73,25 +76,11 @@ class GameBox extends Component {
     )
   }
 
-  renderTeamStatuses(game, selected) {
+  renderTeamStatuses({ homeTeamStatus, awayTeamStatus, notStarted }, selected) {
     return (
       <div className={style.teamStatuses}>
-        {
-          this.renderTeamStatus(
-            game.awayTeamTriCode,
-            game.awayTeamSplashPrimaryColor,
-            game.awayTeamScore,
-            selected,
-            !game.notStarted)
-        }
-        {
-          this.renderTeamStatus(
-            game.homeTeamTriCode,
-            game.homeTeamSplashPrimaryColor,
-            game.homeTeamScore,
-            selected,
-            !game.notStarted)
-        }
+        {this.renderTeamStatus(awayTeamStatus, selected, !notStarted)}
+        {this.renderTeamStatus(homeTeamStatus, selected, !notStarted)}
       </div>
     )
   }
@@ -113,9 +102,9 @@ class GameBox extends Component {
           </div>
           <div className={style.secondaryGameInfo}>
             {
-              !game.notStarted
-                ? this.renderLeaders(game)
-                : null
+              game.notStarted
+                ? this.renderRecords(game)
+                : this.renderLeaders(game)
             }
           </div>
         </div>

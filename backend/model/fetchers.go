@@ -3,6 +3,8 @@ package model
 import (
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/pkg/errors"
 	teamColorsAPI "github.com/skeswa/enbiyay/backend/colors/api"
 	teamColorsDTOs "github.com/skeswa/enbiyay/backend/colors/dtos"
@@ -12,7 +14,7 @@ import (
 
 // fetchInitialStoreData uses the NBA and Github APIs, respectively, to get the
 // requisite information to initialize the store.
-func fetchInitialStoreData() (
+func fetchInitialStoreData(logger *zap.Logger) (
 	*nbaDTOs.NBAAllTeams,
 	*nbaDTOs.NBAAllPlayers,
 	*teamColorsDTOs.AllTeamColorDetails,
@@ -27,8 +29,8 @@ func fetchInitialStoreData() (
 		teamColors *teamColorsDTOs.AllTeamColorDetails
 		scoreboard *nbaDTOs.NBAScoreboard
 
-		// Don't move on to the next day until 10am.
-		now            = time.Now().Add(-10 * time.Hour)
+		// Don't move on to the next day until 2pm.
+		now            = time.Now().Add(-14 * time.Hour)
 		killed1        = false
 		errorChan      = make(chan error)
 		teamsChan      = make(chan nbaDTOs.NBAAllTeams)
@@ -36,6 +38,8 @@ func fetchInitialStoreData() (
 		teamColorsChan = make(chan teamColorsDTOs.AllTeamColorDetails)
 		scoreboardChan = make(chan nbaDTOs.NBAScoreboard)
 	)
+
+	logger.Debug("fetching initial store data")
 
 	go fetchTeams(teamsChan, errorChan, &killed1)
 	go fetchPlayers(playersChan, errorChan, &killed1)
@@ -45,14 +49,24 @@ func fetchInitialStoreData() (
 	for !killed1 {
 		select {
 		case result := <-teamsChan:
+			logger.Debug("initial store data fetcher received team")
+
 			teams = &result
 		case result := <-playersChan:
+			logger.Debug("initial store data fetcher received players")
+
 			players = &result
 		case result := <-teamColorsChan:
+			logger.Debug("initial store data fetcher received colors")
+
 			teamColors = &result
 		case result := <-scoreboardChan:
+			logger.Debug("initial store data fetcher received scoreboard")
+
 			scoreboard = &result
 		case result := <-errorChan:
+			logger.Debug("initial store data fetcher received error")
+
 			err = result
 		}
 
@@ -61,6 +75,8 @@ func fetchInitialStoreData() (
 				players != nil &&
 				teamColors != nil &&
 				scoreboard != nil) {
+			logger.Debug("initial store data fetcher activated the kill switch")
+
 			killed1 = true
 			close(teamsChan)
 			close(errorChan)
@@ -75,18 +91,15 @@ func fetchInitialStoreData() (
 		}
 	}
 
-	boxScores, err := fetchBoxScores(now, scoreboard)
+	boxScores, err := fetchBoxScores(now, scoreboard, logger)
 	if err != nil {
 		return nil, nil, nil, nil, nil, errors.Wrap(
 			err,
 			"failed to fetch initial store data")
 	}
 
+	logger.Debug("initial store data fetcher returning initial store data")
 	return teams, players, teamColors, scoreboard, boxScores, nil
-}
-
-func fetchStoreUpdateData() {
-
 }
 
 // fetchTeams is an asynchronous wrapper for FetchNBATeams(...).
@@ -161,7 +174,12 @@ func fetchBoxScore(
 func fetchBoxScores(
 	date time.Time,
 	scoreboard *nbaDTOs.NBAScoreboard,
+	logger *zap.Logger,
 ) ([]nbaDTOs.NBABoxScore, error) {
+	if len(scoreboard.Games) < 1 {
+		return nil, nil
+	}
+
 	var (
 		err       error
 		boxScores []nbaDTOs.NBABoxScore
@@ -171,6 +189,9 @@ func fetchBoxScores(
 		boxScoreChan = make(chan nbaDTOs.NBABoxScore)
 	)
 
+	logger.Debug(
+		"fetching box scores",
+		zap.Int("numBoxScores", len(scoreboard.Games)))
 	for _, game := range scoreboard.Games {
 		go fetchBoxScore(
 			date,
@@ -184,13 +205,19 @@ func fetchBoxScores(
 	for !killed2 {
 		select {
 		case result := <-boxScoreChan:
+			logger.Debug("plural box score fetcher received box score")
+
 			boxScores = append(boxScores, result)
 		case result := <-errorChan:
+			logger.Debug("plural box score fetcher received error")
+
 			err = result
 		}
 
 		if err != nil ||
 			(len(boxScores) >= len(scoreboard.Games)) {
+			logger.Debug("plural box score fetcher activated the kill switch")
+
 			killed2 = true
 			close(errorChan)
 			close(boxScoreChan)
@@ -202,6 +229,7 @@ func fetchBoxScores(
 		}
 	}
 
+	logger.Debug("plural box score fetcher returning box scores")
 	return boxScores, nil
 }
 

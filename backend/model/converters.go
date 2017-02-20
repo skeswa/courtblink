@@ -54,31 +54,35 @@ func convertNBAGameToGameSummary(
 		boxScore, _ = boxScoreCache.FindBoxScoreByGameID(
 			game.ID)
 		startTimeTBD = game.IsStartTimeTBD
+
+		homeTeamPrimaryColor, homeTeamSecondaryColor string
+		awayTeamPrimaryColor, awayTeamSecondaryColor string
 	)
 
 	if !homeTeamExists {
 		return dtos.GameSummary{},
-			fmt.Errorf("no such home team exists for team %v", game.HomeTeam.ID)
-	}
-	if !awayTeamExists {
-		return dtos.GameSummary{},
-			fmt.Errorf("no such away team exists for team %v", game.AwayTeam.ID)
-	}
-	if !homeTeamColorsExist {
-		return dtos.GameSummary{},
 			fmt.Errorf("no such home team colors exist for team %v", game.HomeTeam.ID)
 	}
-	if !awayTeamColorsExist {
+	if !awayTeamExists {
 		return dtos.GameSummary{},
 			fmt.Errorf("no such away team colors exist for team %v", game.AwayTeam.ID)
 	}
 
-	var (
+	if homeTeamColorsExist {
 		homeTeamPrimaryColor, homeTeamSecondaryColor = convertTeamColorToColors(
 			homeTeamColors)
+	} else {
+		homeTeamPrimaryColor, homeTeamSecondaryColor = stringToColors(game.HomeTeam.ID)
+	}
+
+	if awayTeamColorsExist {
 		awayTeamPrimaryColor, awayTeamSecondaryColor = convertTeamColorToColors(
 			awayTeamColors)
+	} else {
+		awayTeamPrimaryColor, awayTeamSecondaryColor = stringToColors(game.AwayTeam.ID)
+	}
 
+	var (
 		homeTeamPointsLeader,
 		homeTeamAssistsLeader,
 		homeTeamReboundsLeader,
@@ -116,33 +120,36 @@ func convertNBAGameToGameSummary(
 		Finished:         startTime.Before(time.Now()) && len(game.Clock) == 0 && game.Period.Current > 3,
 		NotStarted:       startTime.After(time.Now()),
 
-		HomeTeamWins:                 confidentAtoi(game.HomeTeam.Win),
-		HomeTeamScore:                confidentAtoi(game.HomeTeam.Score),
-		HomeTeamLosses:               confidentAtoi(game.HomeTeam.Loss),
-		HomeTeamTeamID:               game.HomeTeam.ID,
-		HomeTeamTriCode:              game.HomeTeam.Tricode,
-		HomeTeamName:                 homeTeam.FullName,
-		HomeTeamCity:                 homeTeam.City,
-		HomeTeamSplashURL:            teamSplashPictureURL(homeTeam.ID),
-		HomeTeamSplashPrimaryColor:   homeTeamPrimaryColor,
-		HomeTeamSplashSecondaryColor: homeTeamSecondaryColor,
-		HomeTeamPointsLeader:         homeTeamPointsLeader,
-		HomeTeamAssistsLeader:        homeTeamAssistsLeader,
-		HomeTeamReboundsLeader:       homeTeamReboundsLeader,
-
-		AwayTeamWins:                 confidentAtoi(game.AwayTeam.Win),
-		AwayTeamScore:                confidentAtoi(game.AwayTeam.Score),
-		AwayTeamLosses:               confidentAtoi(game.AwayTeam.Loss),
-		AwayTeamTeamID:               game.AwayTeam.ID,
-		AwayTeamTriCode:              game.AwayTeam.Tricode,
-		AwayTeamName:                 awayTeam.FullName,
-		AwayTeamCity:                 awayTeam.City,
-		AwayTeamSplashURL:            teamSplashPictureURL(awayTeam.ID),
-		AwayTeamSplashPrimaryColor:   awayTeamPrimaryColor,
-		AwayTeamSplashSecondaryColor: awayTeamSecondaryColor,
-		AwayTeamPointsLeader:         awayTeamPointsLeader,
-		AwayTeamAssistsLeader:        awayTeamAssistsLeader,
-		AwayTeamReboundsLeader:       awayTeamReboundsLeader,
+		HomeTeamStatus: dtos.GameTeamStatus{
+			Wins:                 confidentAtoi(game.HomeTeam.Win),
+			Score:                confidentAtoi(game.HomeTeam.Score),
+			Losses:               confidentAtoi(game.HomeTeam.Loss),
+			TeamID:               game.HomeTeam.ID,
+			TriCode:              game.HomeTeam.Tricode,
+			Name:                 homeTeam.FullName,
+			City:                 homeTeam.City,
+			SplashURL:            teamSplashPictureURL(homeTeam.ID),
+			SplashPrimaryColor:   homeTeamPrimaryColor,
+			SplashSecondaryColor: homeTeamSecondaryColor,
+			PointsLeader:         homeTeamPointsLeader,
+			AssistsLeader:        homeTeamAssistsLeader,
+			ReboundsLeader:       homeTeamReboundsLeader,
+		},
+		AwayTeamStatus: dtos.GameTeamStatus{
+			Wins:                 confidentAtoi(game.AwayTeam.Win),
+			Score:                confidentAtoi(game.AwayTeam.Score),
+			Losses:               confidentAtoi(game.AwayTeam.Loss),
+			TeamID:               game.AwayTeam.ID,
+			TriCode:              game.AwayTeam.Tricode,
+			Name:                 awayTeam.FullName,
+			City:                 awayTeam.City,
+			SplashURL:            teamSplashPictureURL(awayTeam.ID),
+			SplashPrimaryColor:   awayTeamPrimaryColor,
+			SplashSecondaryColor: awayTeamSecondaryColor,
+			PointsLeader:         awayTeamPointsLeader,
+			AssistsLeader:        awayTeamAssistsLeader,
+			ReboundsLeader:       awayTeamReboundsLeader,
+		},
 	}, nil
 }
 
