@@ -1,2 +1,2 @@
 # courtblink
-A dope way to follow pro basketball.
+What we all wanted NBA.com to be.

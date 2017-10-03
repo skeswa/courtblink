@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/koa": "^2.0.39",
+    "@types/mz": "^0.0.32",
+    "@types/node": "^8.0.30",
+    "@types/node-fetch": "^1.6.7",
+    "@types/winston": "^2.3.6",
+    "koa": "^2.3.0",
+    "mz": "^2.7.0",
+    "node-fetch": "^1.7.3",
+    "socks": "^1.1.10",
+    "winston": "^2.3.1"
+  }
+}
