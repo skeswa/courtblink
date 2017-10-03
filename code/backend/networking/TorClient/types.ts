@@ -44,7 +44,7 @@ export type TorConfigFileRef = {
 /** Strategy for creating a new `TorClient`. */
 export enum TorClientCreationStrategy {
   /** Uses the `tor` binary installed on the local system. */
-  WithATorProcess,
+  WithATorProcess = 'WithATorProcess',
 }
 
 export type TorProcessMonitorOptions = {

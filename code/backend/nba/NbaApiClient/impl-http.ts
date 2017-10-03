@@ -1,17 +1,18 @@
 import { LoggerInstance } from 'winston'
 
-import NBAAPIClient from './interface'
+import { HttpClient } from '../../networking/HttpClient'
 import { BoxScore } from '../schema/box-score'
 import { AllPlayerDetails } from '../schema/player-details'
 import { Scoreboard } from '../schema/scoreboard'
 import { AllTeamDetails } from '../schema/team-details'
-import ProxiedHttpClient from '../../networking/proxied-http-client'
+import { yyyy, yyyymmdd } from './helpers'
+import { NbaApiClient } from './types'
 
-class HTTPNBAAPIClient implements NBAAPIClient {
-  private httpClient: ProxiedHttpClient
+export class HttpNbaApiClient implements NbaApiClient {
+  private httpClient: HttpClient
   private logger: LoggerInstance
 
-  constructor(httpClient: ProxiedHttpClient, logger: LoggerInstance) {
+  constructor(httpClient: HttpClient, logger: LoggerInstance) {
     this.httpClient = httpClient
     this.logger = logger
   }
@@ -79,24 +80,4 @@ class HTTPNBAAPIClient implements NBAAPIClient {
       )
     }
   }
-}
-
-function formatAsTwoDigits(num: number): string {
-  return num > 9 ? num.toString() : '0' + num.toString()
-}
-
-function yyyy(date: Date): string {
-  return date.getFullYear().toString()
-}
-
-function yyyymmdd(date: Date): string {
-  const month = date.getMonth() + 1 // getMonth() is zero-based.
-  const day = date.getDate()
-  const year = date.getFullYear()
-
-  const mm = formatAsTwoDigits(month)
-  const dd = formatAsTwoDigits(day)
-  const yyyy = year.toString()
-
-  return yyyy + mm + dd
 }

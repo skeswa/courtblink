@@ -12,7 +12,7 @@ export interface HttpClient {
 /** Strategy for creating a new `HttpClient`. */
 export enum HttpClientCreationStrategy {
   /** Uses `tor` to proxy HTTP requests. */
-  WithAProxy,
+  WithAProxy = 'WithProxy',
   /** Performs plain-vanilla HTTP requests. */
-  WithoutAnythingSpecial
+  WithoutAnythingSpecial = 'WithoutAnythingSpecial'
 }
