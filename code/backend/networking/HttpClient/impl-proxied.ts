@@ -4,7 +4,7 @@ import { TorClient } from '../TorClient'
 import { HttpClient } from './types'
 
 export class ProxiedHttpClient implements HttpClient {
-  private torClient: TorClient;
+  private torClient: TorClient
 
   constructor(torClient: TorClient) {
     this.torClient = torClient

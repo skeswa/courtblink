@@ -1,4 +1,4 @@
-import { LoggerInstance } from 'winston'
+import { Logger } from 'util/Logger'
 
 import { TorProcessMonitor } from './impl-process-monitor'
 import {
@@ -16,7 +16,7 @@ import {
  */
 export function createTorClient(
   strategy: TorClientCreationStrategy.WithATorProcess,
-  logger: LoggerInstance,
+  logger: Logger,
   torExecutableName: string = 'tor'
 ): TorClient {
   return new TorProcessMonitor(logger, torExecutableName)

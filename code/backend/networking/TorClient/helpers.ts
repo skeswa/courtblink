@@ -8,6 +8,8 @@ import {
 import { join as joinPaths } from 'path'
 import { find as findPorts } from 'portastic'
 
+import { ContextualError } from 'util/ContextualError'
+
 import { TorConfig, TorConfigFileRef } from './types'
 
 /** Flag used by tor to identify the config file path. */
@@ -34,8 +36,9 @@ export async function startTorProcess(
     // Listen for the process failing within the grace period.
     await pause(200 /* 0.2 second grace period */)
     if (torProcessError) {
-      throw new Error(
-        `The tor process failed within the grace period: ${torProcessError}`
+      throw new ContextualError(
+        `The tor process failed within the grace period`,
+        torProcessError
       )
     }
 
@@ -46,7 +49,7 @@ export async function startTorProcess(
 
     return torProcess
   } catch (err) {
-    throw new Error(`Failed to start the tor process: ${err}`)
+    throw new ContextualError('Failed to start the tor process', err)
   }
 }
 
@@ -71,7 +74,7 @@ export async function createTorConfigFile(
 
     return { configDirPath, configFilePath }
   } catch (err) {
-    throw new Error(`Failed to write the tor config file: ${err}`)
+    throw new ContextualError('Failed to write the tor config file', err)
   }
 }
 
@@ -85,7 +88,7 @@ export async function deleteTorConfigFile(
     // Then delete the enclosing directory.
     await deleteDir(ref.configDirPath)
   } catch (err) {
-    throw new Error(`Failed to delete the tor config file: ${err}`)
+    throw new ContextualError('Failed to delete the tor config file', err)
   }
 }
 
@@ -96,7 +99,7 @@ export async function createTorConfig(): Promise<TorConfig> {
 
     // Exit if there is an invalid number of available ports.
     if (ports.length < 2) {
-      throw new Error(
+      throw new ContextualError(
         'insufficient number of TCP ports are available for the tor ' +
           'monitor to start tor'
       )
@@ -109,7 +112,7 @@ export async function createTorConfig(): Promise<TorConfig> {
 
     return { controlPort, socksPort, socksHost }
   } catch (err) {
-    throw new Error(`Failed to create tor config: ${err}`)
+    throw new ContextualError('Failed to create tor config', err)
   }
 }
 

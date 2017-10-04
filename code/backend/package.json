@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "generate-schema": "pbjs -t static-module -w commonjs -o ../common/api/schema/generated/schema.js ../common/api/schema/*.proto && pbts -o ../common/api/schema/generated/schema.d.ts ../common/api/schema/generated/schema.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,9 +16,11 @@
     "@types/node": "^8.0.30",
     "@types/node-fetch": "^1.6.7",
     "@types/winston": "^2.3.6",
+    "common": "file:../common",
     "koa": "^2.3.0",
     "mz": "^2.7.0",
     "node-fetch": "^1.7.3",
+    "protobufjs": "^6.8.0",
     "socks": "^1.1.10",
     "winston": "^2.3.1"
   }

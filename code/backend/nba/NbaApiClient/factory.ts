@@ -1,6 +1,6 @@
-import { LoggerInstance } from 'winston'
+import { HttpClient } from 'networking/HttpClient'
+import { Logger } from 'util/Logger'
 
-import { HttpClient } from '../../networking/HttpClient'
 import { HttpNbaApiClient } from './impl-http'
 import { NbaApiClient, NbaApiClientCreationStrategy } from './types'
 
@@ -13,8 +13,8 @@ import { NbaApiClient, NbaApiClientCreationStrategy } from './types'
  */
 export function createNbaApiClient(
   strategy: NbaApiClientCreationStrategy.UsingNbaHttpApi,
-  logger: LoggerInstance,
-  httpClient: HttpClient,
+  logger: Logger,
+  httpClient: HttpClient
 ): NbaApiClient {
   return new HttpNbaApiClient(httpClient, logger)
 }

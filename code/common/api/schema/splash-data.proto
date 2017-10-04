@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+import "./game-leader.proto";
+
+message SplashData {
+  repeated GameLeader games = 1;
+}

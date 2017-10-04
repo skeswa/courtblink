@@ -14,5 +14,5 @@ export enum HttpClientCreationStrategy {
   /** Uses `tor` to proxy HTTP requests. */
   WithAProxy = 'WithProxy',
   /** Performs plain-vanilla HTTP requests. */
-  WithoutAnythingSpecial = 'WithoutAnythingSpecial'
+  WithoutAnythingSpecial = 'WithoutAnythingSpecial',
 }

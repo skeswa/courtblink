@@ -1,11 +1,11 @@
 ///<reference types="node" />
 
 declare module 'socks' {
-  import { Agent as HTTPAgent } from 'http';
+  import { Agent as HTTPAgent } from 'http'
 
   /**
    * Different types of socks connection.
-   * 
+   *
    * | Type        | Description                                               |
    * |-------------|-----------------------------------------------------------|
    * | `connect`   | establishes a regular SOCKS connection to the target host.|
@@ -29,14 +29,14 @@ declare module 'socks' {
      *   connect to the newly open TCP port.
      * - When using `associate`: IP Address and Port of the expected client
      *   that will send UDP packets to this UDP association relay.
-     * 
+     *
      * Note:
      * - When using SOCKS 4, only an ipv4 address can be used.
      * - When using SOCKS 4a, an ipv4 address OR a hostname can be used.
      * - When using SOCKS 5, ipv4, ipv6, or a hostname can be used.
      */
     host: string
-    
+
     /** TCP port of target to connect to. */
     port: number
   }
@@ -85,7 +85,7 @@ declare module 'socks' {
   export class Agent extends HTTPAgent {
     /**
      * Creates a new agent.
-     * 
+     *
      * @param options configuration for the agent.
      * @param secure we are connecting to a HTTPS server, false for HTTP server.
      * @param rejectUnauthorized rejectUnauthorized option passed to

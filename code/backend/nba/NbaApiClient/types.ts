@@ -1,7 +1,7 @@
-import { BoxScore } from '../schema/box-score'
-import { AllPlayerDetails } from '../schema/player-details'
-import { Scoreboard } from '../schema/scoreboard'
-import { AllTeamDetails } from '../schema/team-details'
+import { BoxScore } from 'nba/schema/box-score'
+import { AllPlayerDetails } from 'nba/schema/player-details'
+import { Scoreboard } from 'nba/schema/scoreboard'
+import { AllTeamDetails } from 'nba/schema/team-details'
 
 /** Fetches NBA-related data. */
 export interface NbaApiClient {

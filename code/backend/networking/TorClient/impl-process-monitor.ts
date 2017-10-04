@@ -1,7 +1,9 @@
 import { Agent } from 'http'
 import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
-import { LoggerInstance } from 'winston'
+
+import { ContextualError } from 'util/ContextualError'
+import { Logger } from 'util/Logger'
 
 import {
   createTorConfig,
@@ -14,7 +16,7 @@ import { TorClient, TorConfig, TorConfigFileRef } from './types'
 /** Manages and monitors a tor process. */
 export class TorProcessMonitor implements TorClient {
   private connected: boolean
-  private logger: LoggerInstance
+  private logger: Logger
   private socksAgent: Agent
   private torConfig: TorConfig
   private torConfigFileRef: TorConfigFileRef
@@ -22,7 +24,7 @@ export class TorProcessMonitor implements TorClient {
   private torProcess: ChildProcess
   private disconnectPromiseResolver: () => void
 
-  constructor(logger: LoggerInstance, torExecutableName: string) {
+  constructor(logger: Logger, torExecutableName: string) {
     this.connected = false
     this.logger = logger
     this.torExecutableName = torExecutableName
@@ -32,7 +34,7 @@ export class TorProcessMonitor implements TorClient {
 
   async connect(): Promise<void> {
     if (this.connected) {
-      throw new Error('Cannot connect to tor if already connected')
+      throw new ContextualError('Cannot connect to tor if already connected')
     }
 
     try {
@@ -62,7 +64,7 @@ export class TorProcessMonitor implements TorClient {
       // Signal that this client is now connected.
       this.connected = true
     } catch (err) {
-      throw new Error(`Failed to connect: ${err}`)
+      throw new ContextualError('Failed to connect', err)
     }
   }
 
@@ -74,7 +76,9 @@ export class TorProcessMonitor implements TorClient {
   /** @return a tor-connected HTTP agent for use with HTTP clients. */
   agent(): Agent {
     if (!this.connected) {
-      throw new Error('Cannot create an agent if not connected to tor')
+      throw new ContextualError(
+        'Cannot create an agent if not connected to tor'
+      )
     }
 
     return this.socksAgent
@@ -82,17 +86,19 @@ export class TorProcessMonitor implements TorClient {
 
   async switchIP(): Promise<void> {
     if (!this.connected) {
-      throw new Error('Cannot switch IPs if not connected to tor')
+      throw new ContextualError('Cannot switch IPs if not connected to tor')
     }
 
     // TODO(skeswa): implement this using the control port.
     // http://en.linuxreviews.org/HOWTO_use_the_Internet_anonymously_using_Tor_and_Privoxy#Some_tricks
-    throw new Error('switchIP() is not implemented yet')
+    throw new ContextualError('switchIP() is not implemented yet')
   }
 
   disconnect(): Promise<void> {
     if (!this.connected) {
-      throw new Error('Cannot disconnect from tor if not connected to tor')
+      throw new ContextualError(
+        'Cannot disconnect from tor if not connected to tor'
+      )
     }
 
     try {
@@ -116,18 +122,18 @@ export class TorProcessMonitor implements TorClient {
       // Return the promise created above.
       return result
     } catch (err) {
-      throw new Error(`Failed to disconnect: ${err}`)
+      throw new ContextualError('Failed to disconnect', err)
     }
   }
 
   private async onTorProcessExit(exitCode: number): Promise<void> {
-    this.logger.debug(`[tor:stdout] tor exited with code ${exitCode}`)
+    this.logger.debug('tor:stdout', `tor exited with code ${exitCode}`)
 
     try {
       // Use SIGINT to kill tor nicely.
       this.torProcess.kill('SIGINIT')
     } catch (err) {
-      this.logger.error(`Failed to kill the tor process: ${err}`)
+      this.logger.error('tor:procmon', `Failed to kill the tor process: ${err}`)
 
       // Do not continue since we failed to stop tor.
       return
@@ -149,7 +155,10 @@ export class TorProcessMonitor implements TorClient {
         // to return.
         this.disconnectPromiseResolver()
       } catch (err) {
-        this.logger.error(`Failed to resolve the disconnect resolver: ${err}`)
+        this.logger.error(
+          'tor:procmon',
+          `Failed to resolve the disconnect resolver: ${err}`
+        )
       } finally {
         // This resolver is now useless, so set it to null.
         this.disconnectPromiseResolver = null
@@ -160,7 +169,10 @@ export class TorProcessMonitor implements TorClient {
       // It is now time to delete the tor configuration files.
       await deleteTorConfigFile(this.torConfigFileRef)
     } catch (err) {
-      this.logger.error(`Failed to delete the tor configuration files: ${err}`)
+      this.logger.error(
+        'tor:procmon',
+        `Failed to delete the tor configuration files: ${err}`
+      )
     } finally {
       // The tor configuration is now useless, so null it.
       this.torConfig = null
@@ -174,12 +186,12 @@ export class TorProcessMonitor implements TorClient {
     // TODO(skeswa): notify exit event subscribers.
   }
 
-  private onTorProcessStderrData(data: string | Buffer) {
-    this.logger.debug(`[tor:stderr] ${data}`)
+  private onTorProcessStderrData(data: string) {
+    this.logger.debug('tor:stderr', data)
   }
 
-  private onTorProcessStdoutData(data: string | Buffer) {
-    this.logger.debug(`[tor:stdout] ${data}`)
+  private onTorProcessStdoutData(data: string) {
+    this.logger.debug('tor:stdout', data)
   }
 
   private subscribeToProcessEvents() {

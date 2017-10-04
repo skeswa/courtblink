@@ -1,11 +1,11 @@
 declare module 'portastic' {
   type FindOptions = {
     /** Minimum port number to start with. */
-    min?: number,
+    min?: number
     /** Maximum port number to scan. */
-    max?: number,
+    max?: number
     /** How many ports to collect. */
-    retrieve?: number,
+    retrieve?: number
   }
 
   /**

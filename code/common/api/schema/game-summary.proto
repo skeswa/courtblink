@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "./live-game-stats.proto";
+
+message GameSummary {
+  string id = 1;
+  LiveGameStats live_game_stats = 2;
+  int32 game_start_time = 3;
+  bool game_start_time_tbd = 4;
+  bool finished = 5;
+  bool not_started = 6;
+  string stat_value = 7;
+  string jersey_number = 8;
+}
