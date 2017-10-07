@@ -9,7 +9,7 @@ import { TeamDetailsCache, TeamDetailsCacheCreationStrategy } from './types'
  * @param strategy the creation strategy to use.
  * @param logger the logging utility to use.
  * @param nbaApiClient the client used to communicate with the NBA API.
- * @return the newly created box score cache.
+ * @return the newly created team details cache.
  */
 export function createTeamDetailsCache(
   strategy: TeamDetailsCacheCreationStrategy.UpdateEveryYear,
