@@ -296,8 +296,8 @@ $root.GameSummary = (function() {
      * @property {boolean} [gameStartTimeTbd] GameSummary gameStartTimeTbd
      * @property {boolean} [finished] GameSummary finished
      * @property {boolean} [notStarted] GameSummary notStarted
-     * @property {string} [statValue] GameSummary statValue
-     * @property {string} [jerseyNumber] GameSummary jerseyNumber
+     * @property {IGameTeamStatus} [homeTeamStatus] GameSummary homeTeamStatus
+     * @property {IGameTeamStatus} [awayTeamStatus] GameSummary awayTeamStatus
      */
 
     /**
@@ -363,20 +363,20 @@ $root.GameSummary = (function() {
     GameSummary.prototype.notStarted = false;
 
     /**
-     * GameSummary statValue.
-     * @member {string}statValue
+     * GameSummary homeTeamStatus.
+     * @member {(IGameTeamStatus|null|undefined)}homeTeamStatus
      * @memberof GameSummary
      * @instance
      */
-    GameSummary.prototype.statValue = "";
+    GameSummary.prototype.homeTeamStatus = null;
 
     /**
-     * GameSummary jerseyNumber.
-     * @member {string}jerseyNumber
+     * GameSummary awayTeamStatus.
+     * @member {(IGameTeamStatus|null|undefined)}awayTeamStatus
      * @memberof GameSummary
      * @instance
      */
-    GameSummary.prototype.jerseyNumber = "";
+    GameSummary.prototype.awayTeamStatus = null;
 
     /**
      * Creates a new GameSummary instance using the specified properties.
@@ -414,10 +414,10 @@ $root.GameSummary = (function() {
             writer.uint32(/* id 5, wireType 0 =*/40).bool(message.finished);
         if (message.notStarted != null && message.hasOwnProperty("notStarted"))
             writer.uint32(/* id 6, wireType 0 =*/48).bool(message.notStarted);
-        if (message.statValue != null && message.hasOwnProperty("statValue"))
-            writer.uint32(/* id 7, wireType 2 =*/58).string(message.statValue);
-        if (message.jerseyNumber != null && message.hasOwnProperty("jerseyNumber"))
-            writer.uint32(/* id 8, wireType 2 =*/66).string(message.jerseyNumber);
+        if (message.homeTeamStatus != null && message.hasOwnProperty("homeTeamStatus"))
+            $root.GameTeamStatus.encode(message.homeTeamStatus, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+        if (message.awayTeamStatus != null && message.hasOwnProperty("awayTeamStatus"))
+            $root.GameTeamStatus.encode(message.awayTeamStatus, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
         return writer;
     };
 
@@ -471,10 +471,10 @@ $root.GameSummary = (function() {
                 message.notStarted = reader.bool();
                 break;
             case 7:
-                message.statValue = reader.string();
+                message.homeTeamStatus = $root.GameTeamStatus.decode(reader, reader.uint32());
                 break;
             case 8:
-                message.jerseyNumber = reader.string();
+                message.awayTeamStatus = $root.GameTeamStatus.decode(reader, reader.uint32());
                 break;
             default:
                 reader.skipType(tag & 7);
@@ -531,12 +531,16 @@ $root.GameSummary = (function() {
         if (message.notStarted != null && message.hasOwnProperty("notStarted"))
             if (typeof message.notStarted !== "boolean")
                 return "notStarted: boolean expected";
-        if (message.statValue != null && message.hasOwnProperty("statValue"))
-            if (!$util.isString(message.statValue))
-                return "statValue: string expected";
-        if (message.jerseyNumber != null && message.hasOwnProperty("jerseyNumber"))
-            if (!$util.isString(message.jerseyNumber))
-                return "jerseyNumber: string expected";
+        if (message.homeTeamStatus != null && message.hasOwnProperty("homeTeamStatus")) {
+            error = $root.GameTeamStatus.verify(message.homeTeamStatus);
+            if (error)
+                return "homeTeamStatus." + error;
+        }
+        if (message.awayTeamStatus != null && message.hasOwnProperty("awayTeamStatus")) {
+            error = $root.GameTeamStatus.verify(message.awayTeamStatus);
+            if (error)
+                return "awayTeamStatus." + error;
+        }
         return null;
     };
 
@@ -567,10 +571,16 @@ $root.GameSummary = (function() {
             message.finished = Boolean(object.finished);
         if (object.notStarted != null)
             message.notStarted = Boolean(object.notStarted);
-        if (object.statValue != null)
-            message.statValue = String(object.statValue);
-        if (object.jerseyNumber != null)
-            message.jerseyNumber = String(object.jerseyNumber);
+        if (object.homeTeamStatus != null) {
+            if (typeof object.homeTeamStatus !== "object")
+                throw TypeError(".GameSummary.homeTeamStatus: object expected");
+            message.homeTeamStatus = $root.GameTeamStatus.fromObject(object.homeTeamStatus);
+        }
+        if (object.awayTeamStatus != null) {
+            if (typeof object.awayTeamStatus !== "object")
+                throw TypeError(".GameSummary.awayTeamStatus: object expected");
+            message.awayTeamStatus = $root.GameTeamStatus.fromObject(object.awayTeamStatus);
+        }
         return message;
     };
 
@@ -594,8 +604,8 @@ $root.GameSummary = (function() {
             object.gameStartTimeTbd = false;
             object.finished = false;
             object.notStarted = false;
-            object.statValue = "";
-            object.jerseyNumber = "";
+            object.homeTeamStatus = null;
+            object.awayTeamStatus = null;
         }
         if (message.id != null && message.hasOwnProperty("id"))
             object.id = message.id;
@@ -609,10 +619,10 @@ $root.GameSummary = (function() {
             object.finished = message.finished;
         if (message.notStarted != null && message.hasOwnProperty("notStarted"))
             object.notStarted = message.notStarted;
-        if (message.statValue != null && message.hasOwnProperty("statValue"))
-            object.statValue = message.statValue;
-        if (message.jerseyNumber != null && message.hasOwnProperty("jerseyNumber"))
-            object.jerseyNumber = message.jerseyNumber;
+        if (message.homeTeamStatus != null && message.hasOwnProperty("homeTeamStatus"))
+            object.homeTeamStatus = $root.GameTeamStatus.toObject(message.homeTeamStatus, options);
+        if (message.awayTeamStatus != null && message.hasOwnProperty("awayTeamStatus"))
+            object.awayTeamStatus = $root.GameTeamStatus.toObject(message.awayTeamStatus, options);
         return object;
     };
 
@@ -1333,7 +1343,7 @@ $root.SplashData = (function() {
      * Properties of a SplashData.
      * @exports ISplashData
      * @interface ISplashData
-     * @property {Array.<IGameLeader>} [games] SplashData games
+     * @property {Array.<IGameSummary>} [games] SplashData games
      */
 
     /**
@@ -1353,7 +1363,7 @@ $root.SplashData = (function() {
 
     /**
      * SplashData games.
-     * @member {Array.<IGameLeader>}games
+     * @member {Array.<IGameSummary>}games
      * @memberof SplashData
      * @instance
      */
@@ -1385,7 +1395,7 @@ $root.SplashData = (function() {
             writer = $Writer.create();
         if (message.games != null && message.games.length)
             for (var i = 0; i < message.games.length; ++i)
-                $root.GameLeader.encode(message.games[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                $root.GameSummary.encode(message.games[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
         return writer;
     };
 
@@ -1423,7 +1433,7 @@ $root.SplashData = (function() {
             case 1:
                 if (!(message.games && message.games.length))
                     message.games = [];
-                message.games.push($root.GameLeader.decode(reader, reader.uint32()));
+                message.games.push($root.GameSummary.decode(reader, reader.uint32()));
                 break;
             default:
                 reader.skipType(tag & 7);
@@ -1464,7 +1474,7 @@ $root.SplashData = (function() {
             if (!Array.isArray(message.games))
                 return "games: array expected";
             for (var i = 0; i < message.games.length; ++i) {
-                var error = $root.GameLeader.verify(message.games[i]);
+                var error = $root.GameSummary.verify(message.games[i]);
                 if (error)
                     return "games." + error;
             }
@@ -1491,7 +1501,7 @@ $root.SplashData = (function() {
             for (var i = 0; i < object.games.length; ++i) {
                 if (typeof object.games[i] !== "object")
                     throw TypeError(".SplashData.games: object expected");
-                message.games[i] = $root.GameLeader.fromObject(object.games[i]);
+                message.games[i] = $root.GameSummary.fromObject(object.games[i]);
             }
         }
         return message;
@@ -1515,7 +1525,7 @@ $root.SplashData = (function() {
         if (message.games && message.games.length) {
             object.games = [];
             for (var j = 0; j < message.games.length; ++j)
-                object.games[j] = $root.GameLeader.toObject(message.games[j], options);
+                object.games[j] = $root.GameSummary.toObject(message.games[j], options);
         }
         return object;
     };

@@ -135,11 +135,11 @@ export interface IGameSummary {
     /** GameSummary notStarted */
     notStarted?: boolean;
 
-    /** GameSummary statValue */
-    statValue?: string;
+    /** GameSummary homeTeamStatus */
+    homeTeamStatus?: IGameTeamStatus;
 
-    /** GameSummary jerseyNumber */
-    jerseyNumber?: string;
+    /** GameSummary awayTeamStatus */
+    awayTeamStatus?: IGameTeamStatus;
 }
 
 /** Represents a GameSummary. */
@@ -169,11 +169,11 @@ export class GameSummary {
     /** GameSummary notStarted. */
     public notStarted: boolean;
 
-    /** GameSummary statValue. */
-    public statValue: string;
+    /** GameSummary homeTeamStatus. */
+    public homeTeamStatus?: (IGameTeamStatus|null);
 
-    /** GameSummary jerseyNumber. */
-    public jerseyNumber: string;
+    /** GameSummary awayTeamStatus. */
+    public awayTeamStatus?: (IGameTeamStatus|null);
 
     /**
      * Creates a new GameSummary instance using the specified properties.
@@ -514,7 +514,7 @@ export class GameTeamStatus {
 export interface ISplashData {
 
     /** SplashData games */
-    games?: IGameLeader[];
+    games?: IGameSummary[];
 }
 
 /** Represents a SplashData. */
@@ -527,7 +527,7 @@ export class SplashData {
     constructor(properties?: ISplashData);
 
     /** SplashData games. */
-    public games: IGameLeader[];
+    public games: IGameSummary[];
 
     /**
      * Creates a new SplashData instance using the specified properties.

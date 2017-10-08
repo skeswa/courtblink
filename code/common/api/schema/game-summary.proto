@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "./live-game-stats.proto";
+import "./game-team-status.proto";
 
 message GameSummary {
   string id = 1;
@@ -9,6 +10,6 @@ message GameSummary {
   bool game_start_time_tbd = 4;
   bool finished = 5;
   bool not_started = 6;
-  string stat_value = 7;
-  string jersey_number = 8;
+  GameTeamStatus home_team_status = 7;
+  GameTeamStatus away_team_status = 8;
 }
