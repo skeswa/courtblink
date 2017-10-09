@@ -1,5 +1,4 @@
 import { TorClient } from 'networking/TorClient'
-import { ContextualError } from 'util/ContextualError'
 
 import { NormalHttpClient } from './impl-normal'
 import { ProxiedHttpClient } from './impl-proxied'
@@ -19,7 +18,7 @@ export function createHttpClient(
   switch (strategy) {
     case HttpClientCreationStrategy.WithAProxy:
       if (!torClient) {
-        throw new ContextualError(
+        throw new Error(
           'A tor client is required when using the "WithAProxy" strategy'
         )
       }
@@ -30,7 +29,7 @@ export function createHttpClient(
       return new NormalHttpClient()
 
     default:
-      throw new ContextualError(
+      throw new Error(
         `Could not create an http client with unknown strategy ${strategy}`
       )
   }

@@ -99,7 +99,7 @@ export async function createTorConfig(): Promise<TorConfig> {
 
     // Exit if there is an invalid number of available ports.
     if (ports.length < 2) {
-      throw new ContextualError(
+      throw new Error(
         'insufficient number of TCP ports are available for the tor ' +
           'monitor to start tor'
       )

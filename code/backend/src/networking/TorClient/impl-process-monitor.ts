@@ -34,7 +34,7 @@ export class TorProcessMonitor implements TorClient {
 
   async connect(): Promise<void> {
     if (this.connected) {
-      throw new ContextualError('Cannot connect to tor if already connected')
+      throw new Error('Cannot connect to tor if already connected')
     }
 
     try {
@@ -76,9 +76,7 @@ export class TorProcessMonitor implements TorClient {
   /** @return a tor-connected HTTP agent for use with HTTP clients. */
   agent(): Agent {
     if (!this.connected) {
-      throw new ContextualError(
-        'Cannot create an agent if not connected to tor'
-      )
+      throw new Error('Cannot create an agent if not connected to tor')
     }
 
     return this.socksAgent
@@ -86,19 +84,17 @@ export class TorProcessMonitor implements TorClient {
 
   async switchIP(): Promise<void> {
     if (!this.connected) {
-      throw new ContextualError('Cannot switch IPs if not connected to tor')
+      throw new Error('Cannot switch IPs if not connected to tor')
     }
 
     // TODO(skeswa): implement this using the control port.
     // http://en.linuxreviews.org/HOWTO_use_the_Internet_anonymously_using_Tor_and_Privoxy#Some_tricks
-    throw new ContextualError('switchIP() is not implemented yet')
+    throw new Error('switchIP() is not implemented yet')
   }
 
   disconnect(): Promise<void> {
     if (!this.connected) {
-      throw new ContextualError(
-        'Cannot disconnect from tor if not connected to tor'
-      )
+      throw new Error('Cannot disconnect from tor if not connected to tor')
     }
 
     try {
@@ -106,8 +102,8 @@ export class TorProcessMonitor implements TorClient {
       // unexpected.
       this.unsubscribeFromProcessEvents()
 
-      // Before we kill the process, create a promise that resolves when it exits.
-      // This promise is resolved by `onTorProcessExit` via
+      // Before we kill the process, create a promise that resolves when it
+      // exits. This promise is resolved by `onTorProcessExit` via
       // `this.disconnectPromiseResolver`.
       const result = new Promise<void>(
         resolve => (this.disconnectPromiseResolver = resolve)
