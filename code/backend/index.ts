@@ -40,6 +40,10 @@ import {
   NbaColorServiceCreationStrategy,
 } from './nba/colors/NbaColorService'
 import {
+  createEntityCacheJanitor,
+  EntityCacheJanitorCreationStrategy,
+} from './networking/EntityCacheJanitor'
+import {
   createHttpClient,
   HttpClientCreationStrategy,
 } from './networking/HttpClient'
@@ -55,9 +59,11 @@ import {
 import { createLogger, LoggerCreationStrategy } from './util/Logger'
 import { ContextualError } from './util/ContextualError'
 
-/** Initializes the backend. */
-async function execute(): Promise<void> {
+/** Sets up and starts the backend server. */
+async function backend(): Promise<void> {
   try {
+    //#region common
+
     // True if this server is running in production.
     const inProd = process.env.NODE_ENV === 'production'
 
@@ -66,6 +72,9 @@ async function execute(): Promise<void> {
       inProd ? LoggerCreationStrategy.ForProd : LoggerCreationStrategy.ForDev
     )
 
+    //#endregion
+    //#region networking
+
     // TODO(skeswa): get the tor executable name from an evvironment variable.
     // Client for communicating with the tor proxy.
     const torClient = createTorClient(
@@ -73,12 +82,6 @@ async function execute(): Promise<void> {
       logger,
       'tor'
     )
-
-    // Connect to tor before continuing.
-    await torClient.connect()
-
-    // Kill the tor client when the process is about to exit.
-    process.on('exit', () => torClient.disconnect())
 
     // Client used to make HTTP requests.
     const httpClient = createHttpClient(
@@ -93,23 +96,12 @@ async function execute(): Promise<void> {
       httpClient
     )
 
-    // Used to cache the NBA scoreboard.
-    const scoreboardCache = createScoreboardCache(
-      ScoreboardCacheCreationStrategy.UpdateEveryMinute,
-      logger,
-      nbaApiClient
-    )
+    //#endregion
+    //#region caching
 
     // Used to cache NBA box scores.
     const boxScoreCache = createBoxScoreCache(
       BoxScoreCacheCreationStrategy.UpdateEveryMinute,
-      logger,
-      nbaApiClient
-    )
-
-    // Used to cache NBA players.
-    const playerDetailsCache = createPlayerDetailsCache(
-      PlayerDetailsCacheCreationStrategy.UpdateEveryYear,
       logger,
       nbaApiClient
     )
@@ -120,11 +112,18 @@ async function execute(): Promise<void> {
       logger
     )
 
-    // Used to build game leader objects.
-    const gameLeadersBuilder = createGameLeadersBuilder(
-      GameLeadersBuilderCreationStrategy.UsingCaches,
-      boxScoreCache,
-      playerDetailsCache
+    // Used to cache NBA players.
+    const playerDetailsCache = createPlayerDetailsCache(
+      PlayerDetailsCacheCreationStrategy.UpdateEveryYear,
+      logger,
+      nbaApiClient
+    )
+
+    // Used to cache the NBA scoreboard.
+    const scoreboardCache = createScoreboardCache(
+      ScoreboardCacheCreationStrategy.UpdateEveryMinute,
+      logger,
+      nbaApiClient
     )
 
     // Used to cache NBA team colors.
@@ -139,6 +138,27 @@ async function execute(): Promise<void> {
       TeamDetailsCacheCreationStrategy.UpdateEveryYear,
       logger,
       nbaApiClient
+    )
+
+    // Cleans up caches once an hour.
+    const cacheJanitor = createEntityCacheJanitor(
+      EntityCacheJanitorCreationStrategy.Hourly,
+      logger,
+      boxScoreCache,
+      scoreboardCache,
+      playerDetailsCache,
+      teamColorsCache,
+      teamDetailsCache
+    )
+
+    //#endregion
+    //#region builders
+
+    // Used to build game leader objects.
+    const gameLeadersBuilder = createGameLeadersBuilder(
+      GameLeadersBuilderCreationStrategy.UsingCaches,
+      boxScoreCache,
+      playerDetailsCache
     )
 
     // Builds summaries of NBA games.
@@ -157,6 +177,9 @@ async function execute(): Promise<void> {
       gameSummaryBuilder
     )
 
+    //#endregion
+    //#region services
+
     // Implements all the RPCs exposed by courtblink.
     const apiService = createApiService(
       ApiServiceCreationStrategy.UsingCaches,
@@ -174,7 +197,45 @@ async function execute(): Promise<void> {
       logger
     )
 
-    // Start the server.
+    //#endregion
+    //#region error-handling
+
+    // Protect the server from uncaught exceptions.
+    process.on('uncaughtException', err =>
+      logger.error('handler:error', 'Encountered an uncaught error', err)
+    )
+
+    // Protect the server from enhandled rejections.
+    process.on('unhandledRejection', reason =>
+      logger.error(
+        'handler:error',
+        'Encountered an unhandled rejection',
+        reason
+      )
+    )
+
+    // Perform all necessary cleanup when the process exits.
+    process.on('exit', () => {
+      logger.info('handler:exit', 'Performing process clean up before exiting')
+
+      try {
+        torClient.disconnect()
+        cacheJanitor.stop()
+        httpServer.stop()
+      } catch (err) {
+        logger.error(
+          'handler:exit',
+          'Tried and failed to gracefully shutdown the server',
+          err
+        )
+      }
+    })
+
+    //#endregion
+
+    // Start all the services.
+    await torClient.connect()
+    cacheJanitor.start()
     httpServer.start()
   } catch (err) {
     throw new ContextualError('Failed to execute the backend server', err)
@@ -182,4 +243,4 @@ async function execute(): Promise<void> {
 }
 
 // Sets up and executes the backend.
-execute().catch(err => console.error('Backend exited with an error:', err))
+backend().catch(err => console.error('Backend exited with an error:', err))

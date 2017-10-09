@@ -25,15 +25,17 @@ export interface Logger {
    * Logs at the `error` level.
    * @param tag specified the origin of this log message.
    * @param message message to log.
+   * @param error the cause of this message.
    */
-  error(tag: string, message: string): void
+  error(tag: string, message: string, error: any): void
 
   /**
    * Logs at the `fatal` level.
    * @param tag specified the origin of this log message.
    * @param message message to log.
+   * @param error the cause of this message.
    */
-  fatal(tag: string, message: string): void
+  fatal(tag: string, message: string, error: any): void
 }
 
 /** Strategy for creating a new `Logger`. */

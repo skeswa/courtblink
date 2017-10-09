@@ -13,11 +13,11 @@ export class DevLogger implements Logger {
     console.log(`warn: [${tag}]`, message)
   }
 
-  error(tag: string, message: string): void {
-    console.log(`error: [${tag}]`, message)
+  error(tag: string, message: string, error: any): void {
+    console.log(`error: [${tag}] ${message}:`, error)
   }
 
-  fatal(tag: string, message: string): void {
-    console.log(`fatal: [${tag}]`, message)
+  fatal(tag: string, message: string, error: any): void {
+    console.log(`fatal: [${tag}] ${message}:`, error)
   }
 }
