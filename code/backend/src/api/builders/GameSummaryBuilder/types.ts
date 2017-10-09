@@ -1,5 +1,5 @@
-import { Game } from 'nba/api/schema'
-import { GameSummary } from 'api/schema'
+import { GameSummary } from '../../../api/schema'
+import { Game } from '../../../nba/api/schema'
 
 /** Builds game summaries. */
 export interface GameSummaryBuilder {

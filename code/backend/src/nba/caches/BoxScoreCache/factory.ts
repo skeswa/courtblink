@@ -1,5 +1,5 @@
-import { NbaApiClient } from 'nba/api/NbaApiClient'
-import { Logger } from 'util/Logger'
+import { NbaApiClient } from '../../../nba/api/NbaApiClient'
+import { Logger } from '../../../util/Logger'
 
 import { MinuteByMinuteBoxScoreCache } from './impl-minute-by-minute'
 import { BoxScoreCache, BoxScoreCacheCreationStrategy } from './types'

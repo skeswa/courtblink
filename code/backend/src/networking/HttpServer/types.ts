@@ -1,4 +1,4 @@
-import { Logger } from 'util/Logger'
+import { Logger } from '../../util/Logger'
 
 /** Responds to incoming Courtblink HTTP requests. */
 export interface HttpServer {

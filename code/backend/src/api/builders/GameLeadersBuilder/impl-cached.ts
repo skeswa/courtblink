@@ -1,7 +1,7 @@
-import { Game } from 'nba/api/schema'
-import { BoxScoreCache } from 'nba/caches/BoxScoreCache'
-import { PlayerDetailsCache } from 'nba/caches/PlayerDetailsCache'
-import { ContextualError } from 'util/ContextualError'
+import { Game } from '../../../nba/api/schema'
+import { BoxScoreCache } from '../../../nba/caches/BoxScoreCache'
+import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
+import { ContextualError } from '../../../util/ContextualError'
 
 import { calculateTeamLeaders } from './helpers'
 import { GameLeaders, GameLeadersBuilder, TeamLeaders } from './types'

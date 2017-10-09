@@ -1,5 +1,5 @@
-import { NbaColorService } from 'nba/colors/NbaColorService'
-import { Logger } from 'util/Logger'
+import { NbaColorService } from '../../../nba/colors/NbaColorService'
+import { Logger } from '../../../util/Logger'
 
 import { YearByYearTeamColorsCache } from './impl-year-by-year'
 import { TeamColorsCache, TeamColorsCacheCreationStrategy } from './types'

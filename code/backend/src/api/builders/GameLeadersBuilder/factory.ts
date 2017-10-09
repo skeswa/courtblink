@@ -1,5 +1,5 @@
-import { BoxScoreCache } from 'nba/caches/BoxScoreCache'
-import { PlayerDetailsCache } from 'nba/caches/PlayerDetailsCache'
+import { BoxScoreCache } from '../../../nba/caches/BoxScoreCache'
+import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
 
 import { CachedGameLeadersBuilder } from './impl-cached'
 import { GameLeadersBuilder, GameLeadersBuilderCreationStrategy } from './types'

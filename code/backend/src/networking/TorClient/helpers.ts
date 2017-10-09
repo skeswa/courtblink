@@ -5,10 +5,11 @@ import {
   unlink as deleteFile,
   writeFile,
 } from 'mz/fs'
+import { tmpdir } from 'os'
 import { join as joinPaths } from 'path'
 import { find as findPorts } from 'portastic'
 
-import { ContextualError } from 'util/ContextualError'
+import { ContextualError } from '../../util/ContextualError'
 
 import { TorConfig, TorConfigFileRef } from './types'
 
@@ -58,7 +59,7 @@ export async function createTorConfigFile(
 ): Promise<TorConfigFileRef> {
   try {
     const configDirPath = await makeTempDir(
-      /* prefix */ 'courtblink-tor-config',
+      /* prefix */ joinPaths(tmpdir(), 'courtblink-tor-config'),
       /* encoding */ 'utf8'
     )
     const configFilePath = joinPaths(configDirPath, 'torrc')
@@ -95,7 +96,7 @@ export async function deleteTorConfigFile(
 export async function createTorConfig(): Promise<TorConfig> {
   try {
     // Find a list of ports that we can use to start tor.
-    const ports = await findPorts({ min: 1000, max: 10000, retrieve: 2 })
+    const ports = await findPorts({ min: 5000, max: 10000, retrieve: 2 })
 
     // Exit if there is an invalid number of available ports.
     if (ports.length < 2) {

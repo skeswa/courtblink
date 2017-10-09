@@ -1,6 +1,9 @@
-import { NbaColorService, TeamColors } from 'nba/colors/NbaColorService'
-import { ContextualError } from 'util/ContextualError'
-import { Logger } from 'util/Logger'
+import {
+  NbaColorService,
+  TeamColors,
+} from '../../../nba/colors/NbaColorService'
+import { ContextualError } from '../../../util/ContextualError'
+import { Logger } from '../../../util/Logger'
 
 import { isYearByYearCacheEntryStale } from './helpers'
 import { TeamColorsCache, TeamColorsCacheEntry } from './types'

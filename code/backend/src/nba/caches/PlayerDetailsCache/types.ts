@@ -1,5 +1,5 @@
-import { EntityCache } from 'networking/EntityCache'
-import { PlayerDetails } from 'nba/api/schema'
+import { PlayerDetails } from '../../../nba/api/schema'
+import { EntityCache } from '../../../networking/EntityCache'
 
 /** Caches player details. */
 export interface PlayerDetailsCache

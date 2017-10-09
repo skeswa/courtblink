@@ -1,4 +1,4 @@
-import { TorClient } from 'networking/TorClient'
+import { TorClient } from '../../networking/TorClient'
 
 import { NormalHttpClient } from './impl-normal'
 import { ProxiedHttpClient } from './impl-proxied'

@@ -1,8 +1,8 @@
-import { GameLeadersBuilder } from 'api/builders/GameLeadersBuilder'
-import { BoxScoreCache } from 'nba/caches/BoxScoreCache'
-import { PlayerDetailsCache } from 'nba/caches/PlayerDetailsCache'
-import { TeamColorsCache } from 'nba/caches/TeamColorsCache'
-import { TeamDetailsCache } from 'nba/caches/TeamDetailsCache'
+import { GameLeadersBuilder } from '../../../api/builders/GameLeadersBuilder'
+import { BoxScoreCache } from '../../../nba/caches/BoxScoreCache'
+import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
+import { TeamColorsCache } from '../../../nba/caches/TeamColorsCache'
+import { TeamDetailsCache } from '../../../nba/caches/TeamDetailsCache'
 
 import { CachedGameSummaryBuilder } from './impl-cached'
 import { GameSummaryBuilder, GameSummaryBuilderCreationStrategy } from './types'

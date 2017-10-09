@@ -15,23 +15,23 @@ export class ProdLogger implements Logger {
     })
   }
 
-  debug(tag: string, message: string, info?: object): void {
-    this.winstonLogger.debug(`[${tag}] ${message}`, info)
+  debug(tag: string, message: string): void {
+    this.winstonLogger.debug(`[${tag}] ${message}`)
   }
 
-  info(tag: string, message: string, info?: object): void {
-    this.winstonLogger.info(`[${tag}] ${message}`, info)
+  info(tag: string, message: string): void {
+    this.winstonLogger.info(`[${tag}] ${message}`)
   }
 
-  warn(tag: string, message: string, info?: object): void {
-    this.winstonLogger.warn(`[${tag}] ${message}`, info)
+  warn(tag: string, message: string): void {
+    this.winstonLogger.warn(`[${tag}] ${message}`)
   }
 
-  error(tag: string, message: string, info?: object): void {
-    this.winstonLogger.error(`[${tag}] ${message}`, info)
+  error(tag: string, message: string): void {
+    this.winstonLogger.error(`[${tag}] ${message}`)
   }
 
-  fatal(tag: string, message: string, info?: object): void {
-    this.winstonLogger.emerg(`[${tag}] ${message}`, info)
+  fatal(tag: string, message: string): void {
+    this.winstonLogger.emerg(`[${tag}] ${message}`)
   }
 }

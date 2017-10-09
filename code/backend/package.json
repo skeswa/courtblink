@@ -20,6 +20,7 @@
     "koa": "^2.3.0",
     "mz": "^2.7.0",
     "node-fetch": "^1.7.3",
+    "portastic": "^1.0.1",
     "protobufjs": "^6.8.0",
     "socks": "^1.1.10",
     "winston": "^2.3.1"

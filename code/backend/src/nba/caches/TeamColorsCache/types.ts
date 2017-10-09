@@ -1,5 +1,5 @@
-import { NamedEntityCache } from 'networking/NamedEntityCache'
-import { TeamColors } from 'nba/colors/NbaColorService'
+import { TeamColors } from '../../../nba/colors/NbaColorService'
+import { NamedEntityCache } from '../../../networking/NamedEntityCache'
 
 /** Caches team colors. */
 export interface TeamColorsCache

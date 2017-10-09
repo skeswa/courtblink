@@ -1,4 +1,4 @@
-import { Logger } from 'util/Logger'
+import { Logger } from '../../../util/Logger'
 
 import { TeamColors, NbaColorService } from './types'
 

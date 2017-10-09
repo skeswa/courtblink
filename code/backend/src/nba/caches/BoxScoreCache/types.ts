@@ -1,5 +1,5 @@
-import { EntityCache } from 'networking/EntityCache'
-import { BoxScore } from 'nba/api/schema'
+import { EntityCache } from '../../../networking/EntityCache'
+import { BoxScore } from '../../../nba/api/schema'
 
 /** Id of the a box score. */
 export type BoxScoreId = {

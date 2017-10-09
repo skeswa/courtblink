@@ -1,5 +1,5 @@
-import { Game } from 'nba/api/schema'
-import { GameLeader } from 'api/schema'
+import { GameLeader } from '../../../api/schema'
+import { Game } from '../../../nba/api/schema'
 
 /** Encapsulates all the leaders for a game. */
 export type GameLeaders = {

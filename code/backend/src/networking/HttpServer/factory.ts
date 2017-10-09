@@ -1,6 +1,6 @@
-import { ApiService } from 'api/ApiService'
-import { HttpClient } from 'networking/HttpClient'
-import { Logger } from 'util/Logger'
+import { ApiService } from '../../api/ApiService'
+import { HttpClient } from '../../networking/HttpClient'
+import { Logger } from '../../util/Logger'
 
 import { KoaServer } from './impl-koa'
 import { HttpServer, HttpServerCreationStrategy } from './types'

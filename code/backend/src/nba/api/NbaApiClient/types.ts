@@ -3,7 +3,7 @@ import {
   AllTeamDetails,
   BoxScore,
   Scoreboard,
-} from 'nba/api/schema'
+} from '../../../nba/api/schema'
 
 /** Fetches NBA-related data. */
 export interface NbaApiClient {

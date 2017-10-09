@@ -1,4 +1,4 @@
-import { Logger } from 'util/Logger'
+import { Logger } from '../../util/Logger'
 
 import { TorProcessMonitor } from './impl-process-monitor'
 import {

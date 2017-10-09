@@ -17,7 +17,7 @@ export function createLogger(strategy: LoggerCreationStrategy): Logger {
 
     default:
       throw new Error(
-        `Could not create a logger with unknown strategy ${strategy}`
+        `Could not create a logger with unknown strategy "${strategy}"`
       )
   }
 }

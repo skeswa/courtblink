@@ -3,11 +3,11 @@ import {
   AllTeamDetails,
   BoxScore,
   Scoreboard,
-} from 'nba/api/schema'
-import { HttpClient } from 'networking/HttpClient'
-import { ContextualError } from 'util/ContextualError'
-import { yyyy, yyyymmdd } from 'util/date/helpers'
-import { Logger } from 'util/Logger'
+} from '../../../nba/api/schema'
+import { HttpClient } from '../../../networking/HttpClient'
+import { ContextualError } from '../../../util/ContextualError'
+import { yyyy, yyyymmdd } from '../../../util/date/helpers'
+import { Logger } from '../../../util/Logger'
 
 import { NbaApiClient } from './types'
 

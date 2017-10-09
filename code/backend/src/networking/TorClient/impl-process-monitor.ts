@@ -2,8 +2,8 @@ import { Agent } from 'http'
 import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
 
-import { ContextualError } from 'util/ContextualError'
-import { Logger } from 'util/Logger'
+import { ContextualError } from '../../util/ContextualError'
+import { Logger } from '../../util/Logger'
 
 import {
   createTorConfig,
@@ -22,14 +22,11 @@ export class TorProcessMonitor implements TorClient {
   private torConfigFileRef: TorConfigFileRef
   private torExecutableName: string
   private torProcess: ChildProcess
-  private disconnectPromiseResolver: () => void
 
   constructor(logger: Logger, torExecutableName: string) {
     this.connected = false
     this.logger = logger
     this.torExecutableName = torExecutableName
-
-    this.subscribeToProcessEvents()
   }
 
   async connect(): Promise<void> {
@@ -63,6 +60,10 @@ export class TorProcessMonitor implements TorClient {
 
       // Signal that this client is now connected.
       this.connected = true
+      this.torProcess = torProcess
+
+      // Subscribe to events not that a connection has been established.
+      this.subscribeToProcessEvents()
     } catch (err) {
       throw new ContextualError('Failed to connect', err)
     }
@@ -92,7 +93,7 @@ export class TorProcessMonitor implements TorClient {
     throw new Error('switchIP() is not implemented yet')
   }
 
-  disconnect(): Promise<void> {
+  disconnect(): void {
     if (!this.connected) {
       throw new Error('Cannot disconnect from tor if not connected to tor')
     }
@@ -102,21 +103,8 @@ export class TorProcessMonitor implements TorClient {
       // unexpected.
       this.unsubscribeFromProcessEvents()
 
-      // Before we kill the process, create a promise that resolves when it
-      // exits. This promise is resolved by `onTorProcessExit` via
-      // `this.disconnectPromiseResolver`.
-      const result = new Promise<void>(
-        resolve => (this.disconnectPromiseResolver = resolve)
-      )
-
       // Use SIGINT to kill tor nicely.
-      this.torProcess.kill('SIGINIT')
-
-      // TODO(skeswa): add a timeout here for backup - we don't want to get
-      // caught here forever.
-
-      // Return the promise created above.
-      return result
+      this.torProcess.kill('SIGINT')
     } catch (err) {
       throw new ContextualError('Failed to disconnect', err)
     }
@@ -144,23 +132,6 @@ export class TorProcessMonitor implements TorClient {
     // Get rid of the tor process instance since it is now useless.
     this.torProcess = null
 
-    // It is now safe to resolve the disconnect promise (if it exists).
-    if (this.disconnectPromiseResolver) {
-      try {
-        // This resolves the disconnect promise, which allows `this.disconnect`
-        // to return.
-        this.disconnectPromiseResolver()
-      } catch (err) {
-        this.logger.error(
-          'tor:procmon',
-          `Failed to resolve the disconnect resolver: ${err}`
-        )
-      } finally {
-        // This resolver is now useless, so set it to null.
-        this.disconnectPromiseResolver = null
-      }
-    }
-
     try {
       // It is now time to delete the tor configuration files.
       await deleteTorConfigFile(this.torConfigFileRef)
@@ -182,33 +153,28 @@ export class TorProcessMonitor implements TorClient {
     // TODO(skeswa): notify exit event subscribers.
   }
 
-  private onTorProcessStderrData(data: string) {
-    this.logger.debug('tor:stderr', data)
+  private onTorProcessStderrData(data: string | Buffer) {
+    this.logger.debug('tor:stderr', data.toString())
   }
 
-  private onTorProcessStdoutData(data: string) {
-    this.logger.debug('tor:stdout', data)
+  private onTorProcessStdoutData(data: string | Buffer) {
+    this.logger.debug('tor:stdout', data.toString())
   }
 
   private subscribeToProcessEvents() {
     // Subscribe to standard out of the tor process.
-    this.torProcess.stdout.on('data', this.onTorProcessStdoutData)
+    this.torProcess.stdout.on('data', data => this.onTorProcessStdoutData(data))
 
     // Subscribe to the standard error of the tor process.
-    this.torProcess.stderr.on('data', this.onTorProcessStderrData)
+    this.torProcess.stderr.on('data', data => this.onTorProcessStderrData(data))
 
     // Subscribe to the exit event of the tor process.
-    this.torProcess.on('exit', this.onTorProcessExit)
+    this.torProcess.on('exit', exitCode => this.onTorProcessExit(exitCode))
   }
 
   private unsubscribeFromProcessEvents() {
-    // Subscribe to standard out of the tor process.
-    this.torProcess.stdout.removeListener('data', this.onTorProcessStdoutData)
-
-    // Subscribe to the standard error of the tor process.
-    this.torProcess.stderr.removeListener('data', this.onTorProcessStderrData)
-
-    // Subscribe to the exit event of the tor process.
-    this.torProcess.removeListener('exit', this.onTorProcessExit)
+    this.torProcess.stdout.removeAllListeners()
+    this.torProcess.stderr.removeAllListeners()
+    this.torProcess.removeAllListeners()
   }
 }

@@ -1,5 +1,5 @@
-import { NamedEntityCache } from 'networking/NamedEntityCache'
-import { TeamDetails } from 'nba/api/schema'
+import { TeamDetails } from '../../../nba/api/schema'
+import { NamedEntityCache } from '../../../networking/NamedEntityCache'
 
 /** Caches team details. */
 export interface TeamDetailsCache

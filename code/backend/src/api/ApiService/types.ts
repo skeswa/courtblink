@@ -1,4 +1,4 @@
-import { SplashData } from 'api/schema'
+import { SplashData } from '../../api/schema'
 
 /**
  * The courtblink API service. Represents all of the possible RPCs exposed to

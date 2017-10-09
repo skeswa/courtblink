@@ -1,5 +1,5 @@
-import { HttpClient } from 'networking/HttpClient'
-import { Logger } from 'util/Logger'
+import { HttpClient } from '../../../networking/HttpClient'
+import { Logger } from '../../../util/Logger'
 
 import { HttpNbaApiClient } from './impl-http'
 import { NbaApiClient, NbaApiClientCreationStrategy } from './types'

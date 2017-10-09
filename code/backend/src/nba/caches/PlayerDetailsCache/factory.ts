@@ -1,5 +1,5 @@
-import { NbaApiClient } from 'nba/api/NbaApiClient'
-import { Logger } from 'util/Logger'
+import { NbaApiClient } from '../../../nba/api/NbaApiClient'
+import { Logger } from '../../../util/Logger'
 
 import { YearByYearPlayerDetailsCache } from './impl-year-by-year'
 import { PlayerDetailsCache, PlayerDetailsCacheCreationStrategy } from './types'

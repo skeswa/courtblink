@@ -1,7 +1,8 @@
-import { ApiService } from 'api/ApiService'
 import * as App from 'koa'
-import { ContextualError } from 'util/ContextualError'
-import { Logger } from 'util/Logger'
+
+import { ApiService } from '../../api/ApiService'
+import { ContextualError } from '../../util/ContextualError'
+import { Logger } from '../../util/Logger'
 
 import { HttpServer } from './types'
 
@@ -43,7 +44,7 @@ export class KoaServer implements HttpServer {
 
     // TODO(skeswa): make this work.
     this.app = new App()
-    this.app.listen(this.port, this.onReady)
+    this.app.listen(this.port, () => this.onReady())
   }
 
   stop(): void {

@@ -22,7 +22,7 @@ export interface TorClient {
    * Disconnects from the tor network. Throws an error if the operation fails
    * or if this client is not currently connected to the tor network.
    */
-  disconnect(): Promise<void>
+  disconnect(): void
 }
 
 export type TorConfig = {

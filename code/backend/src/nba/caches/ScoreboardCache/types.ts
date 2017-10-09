@@ -1,5 +1,5 @@
-import { EntityCache } from 'networking/EntityCache'
-import { Scoreboard } from 'nba/api/schema'
+import { Scoreboard } from '../../../nba/api/schema'
+import { EntityCache } from '../../../networking/EntityCache'
 
 /** Caches scoreboards. */
 export interface ScoreboardCache extends EntityCache<Date, Scoreboard> {}

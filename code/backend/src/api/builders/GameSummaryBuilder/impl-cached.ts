@@ -1,11 +1,11 @@
-import { GameLeadersBuilder } from 'api/builders/GameLeadersBuilder'
-import { GameSummary, GameTeamStatus, LiveGameStats } from 'api/schema'
-import { Game } from 'nba/api/schema'
-import { BoxScoreCache } from 'nba/caches/BoxScoreCache'
-import { PlayerDetailsCache } from 'nba/caches/PlayerDetailsCache'
-import { TeamColorsCache } from 'nba/caches/TeamColorsCache'
-import { TeamDetailsCache } from 'nba/caches/TeamDetailsCache'
-import { ContextualError } from 'util/ContextualError'
+import { GameLeadersBuilder } from '../../../api/builders/GameLeadersBuilder'
+import { GameSummary, GameTeamStatus, LiveGameStats } from '../../../api/schema'
+import { Game } from '../../../nba/api/schema'
+import { BoxScoreCache } from '../../../nba/caches/BoxScoreCache'
+import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
+import { TeamColorsCache } from '../../../nba/caches/TeamColorsCache'
+import { TeamDetailsCache } from '../../../nba/caches/TeamDetailsCache'
+import { ContextualError } from '../../../util/ContextualError'
 
 import {
   extractBroadcastChannel,

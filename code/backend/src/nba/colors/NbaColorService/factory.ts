@@ -1,6 +1,6 @@
-import { ApiService } from 'api/ApiService'
-import { HttpClient } from 'networking/HttpClient'
-import { Logger } from 'util/Logger'
+import { ApiService } from '../../../api/ApiService'
+import { HttpClient } from '../../../networking/HttpClient'
+import { Logger } from '../../../util/Logger'
 
 import { StaticallyDefinedNbaColorService } from './impl-static'
 import { NbaColorService, NbaColorServiceCreationStrategy } from './types'
