@@ -2,22 +2,22 @@ import { ApiService } from 'api/ApiService'
 import { HttpClient } from 'networking/HttpClient'
 import { Logger } from 'util/Logger'
 
-import { CourtblinkKoaServer } from './impl-koa'
-import { CourtblinkServer, CourtblinkServerCreationStrategy } from './types'
+import { KoaServer } from './impl-koa'
+import { HttpServer, HttpServerCreationStrategy } from './types'
 
 /**
- * Creates a new courtblink server.
+ * Creates a new HTTP server.
  * @param strategy the creation strategy to use.
  * @param port the port, over which, the server will respond to HTTP requests.
  * @param apiService service that implements the courtblink API.
  * @param logger the logging utility to use.
  * @return the newly created courtblink server.
  */
-export function createCourtblinkServer(
-  strategy: CourtblinkServerCreationStrategy.UsingKoa,
+export function createHttpServer(
+  strategy: HttpServerCreationStrategy.UsingKoa,
   port: number,
   apiService: ApiService,
   logger: Logger
-): CourtblinkServer {
-  return new CourtblinkKoaServer(port, apiService, logger)
+): HttpServer {
+  return new KoaServer(port, apiService, logger)
 }

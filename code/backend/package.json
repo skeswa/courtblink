@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate-schema": "pbjs -t static-module -w commonjs -o ../common/api/schema/generated/schema.js ../common/api/schema/*.proto && pbts -o ../common/api/schema/generated/schema.d.ts ../common/api/schema/generated/schema.js",
+    "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

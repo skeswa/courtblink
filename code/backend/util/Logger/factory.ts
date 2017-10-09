@@ -1,5 +1,3 @@
-import { ContextualError } from 'util/ContextualError'
-
 import { DevLogger } from './impl-dev'
 import { ProdLogger } from './impl-prod'
 import { Logger, LoggerCreationStrategy } from './types'
@@ -18,7 +16,7 @@ export function createLogger(strategy: LoggerCreationStrategy): Logger {
       return new ProdLogger()
 
     default:
-      throw new ContextualError(
+      throw new Error(
         `Could not create a logger with unknown strategy ${strategy}`
       )
   }

@@ -1,1 +1,2 @@
-export { ApiService } from './types'
+export { createApiService } from './factory'
+export { ApiService, ApiServiceCreationStrategy } from './types'

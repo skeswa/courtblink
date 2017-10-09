@@ -3,13 +3,13 @@ import * as App from 'koa'
 import { ContextualError } from 'util/ContextualError'
 import { Logger } from 'util/Logger'
 
-import { CourtblinkServer } from './types'
+import { HttpServer } from './types'
 
 // Tag for this server within the logger.
 const tag = 'server:koa'
 
 /** Courtblink server implementation that uses the koa web framework. */
-export class CourtblinkKoaServer implements CourtblinkServer {
+export class KoaServer implements HttpServer {
   private apiService: ApiService
   private app: App
   private logger: Logger
@@ -31,8 +31,8 @@ export class CourtblinkKoaServer implements CourtblinkServer {
     // If `app` already exists, `start()` has already been called.
     if (this.app) {
       throw new Error(
-        '`CourtblinkKoaServer#start()` cannot be called more than once ' +
-          'without calling `CourtblinkKoaServer#stop()` first'
+        '`start()` cannot be called more than once without calling ' +
+          '`stop()` first'
       )
     }
 
@@ -50,8 +50,7 @@ export class CourtblinkKoaServer implements CourtblinkServer {
     // If `app` doesn't already exists, `start()` has not been called.
     if (!this.app) {
       throw new Error(
-        '`CourtblinkKoaServer#stop()` cannot be called before calling ' +
-          '`CourtblinkKoaServer#start()` first'
+        '`stop()` cannot be called before calling `start()` first'
       )
     }
 

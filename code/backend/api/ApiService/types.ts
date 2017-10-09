@@ -12,3 +12,9 @@ export interface ApiService {
    */
   fetchSplashData(date: Date): Promise<SplashData>
 }
+
+/** Strategy for creating a new `ApiService`. */
+export enum ApiServiceCreationStrategy {
+  /** API service that leverages caching to stay fast. */
+  UsingCaches = 'UsingCaches',
+}

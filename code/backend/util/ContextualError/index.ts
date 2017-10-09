@@ -1,6 +1,6 @@
 /** Error with context and cause. */
 export class ContextualError extends Error {
-  constructor(context: string, cause?: any) {
+  constructor(context: string, cause: any) {
     // 'Error' breaks prototype chain here.
     super(context)
 

@@ -1,7 +1,7 @@
 import { Logger } from 'util/Logger'
 
 /** Responds to incoming Courtblink HTTP requests. */
-export interface CourtblinkServer {
+export interface HttpServer {
   /**
    * Starts the courtblink server on the specified port. The server will run
    * until it is stopped with the `stop()` method.
@@ -16,7 +16,7 @@ export interface CourtblinkServer {
 }
 
 /** Strategy for creating a new `CourtblinkServer`. */
-export enum CourtblinkServerCreationStrategy {
+export enum HttpServerCreationStrategy {
   /** Uses koa for the web server implementation. */
   UsingKoa = 'UsingKoa',
 }
