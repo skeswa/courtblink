@@ -91,7 +91,7 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
   }
 
   /**
-   * Returns true if the date is out of bounds for a cache entry
+   * Returns true if the date is out of bounds for a cache entry.
    * @param date date to check.
    * @return true if the date is out of bounds for a cache entry. */
   private isOutOfBounds(date: Date): boolean {
