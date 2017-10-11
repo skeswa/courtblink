@@ -13,9 +13,18 @@ import {
 } from './helpers'
 import { TorClient, TorConfig, TorConfigFileRef } from './types'
 
+// Log tags identify log messages from this module.
+const tag = 'tor:procmon'
+const torStdoutTag = `${tag}:stdout`
+const torStderrTag = `${tag}:stderr`
+
+// Message that gets logged to stdout by the tor process when tor is ready.
+const successMessage = 'Tor has successfully opened a circuit'
+
 /** Manages and monitors a tor process. */
 export class TorProcessMonitor implements TorClient {
   private connected: boolean
+  private declareTorConnected: () => void
   private logger: Logger
   private socksAgent: Agent
   private torConfig: TorConfig
@@ -33,6 +42,8 @@ export class TorProcessMonitor implements TorClient {
     if (this.connected) {
       throw new Error('Cannot connect to tor if already connected')
     }
+
+    this.logger.info(tag, 'Connecting to tor')
 
     try {
       // Create the tor configuration before starting tor.
@@ -64,6 +75,14 @@ export class TorProcessMonitor implements TorClient {
 
       // Subscribe to events not that a connection has been established.
       this.subscribeToProcessEvents()
+
+      this.logger.info(
+        tag,
+        'Waiting for tor to form a circuit with the tor network'
+      )
+
+      // Wait until tor connects to declare this client connected.
+      await this.waitForTorToBeReady()
     } catch (err) {
       throw new ContextualError('Failed to connect', err)
     }
@@ -93,35 +112,37 @@ export class TorProcessMonitor implements TorClient {
     throw new Error('switchIP() is not implemented yet')
   }
 
-  disconnect(): void {
+  async disconnect(): Promise<void> {
     if (!this.connected) {
       throw new Error('Cannot disconnect from tor if not connected to tor')
     }
 
+    this.logger.info(tag, 'Disconnecting from tor')
+
     try {
-      // Stop logging tor's output before killing it so it doesn't look
+      // Stop logging tor's output before killingß it so it doesn't look
       // unexpected.
       this.unsubscribeFromProcessEvents()
 
       // Use SIGINT to kill tor nicely.
-      this.torProcess.kill('SIGINT')
+      try {
+        this.torProcess.kill('SIGINT')
+      } catch (err) {
+        this.logger.error(tag, 'Failed to kill the tor process', err)
+      }
+
+      // Handle the exit.
+      await this.onTorProcessExit(
+        -1 /* Use this code to meam that we killed it */
+      )
     } catch (err) {
       throw new ContextualError('Failed to disconnect', err)
     }
   }
 
+  /** Called when the tor process exits. */
   private async onTorProcessExit(exitCode: number): Promise<void> {
     this.logger.debug('tor:stdout', `tor exited with code ${exitCode}`)
-
-    try {
-      // Use SIGINT to kill tor nicely.
-      this.torProcess.kill('SIGINIT')
-    } catch (err) {
-      this.logger.error('tor:procmon', `Failed to kill the tor process: ${err}`)
-
-      // Do not continue since we failed to stop tor.
-      return
-    }
 
     // Stop logging tor's output since that is no longer a thing.
     this.unsubscribeFromProcessEvents()
@@ -137,8 +158,9 @@ export class TorProcessMonitor implements TorClient {
       await deleteTorConfigFile(this.torConfigFileRef)
     } catch (err) {
       this.logger.error(
-        'tor:procmon',
-        `Failed to delete the tor configuration files: ${err}`
+        tag,
+        'Failed to delete the tor configuration files',
+        err
       )
     } finally {
       // The tor configuration is now useless, so null it.
@@ -153,14 +175,24 @@ export class TorProcessMonitor implements TorClient {
     // TODO(skeswa): notify exit event subscribers.
   }
 
+  /** Called when there is a new stderr message from the tor process. */
   private onTorProcessStderrData(data: string | Buffer) {
-    this.logger.debug('tor:stderr', data.toString())
+    this.logger.debug(torStderrTag, data.toString())
   }
 
+  /** Called when there is a new stdout message from the tor process. */
   private onTorProcessStdoutData(data: string | Buffer) {
-    this.logger.debug('tor:stdout', data.toString())
+    const message = data.toString()
+
+    // Check to see if the log message from tor has indicated that tor is ready.
+    if (this.declareTorConnected && message.indexOf(successMessage) !== -1) {
+      this.declareTorConnected()
+    }
+
+    this.logger.debug(torStdoutTag, data.toString())
   }
 
+  /** Creates and binds all of the tor process event handlers. */
   private subscribeToProcessEvents() {
     // Subscribe to standard out of the tor process.
     this.torProcess.stdout.on('data', data => this.onTorProcessStdoutData(data))
@@ -172,9 +204,37 @@ export class TorProcessMonitor implements TorClient {
     this.torProcess.on('exit', exitCode => this.onTorProcessExit(exitCode))
   }
 
+  /** Removes all of the tor process event handlers. */
   private unsubscribeFromProcessEvents() {
     this.torProcess.stdout.removeAllListeners()
     this.torProcess.stderr.removeAllListeners()
     this.torProcess.removeAllListeners()
+  }
+
+  // TODO(skeswa): add a reasonable timeout.
+  /** Function that waits until `declareTorConnected` resolves. */
+  private waitForTorToBeReady(): Promise<void> {
+    if (this.declareTorConnected) {
+      return Promise.reject(
+        '`declareTorConnected` was already set; could not create a new promise'
+      )
+    }
+
+    // Creates a promise around the `declareTorConnected` function.
+    return new Promise(
+      resolve =>
+        (this.declareTorConnected = () => {
+          // `declareTorConnected` needs to clean it self up and then resolve
+          // this promise.
+          this.declareTorConnected = null
+          resolve()
+
+          // Log that the tor client is now ready to accept connections.
+          this.logger.info(
+            tag,
+            'Tor is now ready to accept incoming connections'
+          )
+        })
+    )
   }
 }

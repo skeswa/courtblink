@@ -1,3 +1,7 @@
+//#region imports
+
+import * as onExit from 'node-cleanup'
+
 import { createApiService, ApiServiceCreationStrategy } from './api/ApiService'
 import {
   createGameLeadersBuilder,
@@ -58,6 +62,7 @@ import {
 } from './networking/TorClient'
 import { createLogger, LoggerCreationStrategy } from './util/Logger'
 import { ContextualError } from './util/ContextualError'
+//#endregion
 
 /** Sets up and starts the backend server. */
 async function backend(): Promise<void> {
@@ -71,8 +76,8 @@ async function backend(): Promise<void> {
     const logger = createLogger(
       inProd ? LoggerCreationStrategy.ForProd : LoggerCreationStrategy.ForDev
     )
-
     //#endregion
+
     //#region networking
 
     // TODO(skeswa): get the tor executable name from an evvironment variable.
@@ -95,8 +100,8 @@ async function backend(): Promise<void> {
       logger,
       httpClient
     )
-
     //#endregion
+
     //#region caching
 
     // Used to cache NBA box scores.
@@ -150,8 +155,8 @@ async function backend(): Promise<void> {
       teamColorsCache,
       teamDetailsCache
     )
-
     //#endregion
+
     //#region builders
 
     // Used to build game leader objects.
@@ -176,8 +181,8 @@ async function backend(): Promise<void> {
       SplashDataBuilderCreationStrategy.UsingCaches,
       gameSummaryBuilder
     )
-
     //#endregion
+
     //#region services
 
     // Implements all the RPCs exposed by courtblink.
@@ -190,15 +195,15 @@ async function backend(): Promise<void> {
 
     // Responds to HTTP requests.
     const httpServer = createHttpServer(
-      HttpServerCreationStrategy.UsingKoa,
+      HttpServerCreationStrategy.UsingDefaultNodeHttpServer,
       // TODO(skeswa): use environment variable for the port.
       3001,
       apiService,
       logger,
       { splash: '/api/splash' }
     )
-
     //#endregion
+
     //#region error-handling
 
     // Protect the server from uncaught exceptions.
@@ -216,22 +221,55 @@ async function backend(): Promise<void> {
     )
 
     // Perform all necessary cleanup when the process exits.
-    process.on('exit', () => {
-      logger.info('handler:exit', 'Performing process clean up before exiting')
+    onExit((exitCode: number, signal: string) => {
+      // Broadcast which signal was received.
+      if (signal) {
+        logger.info('handler:exit', `Received signal "${signal}"`)
+      }
 
-      try {
-        torClient.disconnect()
-        cacheJanitor.stop()
-        httpServer.stop()
-      } catch (err) {
-        logger.error(
+      // Broadcast which exit code was received.
+      if (exitCode) {
+        logger.info(
           'handler:exit',
-          'Tried and failed to gracefully shutdown the server',
-          err
+          `Now exiting in error with code ${exitCode}`
         )
       }
-    })
 
+      // Exit here if there was no signal, since that means no wind down is
+      // necessary.
+      if (!signal) return true
+
+      logger.info('handler:exit', 'Winding down internal services')
+
+      // Since there is a signal, teat everything down before exiting.
+      try {
+        // Kill the cache janitor first because it is synchronous.
+        cacheJanitor.stop()
+
+        // Wait for the tor client to exit asynchronously. Then wait for the
+        // HTTP server to finish asynchronously. Then kill the
+        // process once it is done.
+        Promise.all([torClient.disconnect(), httpServer.stop()])
+          .then(() => {
+            logger.info('handler:exit', 'Exited successfully')
+            process.kill(process.pid, signal)
+          })
+          .catch(err => {
+            logger.error('handler:exit', 'Did not exit successfully', err)
+            process.kill(process.pid, signal)
+          })
+      } catch (err) {
+        // Something went wrong while winding things down. Make sure the cause
+        // of this issue gets logged properly.
+        logger.error('handler:exit', 'Did not exit successfully', err)
+      } finally {
+        // This is so that we don't come back to this exit handler.
+        onExit.uninstall()
+      }
+
+      // Exit false because the process should not exit yet.
+      return false
+    })
     //#endregion
 
     // Start all the services.
@@ -239,7 +277,7 @@ async function backend(): Promise<void> {
     cacheJanitor.start()
     httpServer.start()
   } catch (err) {
-    throw new ContextualError('Failed to execute the backend server', err)
+    throw new ContextualError('Failed to start the backend server', err)
   }
 }
 

@@ -2,7 +2,7 @@ import { ApiService } from '../../api/ApiService'
 import { HttpClient } from '../../networking/HttpClient'
 import { Logger } from '../../util/Logger'
 
-import { KoaServer } from './impl-koa'
+import { NodeHttpServer } from './impl-node-http'
 import {
   HttpServer,
   HttpServerCreationStrategy,
@@ -19,11 +19,11 @@ import {
  * @return the newly created courtblink server.
  */
 export function createHttpServer(
-  strategy: HttpServerCreationStrategy.UsingKoa,
+  strategy: HttpServerCreationStrategy.UsingDefaultNodeHttpServer,
   port: number,
   apiService: ApiService,
   logger: Logger,
   endpointRoutes: HttpServerEndpointRoutes
 ): HttpServer {
-  return new KoaServer(port, apiService, logger, endpointRoutes)
+  return new NodeHttpServer(port, apiService, logger, endpointRoutes)
 }

@@ -55,6 +55,10 @@
   dependencies:
     "@types/node" "*"
 
+"@types/node-cleanup@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/node-cleanup/-/node-cleanup-2.1.0.tgz#e9aabbe167907b0fafbb6155305824040c4d25c1"
+
 "@types/node-fetch@^1.6.7":
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-1.6.7.tgz#521078e8f0c69a158e5022005aca92d2620f6d57"
@@ -184,6 +188,10 @@ mz@^2.7.0:
     any-promise "^1.0.0"
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
+
+node-cleanup@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-cleanup/-/node-cleanup-2.1.2.tgz#7ac19abd297e09a7f72a71545d951b517e4dde2c"
 
 node-fetch@^1.7.3:
   version "1.7.3"

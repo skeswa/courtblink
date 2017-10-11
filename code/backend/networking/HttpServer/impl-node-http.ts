@@ -57,13 +57,10 @@ export class NodeHttpServer implements HttpServer {
 
     try {
       // Create the server, and bind it to the `onRequest` method.
-      const server = createServer((req, res) => this.serve(req, res))
-
-      // Bind the `onError` method to handle uncaught errors.
-      server.on('error', err => this.onError(err))
+      this.server = createServer((req, res) => this.serve(req, res))
 
       // Start the server, and bind the listening event to the `onReady` method.
-      server.listen(this.port, () => this.onReady())
+      this.server.listen(this.port, () => this.onReady())
     } catch (err) {
       throw new ContextualError(
         'Failed to start the courtblink node http server',
@@ -72,37 +69,34 @@ export class NodeHttpServer implements HttpServer {
     }
   }
 
-  stop(): void {
+  stop(): Promise<void> {
     // Do not allow the server to be stopped if it has not successfully started
     // yet.
     if (!this.server || !this.isListening) {
-      throw new Error(
-        '`stop()` cannot be called yet, since the server has not yet started ' +
-          'to accept incoming requests'
+      return Promise.reject(
+        '`stop()` cannot be called yet, since the server has not yet ' +
+          'started to accept incoming requests'
       )
     }
 
     this.logger.info(tag, `Closing off connections to port ${this.port}`)
 
     // Stop the server from accepting new incoming connections.
-    this.server.close(() => {
-      this.logger.info(tag, `Server stopped successfully`)
+    return new Promise(resolve =>
+      this.server.close(() => {
+        this.logger.info(tag, `Server stopped successfully`)
 
-      // Unbind all the event handlers.
-      this.server.removeAllListeners()
+        // Unbind all the event handlers.
+        this.server.removeAllListeners()
 
-      // Nul lthe server reference to commincate that a new one should be
-      // created.
-      this.server = null
-    })
-  }
+        // Null the server reference to commincate that a new one should be
+        // created.
+        this.server = null
 
-  /**
-   * Method called when the server encounters an uncaught error.
-   * @param error the uncaught error to handle.
-   */
-  private onError(err: Error): void {
-    this.logger.error(tag, 'Encounted an uncaught error', err)
+        // All done!
+        resolve()
+      })
+    )
   }
 
   /** Method called when this server is ready for incoming requests. */
@@ -151,7 +145,7 @@ export class NodeHttpServer implements HttpServer {
     }
 
     // Log how long it took to respond.
-    this.logger.debug(
+    this.logger.info(
       tag,
       `Responded to request with path "${path}" in ${Date.now() - startTime}ms`
     )

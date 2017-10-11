@@ -12,7 +12,7 @@ export interface HttpServer {
    * Stops the courtblink server. Throws an error if the server wasn't running
    * to begin with.
    */
-  stop(): void
+  stop(): Promise<void>
 }
 
 /** Strategy for creating a new `CourtblinkServer`. */
