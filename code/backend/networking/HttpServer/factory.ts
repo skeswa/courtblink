@@ -3,7 +3,11 @@ import { HttpClient } from '../../networking/HttpClient'
 import { Logger } from '../../util/Logger'
 
 import { KoaServer } from './impl-koa'
-import { HttpServer, HttpServerCreationStrategy } from './types'
+import {
+  HttpServer,
+  HttpServerCreationStrategy,
+  HttpServerEndpointRoutes,
+} from './types'
 
 /**
  * Creates a new HTTP server.
@@ -11,13 +15,15 @@ import { HttpServer, HttpServerCreationStrategy } from './types'
  * @param port the port, over which, the server will respond to HTTP requests.
  * @param apiService service that implements the courtblink API.
  * @param logger the logging utility to use.
+ * @param endpointRoutes routes to use for each server endpoint.
  * @return the newly created courtblink server.
  */
 export function createHttpServer(
   strategy: HttpServerCreationStrategy.UsingKoa,
   port: number,
   apiService: ApiService,
-  logger: Logger
+  logger: Logger,
+  endpointRoutes: HttpServerEndpointRoutes
 ): HttpServer {
-  return new KoaServer(port, apiService, logger)
+  return new KoaServer(port, apiService, logger, endpointRoutes)
 }

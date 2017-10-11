@@ -6,7 +6,7 @@ import { Logger } from '../../../util/Logger'
 
 import { ScoreboardCache } from './types'
 
-// Tag for this cache within the logger.
+// Log tag that identifies this module.
 const tag = 'scoreboard-cache:minute-by-minute'
 
 // How long to leave data in a cache entry alone before updating it.

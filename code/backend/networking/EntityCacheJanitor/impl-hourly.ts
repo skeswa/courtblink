@@ -3,7 +3,7 @@ import { Logger } from '../../util/Logger'
 
 import { EntityCacheJanitor } from './types'
 
-// Tag used for logging.
+// Log tag that identifies this module.
 const tag = 'cache:janitor'
 
 /** Performs cache garbage collection every hour. */

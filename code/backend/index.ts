@@ -194,7 +194,8 @@ async function backend(): Promise<void> {
       // TODO(skeswa): use environment variable for the port.
       3001,
       apiService,
-      logger
+      logger,
+      { splash: '/api/splash' }
     )
 
     //#endregion

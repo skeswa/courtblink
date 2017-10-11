@@ -8,7 +8,7 @@ import { Logger } from '../../../util/Logger'
 import { isYearByYearCacheEntryStale } from './helpers'
 import { TeamColorsCache, TeamColorsCacheEntry } from './types'
 
-// Tag for this cache within the logger.
+// Log tag that identifies this module.
 const tag = 'team-colors-cache:year-by-year'
 
 /** Team colors cache that updates cached team colors every year. */

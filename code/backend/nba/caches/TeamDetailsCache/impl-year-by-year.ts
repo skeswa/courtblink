@@ -5,7 +5,7 @@ import { Logger } from '../../../util/Logger'
 
 import { TeamDetailsCache } from './types'
 
-// Tag for this cache within the logger.
+// Log tag that identifies this module.
 const tag = 'team-details-cache:year-by-year'
 
 /** Team details cache that updates cached team details every year. */

@@ -2,7 +2,7 @@ import { Logger } from '../../../util/Logger'
 
 import { TeamColors, NbaColorService } from './types'
 
-// Logger tag for this class.
+// Log tag that identifies this module.
 const tag = 'nba:colors:static'
 
 /** Color service with hard-coded colors mapped to full team names. */

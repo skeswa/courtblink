@@ -17,6 +17,14 @@ export interface HttpServer {
 
 /** Strategy for creating a new `CourtblinkServer`. */
 export enum HttpServerCreationStrategy {
-  /** Uses koa for the web server implementation. */
-  UsingKoa = 'UsingKoa',
+  /**
+   * Uses the http server that ships with node for the web server
+   * implementation.
+   */
+  UsingDefaultNodeHttpServer = 'UsingDefaultNodeHttpServer',
+}
+
+/** Specifies the routes to use for different server endpoints. */
+export type HttpServerEndpointRoutes = {
+  splash: string
 }

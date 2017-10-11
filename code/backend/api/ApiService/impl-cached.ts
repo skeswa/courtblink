@@ -8,7 +8,7 @@ import { Logger } from '../../util/Logger'
 
 import { ApiService } from './types'
 
-// The tag used for logging.
+// Log tag that identifies this module.
 const tag = 'courtblink:api'
 
 /** API service that leverages caching to stay fast. */

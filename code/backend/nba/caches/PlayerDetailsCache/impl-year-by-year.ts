@@ -5,7 +5,7 @@ import { Logger } from '../../../util/Logger'
 
 import { PlayerDetailsCache } from './types'
 
-// Tag for this cache within the logger.
+// Log tag that identifies this module.
 const tag = 'player-details-cache:year-by-year'
 
 /** Player details cache that updates cached player details every year. */
