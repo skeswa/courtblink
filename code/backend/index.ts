@@ -16,6 +16,10 @@ import {
   SplashDataBuilderCreationStrategy,
 } from './api/builders/SplashDataBuilder'
 import {
+  createEntityCacheJanitor,
+  EntityCacheJanitorCreationStrategy,
+} from './data/EntityCacheJanitor'
+import {
   createNbaApiClient,
   NbaApiClientCreationStrategy,
 } from './nba/api/NbaApiClient'
@@ -43,10 +47,6 @@ import {
   createNbaColorService,
   NbaColorServiceCreationStrategy,
 } from './nba/colors/NbaColorService'
-import {
-  createEntityCacheJanitor,
-  EntityCacheJanitorCreationStrategy,
-} from './networking/EntityCacheJanitor'
 import {
   createHttpClient,
   HttpClientCreationStrategy,
@@ -91,6 +91,7 @@ async function backend(): Promise<void> {
     // Client used to make HTTP requests.
     const httpClient = createHttpClient(
       HttpClientCreationStrategy.WithAProxy,
+      logger,
       torClient
     )
 

@@ -1,9 +1,14 @@
-import { Game } from '../../../nba/api/schema'
+import { Game, TeamDetails } from '../../../nba/api/schema'
 
 // Constants for different channel names.
 const leaguePassChannelName = 'League Pass'
 const localChannelName = 'Local'
 const tntChannelName = 'TNT'
+
+// Generic picture of a basketball used a fallback when there is no splash url.
+const fallbackSplashUrl =
+  'https://www.ivacy.com/blog/wp-content/' +
+  'uploads/2016/08/olympics-basketball.jpg'
 
 /**
  * Estimates what the broadcast channel is by looking at the provided game.
@@ -34,18 +39,24 @@ export function extractBroadcastChannel(game: Game): string {
 }
 
 /**
+ * @param teamDetails details about the team to get the splash url for.
+ * @return the splash url for the specified team.
+ */
+export function extractSplashUrl(teamDetails: TeamDetails | undefined): string {
+  // Use the fallback if there are no team details to work off of.
+  if (!teamDetails || !teamDetails.teamId) return fallbackSplashUrl
+
+  return (
+    `http://i.cdn.turner.com/nba/nba/assets/teams/spotlight/` +
+    `${teamDetails.teamId}.jpg`
+  )
+}
+
+/**
  * @param intString an integer in string form.
  * @return int version of the provided numeric string, or zero.
  */
 export function parseIntOrReturnZero(intString: string): number {
   const int = parseInt(intString || '', 10)
   return int ? int : 0
-}
-
-/**
- * @param teamId id of the team to get the splash url for.
- * @return the plash url for the specified team.
- */
-export function toSplashUrl(teamId: string): string {
-  return `http://i.cdn.turner.com/nba/nba/assets/teams/spotlight/${teamId}.jpg`
 }

@@ -17,7 +17,10 @@ export class CachedSplashDataBuilder implements SplashDataBuilder {
     this.gameSummaryBuilder = gameSummaryBuilder
   }
 
-  async build(scoreboard: Scoreboard): Promise<SplashData> {
+  async build(scoreboard: Scoreboard | undefined): Promise<SplashData> {
+    // If there is no scoreboard, exit early with no games in thr splash.
+    if (!scoreboard) return SplashData.create({})
+
     try {
       // Turn all the games into game summaries.
       const gameSummaries = await Promise.all(

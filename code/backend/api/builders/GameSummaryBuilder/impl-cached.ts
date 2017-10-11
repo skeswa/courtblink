@@ -1,5 +1,10 @@
 import { GameLeadersBuilder } from '../../../api/builders/GameLeadersBuilder'
-import { GameSummary, GameTeamStatus, LiveGameStats } from '../../../api/schema'
+import {
+  IGameLeader,
+  IGameSummary,
+  IGameTeamStatus,
+  ILiveGameStats,
+} from '../../../api/schema'
 import { Game } from '../../../nba/api/schema'
 import { BoxScoreCache } from '../../../nba/caches/BoxScoreCache'
 import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
@@ -9,10 +14,19 @@ import { ContextualError } from '../../../util/ContextualError'
 
 import {
   extractBroadcastChannel,
+  extractSplashUrl,
   parseIntOrReturnZero,
-  toSplashUrl,
 } from './helpers'
 import { GameSummaryBuilder } from './types'
+
+// Default team city to use when a team doesn't have a city.
+const unknownTeamCity = 'Unknown City'
+
+// Default grayish colors to use when we don't know what colors a team has.
+const unknownTeamColors = { primaryColor: '#000000', secondaryColor: '#888888' }
+
+// Default team name to use when a team doesn't have a name.
+const unknownTeamName = 'Unknown Team'
 
 /** Uses caches to help build new game summary objects. */
 export class CachedGameSummaryBuilder implements GameSummaryBuilder {
@@ -45,7 +59,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
     this.teamDetailsCache = teamDetailsCache
   }
 
-  async build(game: Game): Promise<GameSummary> {
+  async build(game: Game): Promise<IGameSummary> {
     try {
       // Retrieve information about the game and teams involved.
       const [homeTeam, awayTeam, boxScore] = await Promise.all([
@@ -59,8 +73,12 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
 
       // Get colors for both home and away teams.
       const [homeTeamColors, awayTeamColors] = await Promise.all([
-        this.teamColorsCache.retrieveByName(homeTeam.fullName),
-        this.teamColorsCache.retrieveByName(awayTeam.fullName),
+        homeTeam
+          ? this.teamColorsCache.retrieveByName(homeTeam.fullName)
+          : unknownTeamColors,
+        awayTeam
+          ? this.teamColorsCache.retrieveByName(awayTeam.fullName)
+          : unknownTeamColors,
       ])
 
       // Create a JS date from the start time for easy time checks.
@@ -93,51 +111,59 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
       // leaders of the game are.
       const gameLeaders = await this.gameLeadersBuilder.build(game)
 
-      return GameSummary.create({
+      return {
         id: game.gameId,
         gameStartTime: startTime.getTime(),
         gameStartTimeTbd: game.isStartTimeTBD,
         finished: isGameFinished,
         notStarted: hasGameNotStarted,
 
-        liveGameStats: LiveGameStats.create({
+        liveGameStats: {
           period: game.period.current,
           channel: broadcastChannel,
           timeRemaining: game.clock,
-        }),
+        },
 
-        homeTeamStatus: GameTeamStatus.create({
+        homeTeamStatus: {
           wins: homeTeamLosses,
           score: homeTeamScore,
           losses: homeTeamWins,
           teamId: game.hTeam.teamId,
           tricode: game.hTeam.triCode,
-          name: homeTeam.fullName,
-          city: homeTeam.city,
-          splashUrl: toSplashUrl(homeTeam.teamId),
-          splashPrimaryColor: homeTeamColors.primaryColor,
-          splashSecondaryColor: homeTeamColors.secondaryColor,
+          name: homeTeam ? homeTeam.fullName : unknownTeamName,
+          city: homeTeam ? homeTeam.city : unknownTeamCity,
+          splashUrl: extractSplashUrl(homeTeam),
+          splashPrimaryColor: homeTeamColors
+            ? homeTeamColors.primaryColor
+            : unknownTeamColors.primaryColor,
+          splashSecondaryColor: homeTeamColors
+            ? homeTeamColors.secondaryColor
+            : unknownTeamColors.secondaryColor,
           pointsLeader: gameLeaders.homeTeam.pointsLeader,
           assistsLeader: gameLeaders.homeTeam.assistsLeader,
           reboundsLeader: gameLeaders.homeTeam.reboundsLeader,
-        }),
+        },
 
-        awayTeamStatus: GameTeamStatus.create({
+        awayTeamStatus: {
           wins: awayTeamLosses,
           score: awayTeamScore,
           losses: awayTeamWins,
           teamId: game.vTeam.teamId,
           tricode: game.vTeam.triCode,
-          name: awayTeam.fullName,
-          city: awayTeam.city,
-          splashUrl: toSplashUrl(awayTeam.teamId),
-          splashPrimaryColor: awayTeamColors.primaryColor,
-          splashSecondaryColor: awayTeamColors.secondaryColor,
+          name: awayTeam ? awayTeam.fullName : unknownTeamName,
+          city: awayTeam ? awayTeam.city : unknownTeamCity,
+          splashUrl: extractSplashUrl(awayTeam),
+          splashPrimaryColor: awayTeamColors
+            ? awayTeamColors.primaryColor
+            : unknownTeamColors.primaryColor,
+          splashSecondaryColor: awayTeamColors
+            ? awayTeamColors.secondaryColor
+            : unknownTeamColors.secondaryColor,
           pointsLeader: gameLeaders.awayTeam.pointsLeader,
           assistsLeader: gameLeaders.awayTeam.assistsLeader,
           reboundsLeader: gameLeaders.awayTeam.reboundsLeader,
-        }),
-      })
+        },
+      }
     } catch (err) {
       throw new ContextualError(
         'Failed to create a new game summary object',

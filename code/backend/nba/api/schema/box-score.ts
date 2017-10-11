@@ -3,8 +3,10 @@ import { Game } from './game'
 export type BoxScore = {
   /** Info about the game that this box score describes. */
   basicGameData: Game
-  /** The juicy innards of the box score.  */
-  stats: BoxScoreDetails
+  /**
+   * The juicy innards of the box score. Null if the game has not yet happened.
+   */
+  stats?: BoxScoreDetails
 }
 
 /** Has all the juicy box score details. */

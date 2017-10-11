@@ -23,7 +23,7 @@ export class NodeHttpServer implements HttpServer {
   private isListening: boolean
   private logger: Logger
   private port: number
-  private server: Server
+  private server: Server | null
 
   /**
    * Creates a new `CourtblinkKoaServer`.
@@ -82,9 +82,15 @@ export class NodeHttpServer implements HttpServer {
     this.logger.info(tag, `Closing off connections to port ${this.port}`)
 
     // Stop the server from accepting new incoming connections.
-    return new Promise(resolve =>
+    return new Promise(resolve => {
+      // Exit early if the server is not closable.
+      if (!this.server) return
+
       this.server.close(() => {
         this.logger.info(tag, `Server stopped successfully`)
+
+        // Exit early if we can't continue working with the server.
+        if (!this.server) return resolve()
 
         // Unbind all the event handlers.
         this.server.removeAllListeners()
@@ -96,7 +102,7 @@ export class NodeHttpServer implements HttpServer {
         // All done!
         resolve()
       })
-    )
+    })
   }
 
   /** Method called when this server is ready for incoming requests. */
@@ -117,7 +123,16 @@ export class NodeHttpServer implements HttpServer {
     response: ServerResponse
   ): Promise<void> {
     // Faster than node's native url parser.
-    const path = parseUrl(request).pathname
+    const url = parseUrl(request)
+
+    // Do not continue if the request url is not parsable.
+    if (!url || !url.pathname) {
+      throw new Error(`Failed to parse the URL of request to "${request.url}"`)
+    }
+
+    // Alias the pathname variable to a more convenient `path` for no other
+    // reason but easier reading.
+    const path = url.pathname
 
     // Remember when the request came in,
     const startTime = Date.now()
@@ -144,10 +159,13 @@ export class NodeHttpServer implements HttpServer {
       )
     }
 
+    // Format how long we took to respond.
+    const transactionDuration = (Date.now() - startTime).toLocaleString()
+
     // Log how long it took to respond.
     this.logger.info(
       tag,
-      `Responded to request with path "${path}" in ${Date.now() - startTime}ms`
+      `Responded to request with path "${path}" in ${transactionDuration}ms`
     )
   }
 

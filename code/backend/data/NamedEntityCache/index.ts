@@ -1,4 +1,4 @@
-import { EntityCache } from 'networking/EntityCache'
+import { EntityCache } from '../../data/EntityCache'
 
 /** Stores remotely obtained data in memory for later retrieval. */
 export interface NamedEntityCache<Id, Name, Entity>
@@ -11,7 +11,7 @@ export interface NamedEntityCache<Id, Name, Entity>
    * @return the entity matching the specified id, or null if no such entity
    *     exists.
    */
-  retrieveByName(name: Name): Promise<Entity>
+  retrieveByName(name: Name): Promise<Entity | undefined>
 
   /** Clears away all expired data in the cache. */
   collectGarbage(): void

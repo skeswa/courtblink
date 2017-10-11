@@ -1,4 +1,4 @@
-import { GameSummary } from '../../../api/schema'
+import { IGameSummary } from '../../../api/schema'
 import { Game } from '../../../nba/api/schema'
 
 /** Builds game summaries. */
@@ -8,7 +8,7 @@ export interface GameSummaryBuilder {
    * @param game game used to build the game summary.
    * @return a new game summary.
    */
-  build(game: Game): Promise<GameSummary>
+  build(game: Game): Promise<IGameSummary>
 }
 
 /** Strategy for creating a new `GameSummaryBuilder`. */

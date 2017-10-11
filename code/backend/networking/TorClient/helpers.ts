@@ -28,7 +28,7 @@ export async function startTorProcess(
     ])
 
     // Temporarily bind to the error event of the process.
-    let torProcessError: Error
+    let torProcessError: Error | undefined
     const onError = (err: Error) => {
       torProcessError = err
     }

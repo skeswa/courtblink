@@ -10,7 +10,7 @@ export interface TorClient {
   isConnected(): boolean
 
   /** @return a tor-connected HTTP agent for use with HTTP clients. */
-  agent(): Agent
+  agent(): Agent | undefined
 
   /**
    * Requests a new IP address from tor. Throws an error if the operation fails

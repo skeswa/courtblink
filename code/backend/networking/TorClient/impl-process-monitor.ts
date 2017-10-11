@@ -24,17 +24,20 @@ const successMessage = 'Tor has successfully opened a circuit'
 /** Manages and monitors a tor process. */
 export class TorProcessMonitor implements TorClient {
   private connected: boolean
-  private declareTorConnected: () => void
+  private declareTorConnected: (() => void) | null
   private logger: Logger
-  private socksAgent: Agent
-  private torConfig: TorConfig
-  private torConfigFileRef: TorConfigFileRef
+  private socksAgent: Agent | null
+  private torConfig: TorConfig | null
+  private torConfigFileRef: TorConfigFileRef | null
   private torExecutableName: string
-  private torProcess: ChildProcess
+  private torProcess: ChildProcess | null
 
   constructor(logger: Logger, torExecutableName: string) {
     this.connected = false
+    this.declareTorConnected = null
     this.logger = logger
+    this.torConfig = null
+    this.torConfigFileRef = null
     this.torExecutableName = torExecutableName
   }
 
@@ -94,12 +97,12 @@ export class TorProcessMonitor implements TorClient {
   }
 
   /** @return a tor-connected HTTP agent for use with HTTP clients. */
-  agent(): Agent {
+  agent(): Agent | undefined {
     if (!this.connected) {
       throw new Error('Cannot create an agent if not connected to tor')
     }
 
-    return this.socksAgent
+    return this.socksAgent ? this.socksAgent : undefined
   }
 
   async switchIP(): Promise<void> {
@@ -125,10 +128,12 @@ export class TorProcessMonitor implements TorClient {
       this.unsubscribeFromProcessEvents()
 
       // Use SIGINT to kill tor nicely.
-      try {
-        this.torProcess.kill('SIGINT')
-      } catch (err) {
-        this.logger.error(tag, 'Failed to kill the tor process', err)
+      if (this.torProcess) {
+        try {
+          this.torProcess.kill('SIGINT')
+        } catch (err) {
+          this.logger.error(tag, 'Failed to kill the tor process', err)
+        }
       }
 
       // Handle the exit.
@@ -155,7 +160,9 @@ export class TorProcessMonitor implements TorClient {
 
     try {
       // It is now time to delete the tor configuration files.
-      await deleteTorConfigFile(this.torConfigFileRef)
+      if (this.torConfigFileRef) {
+        await deleteTorConfigFile(this.torConfigFileRef)
+      }
     } catch (err) {
       this.logger.error(
         tag,
@@ -194,6 +201,9 @@ export class TorProcessMonitor implements TorClient {
 
   /** Creates and binds all of the tor process event handlers. */
   private subscribeToProcessEvents() {
+    // Exit early if there is no tor process.
+    if (!this.torProcess) return
+
     // Subscribe to standard out of the tor process.
     this.torProcess.stdout.on('data', data => this.onTorProcessStdoutData(data))
 
@@ -206,6 +216,9 @@ export class TorProcessMonitor implements TorClient {
 
   /** Removes all of the tor process event handlers. */
   private unsubscribeFromProcessEvents() {
+    // Exit early if there is no tor process.
+    if (!this.torProcess) return
+
     this.torProcess.stdout.removeAllListeners()
     this.torProcess.stderr.removeAllListeners()
     this.torProcess.removeAllListeners()
@@ -224,9 +237,10 @@ export class TorProcessMonitor implements TorClient {
     return new Promise(
       resolve =>
         (this.declareTorConnected = () => {
-          // `declareTorConnected` needs to clean it self up and then resolve
+          // `declareTorConnected` needs to clean itself up and then resolve
           // this promise.
           this.declareTorConnected = null
+
           resolve()
 
           // Log that the tor client is now ready to accept connections.

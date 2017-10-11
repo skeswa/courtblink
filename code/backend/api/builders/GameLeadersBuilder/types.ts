@@ -1,4 +1,4 @@
-import { GameLeader } from '../../../api/schema'
+import { IGameLeader } from '../../../api/schema'
 import { Game } from '../../../nba/api/schema'
 
 /** Encapsulates all the leaders for a game. */
@@ -28,9 +28,9 @@ export enum GameLeadersBuilderCreationStrategy {
 /** Encapsulates all the leaders for a team. */
 export type TeamLeaders = {
   /** Leader in rebounds. */
-  reboundsLeader: GameLeader
+  reboundsLeader?: IGameLeader
   /** Leader in points. */
-  pointsLeader: GameLeader
+  pointsLeader?: IGameLeader
   /** Leader in assists. */
-  assistsLeader: GameLeader
+  assistsLeader?: IGameLeader
 }

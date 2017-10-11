@@ -8,7 +8,7 @@ export interface SplashDataBuilder {
    * @param scoreboard scoreboard used to build the splash data.
    * @return a new splash data.
    */
-  build(scoreboard: Scoreboard): Promise<SplashData>
+  build(scoreboard: Scoreboard | undefined): Promise<SplashData>
 }
 
 /** Strategy for creating a new `SplashDataBuilder`. */

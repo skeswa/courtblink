@@ -28,7 +28,7 @@ export class YearByYearTeamDetailsCache implements TeamDetailsCache {
     this.nbaApiClient = nbaApiClient
   }
 
-  async retrieveById(id: string): Promise<TeamDetails> {
+  async retrieveById(id: string): Promise<TeamDetails | undefined> {
     try {
       // Check to see if the cache needs to be updated first.
       if (this.isInvalidated()) {
@@ -46,7 +46,7 @@ export class YearByYearTeamDetailsCache implements TeamDetailsCache {
     }
   }
 
-  async retrieveByName(name: string): Promise<TeamDetails> {
+  async retrieveByName(name: string): Promise<TeamDetails | undefined> {
     try {
       // Check to see if the cache needs to be updated first.
       if (this.isInvalidated()) {

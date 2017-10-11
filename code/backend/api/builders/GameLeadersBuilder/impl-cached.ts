@@ -32,6 +32,9 @@ export class CachedGameLeadersBuilder implements GameLeadersBuilder {
         gameId: game.gameId,
       })
 
+      // If there is no box score, exit early and empty.
+      if (!boxScore) return { homeTeam: {}, awayTeam: {} }
+
       // Get the home and away team game leaders in parallel.
       const [homeTeam, awayTeam] = await Promise.all([
         calculateTeamLeaders(

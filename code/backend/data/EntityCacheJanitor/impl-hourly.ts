@@ -1,4 +1,4 @@
-import { EntityCache } from '../../networking/EntityCache'
+import { EntityCache } from '../../data/EntityCache'
 import { Logger } from '../../util/Logger'
 
 import { EntityCacheJanitor } from './types'

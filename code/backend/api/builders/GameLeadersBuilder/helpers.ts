@@ -1,4 +1,4 @@
-import { GameLeader } from '../../../api/schema'
+import { IGameLeader } from '../../../api/schema'
 import { BoxScore, PlayerStatline } from '../../../nba/api/schema'
 import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
 import { ContextualError } from '../../../util/ContextualError'
@@ -17,13 +17,18 @@ export async function calculateTeamLeaders(
   teamId: string,
   playerDetailsCache: PlayerDetailsCache
 ): Promise<TeamLeaders> {
-  let lowestAssistsSortKey: number,
-    lowestPointsSortKey: number,
-    lowestReboundsSortKey: number
+  // Exit early if there aren't yet stats to work with.
+  if (!boxScore.stats) {
+    return {}
+  }
 
-  let assistsLeaderStatLine: PlayerStatline,
-    pointsLeaderStatLine: PlayerStatline,
-    reboundsLeaderStatLine: PlayerStatline
+  let lowestAssistsSortKey: number | null = null,
+    lowestPointsSortKey: number | null = null,
+    lowestReboundsSortKey: number | null = null
+
+  let assistsLeaderStatLine: PlayerStatline | null = null,
+    pointsLeaderStatLine: PlayerStatline | null = null,
+    reboundsLeaderStatLine: PlayerStatline | null = null
 
   try {
     // Loop through the active players looking for the leaders.
@@ -68,17 +73,17 @@ export async function calculateTeamLeaders(
     const [assistsLeader, pointsLeader, reboundsLeader] = await Promise.all([
       toGameLeader(
         assistsLeaderStatLine,
-        assistsLeaderStatLine.assists,
+        assistsLeaderStatLine ? assistsLeaderStatLine.assists : null,
         playerDetailsCache
       ),
       toGameLeader(
         pointsLeaderStatLine,
-        pointsLeaderStatLine.points,
+        pointsLeaderStatLine ? pointsLeaderStatLine.points : null,
         playerDetailsCache
       ),
       toGameLeader(
         reboundsLeaderStatLine,
-        reboundsLeaderStatLine.totReb,
+        reboundsLeaderStatLine ? reboundsLeaderStatLine.totReb : null,
         playerDetailsCache
       ),
     ])
@@ -97,27 +102,31 @@ export async function calculateTeamLeaders(
  * @return game leader object that represents the player of the stat line.
  */
 export async function toGameLeader(
-  statLine: PlayerStatline,
-  statValue: string,
+  statLine: PlayerStatline | null,
+  statValue: string | null,
   playerDetailsCache: PlayerDetailsCache
-): Promise<GameLeader> {
+): Promise<IGameLeader | undefined> {
+  // Exit early if there is no data to work with. Return `undefined` instead
+  // of `null` due to how optional fields work in typescript.
+  if (!statLine || !statValue) return undefined
+
   // Get some more information about the player that generated this statline.
   const playerDetails = await playerDetailsCache.retrieveById(statLine.personId)
 
   return playerDetails
-    ? GameLeader.create({
+    ? {
         id: statLine.personId,
         name: `${playerDetails.firstName} ${playerDetails.lastName}`,
         minutes: statLine.min,
         jerseyNumber: playerDetails.jersey,
         statValue: statValue.toString(),
-      })
+      }
     : // If there aren't player details, make it up.
-      GameLeader.create({
+      {
         id: statLine.personId,
         name: 'Unknown Player',
         minutes: statLine.min,
         jerseyNumber: '??',
         statValue: statValue.toString(),
-      })
+      }
 }

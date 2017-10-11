@@ -13,7 +13,7 @@ const cacheEntryDataLifespan = 60 * 1000 /* 1 minute (ms). */
 
 // How long after the game that a cache entry represents ends before
 // destroying it.
-const cacheEntryLifespan = 2 * 24 * 60 * 60 * 1000 /* 2 days (ms). */
+const cacheEntryLifespan = 3 * 24 * 60 * 60 * 1000 /* 3 days (ms). */
 
 /** Box score cache that updates cached box scores every minute. */
 export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
@@ -37,6 +37,20 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
     const key = this.composeMapKey(gameId, date)
     let entry = this.entries.get(key)
 
+    // Do not continue if this box score is out of bounds.
+    if (this.isOutOfBounds(date)) {
+      // If the entry exists, get rid of it.
+      if (entry) {
+        this.entries.delete(key)
+      }
+
+      // Throw an error since, clearly, this box score is not available.
+      throw new Error(
+        `Could not get the game with id "${gameId}" because it has been ` +
+          `marked as expired; try requesting a more recent box score`
+      )
+    }
+
     // Check if we need to create a new entry first.
     if (!entry) {
       // Create a new entry.
@@ -46,24 +60,13 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
       this.entries.set(key, entry)
     }
 
-    // If this entry needs to be deleted, delete it and throw an error.
-    if (entry.hasExpired()) {
-      this.entries.delete(key)
-
-      // Throw an error since, clearly, this box score is not available.
-      throw new Error(
-        `Could not get the game with id "${gameId}" because it has been ` +
-          `marked as expired; try requesting a more recent box score`
-      )
-    }
-
     return await entry.boxScore()
   }
 
   collectGarbage() {
     // Get the list of expired keys to figure out what to cleanup.
     const expiredKeys = Array.from(this.entries.entries())
-      .filter(([key, value]) => value.hasExpired())
+      .filter(([key, value]) => this.isOutOfBounds(value.date))
       .map(([key]) => key)
 
     if (expiredKeys.length > 0) {
@@ -86,12 +89,20 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
   private composeMapKey(gameId: string, date: Date) {
     return `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}:${gameId}`
   }
+
+  /**
+   * Returns true if the date is out of bounds for a cache entry
+   * @param date date to check.
+   * @return true if the date is out of bounds for a cache entry. */
+  private isOutOfBounds(date: Date): boolean {
+    return Math.abs(Date.now() - date.getTime()) > cacheEntryLifespan
+  }
 }
 
 /** Entry of the cache. Wraps an individual box score. */
 class CacheEntry {
   private cachedBoxScore: BoxScore
-  private date: Date
+  public date: Date
   private gameId: string
   private logger: Logger
   private nbaApiClient: NbaApiClient
@@ -125,18 +136,6 @@ class CacheEntry {
         err
       )
     }
-  }
-
-  /** @return true if this entry should be destroyed. */
-  hasExpired(): boolean {
-    // Do not destroy has yet to be initialized.
-    if (!this.boxScore || !this.timeLastUpdated) return false
-
-    const gameEndTime = Date.parse(this.cachedBoxScore.basicGameData.endTimeUTC)
-    const now = Date.now()
-
-    // Destroy this entry if it has exceeded the lifespan.
-    return now > gameEndTime + cacheEntryLifespan
   }
 
   /** Updates the value of this cache entry. */

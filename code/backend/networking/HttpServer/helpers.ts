@@ -28,12 +28,22 @@ export function extractRequestSplashDate(
   const routePrefixLength = endpointRoutes.splash.length
 
   // It goes YYYYMMDD, so we take the appropriate substrings below.
-  const yyyy = path.substr(routePrefixLength + 1, 4)
-  const mm = path.substr(routePrefixLength + 1 + 4, 2)
-  const dd = path.substr(routePrefixLength + 1 + 4 + 2, 2)
+  const yyyyStr = path.substr(routePrefixLength + 1, 4)
+  const mmStr = path.substr(routePrefixLength + 1 + 4, 2)
+  const ddStr = path.substr(routePrefixLength + 1 + 4 + 2, 2)
+
+  // Turn each segment of the requested date into an integer.
+  const yyyy = parseInt(yyyyStr)
+  let mm = parseInt(mmStr)
+  const dd = parseInt(ddStr)
+
+  // Month should be off by one since the API presents it as Jan = 1, but JS
+  // expects Jan = 0. This means means mm needs to be decremented. If mm is
+  // already <= 1, just let it be 1.
+  mm = mm > 1 ? mm - 1 : 1
 
   // Create a date using the number form of each date part.
-  return new Date(parseInt(yyyy), parseInt(mm), parseInt(dd))
+  return new Date(yyyy, mm, dd)
 }
 
 /**
