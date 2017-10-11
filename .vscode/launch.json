@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "backend",
+      "type": "node",
+      "request": "launch",
+      "program":
+        "${workspaceRoot}/code/backend/node_modules/ts-node/dist/_bin.js",
+      "args": ["index.ts"],
+      "cwd": "${workspaceRoot}/code/backend",
+      "protocol": "inspector"
+    }
+  ]
+}
