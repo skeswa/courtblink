@@ -1,6 +1,7 @@
 import { Scoreboard } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
 import { ContextualError } from '../../../util/ContextualError'
+import { Clock } from '../../../util/Clock'
 import { yyyymmdd } from '../../../util/date/helpers'
 import { Logger } from '../../../util/Logger'
 
@@ -18,16 +19,19 @@ const cacheEntryLifespan = 2 * 24 * 60 * 60 * 1000 /* 2 days (ms). */
 
 /** Box score cache that updates cached scoreboards every minute. */
 export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
+  private clock: Clock
   private entries: Map<string, CacheEntry>
   private logger: Logger
   private nbaApiClient: NbaApiClient
 
   /**
    * Creates a new minute-by-minute scoreboard cache.
-   * @param nbaApiClient client for the NBA API.
+   * @param clock time utility.
    * @param logger the logging utility to use.
+   * @param nbaApiClient client for the NBA API.
    */
-  constructor(nbaApiClient: NbaApiClient, logger: Logger) {
+  constructor(clock: Clock, logger: Logger, nbaApiClient: NbaApiClient) {
+    this.clock = clock
     this.entries = new Map()
     this.logger = logger
     this.nbaApiClient = nbaApiClient
@@ -40,7 +44,7 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
     // Check if we need to create a new entry first.
     if (!entry) {
       // Create a new entry.
-      entry = new CacheEntry(date, this.nbaApiClient, this.logger)
+      entry = new CacheEntry(this.clock, date, this.logger, this.nbaApiClient)
 
       // Make sure it is represented in the entries map before continuing.
       this.entries.set(key, entry)
@@ -81,12 +85,26 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
 /** Entry of the cache. Wraps an individual scoreboard. */
 class CacheEntry {
   private cachedScoreboard: Scoreboard
+  private clock: Clock
   private date: Date
   private logger: Logger
   private nbaApiClient: NbaApiClient
   private timeLastUpdated: number
 
-  constructor(date: Date, nbaApiClient: NbaApiClient, logger: Logger) {
+  /**
+   * Creates a new cache entry.
+   * @param clock time utility.
+   * @param date representative date for this cache entry.
+   * @param logger logging utility.
+   * @param nbaApiClient client for interfacing with the NBA.
+   */
+  constructor(
+    clock: Clock,
+    date: Date,
+    logger: Logger,
+    nbaApiClient: NbaApiClient
+  ) {
+    this.clock
     this.date = date
     this.logger = logger
     this.nbaApiClient = nbaApiClient
@@ -137,7 +155,7 @@ class CacheEntry {
 
     // Update the scoreboard.
     this.cachedScoreboard = scoreboard
-    this.timeLastUpdated = Date.now()
+    this.timeLastUpdated = this.clock.millisSinceEpoch()
   }
 
   /** @return true if this entry should be updated. */
@@ -146,7 +164,11 @@ class CacheEntry {
     if (!this.scoreboard || !this.timeLastUpdated) return true
 
     // Update is this entry's data has exceeded the lifespan.
-    if (Date.now() - this.timeLastUpdated >= cacheEntryDataLifespan) return true
+    if (
+      this.clock.millisSinceEpoch() - this.timeLastUpdated >=
+      cacheEntryDataLifespan
+    )
+      return true
 
     return false
   }

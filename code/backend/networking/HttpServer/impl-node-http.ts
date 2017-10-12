@@ -3,6 +3,7 @@ import * as parseUrl from 'parseurl'
 
 import { ApiService } from '../../api/ApiService'
 import { SplashData } from '../../api/schema'
+import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../util/ContextualError'
 import { Logger } from '../../util/Logger'
 
@@ -19,6 +20,7 @@ const tag = 'server:node-http'
 /** Courtblink server implementation that uses the node http. */
 export class NodeHttpServer implements HttpServer {
   private apiService: ApiService
+  private clock: Clock
   private endpointRoutes: HttpServerEndpointRoutes
   private isListening: boolean
   private logger: Logger
@@ -27,18 +29,21 @@ export class NodeHttpServer implements HttpServer {
 
   /**
    * Creates a new `CourtblinkKoaServer`.
-   * @param port the port, over which, the server will respond to HTTP requests.
    * @param apiService service that implements the courtblink API.
-   * @param logger the logging utility to use.
+   * @param clock time utility.
    * @param endpointRoutes routes to use for each server endpoint.
+   * @param logger the logging utility to use.
+   * @param port the port, over which, the server will respond to HTTP requests.
    */
   constructor(
-    port: number,
     apiService: ApiService,
+    clock: Clock,
+    endpointRoutes: HttpServerEndpointRoutes,
     logger: Logger,
-    endpointRoutes: HttpServerEndpointRoutes
+    port: number
   ) {
     this.apiService = apiService
+    this.clock = clock
     this.endpointRoutes = endpointRoutes
     this.isListening = false
     this.logger = logger
@@ -135,7 +140,7 @@ export class NodeHttpServer implements HttpServer {
     const path = url.pathname
 
     // Remember when the request came in,
-    const startTime = Date.now()
+    const startTime = this.clock.millisSinceEpoch()
 
     try {
       // Route the request differently according to the URL.
@@ -160,7 +165,8 @@ export class NodeHttpServer implements HttpServer {
     }
 
     // Format how long we took to respond.
-    const transactionDuration = (Date.now() - startTime).toLocaleString()
+    const transactionDuration = (this.clock.millisSinceEpoch() - startTime
+    ).toLocaleString()
 
     // Log how long it took to respond.
     this.logger.info(

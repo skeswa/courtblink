@@ -1,6 +1,8 @@
 import { BoxScore } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
 import { ContextualError } from '../../../util/ContextualError'
+import { yyyymmdd } from '../../../util/date/helpers'
+import { Clock } from '../../../util/Clock'
 import { Logger } from '../../../util/Logger'
 
 import { BoxScoreCache, BoxScoreId } from './types'
@@ -17,16 +19,19 @@ const cacheEntryLifespan = 3 * 24 * 60 * 60 * 1000 /* 3 days (ms). */
 
 /** Box score cache that updates cached box scores every minute. */
 export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
+  private clock: Clock
   private entries: Map<string, CacheEntry>
   private logger: Logger
   private nbaApiClient: NbaApiClient
 
   /**
    * Creates a new minute-by-minute box score cache.
-   * @param nbaApiClient client for the NBA API.
+   * @param clock time utility.
    * @param logger the logging utility to use.
+   * @param nbaApiClient client for the NBA API.
    */
-  constructor(nbaApiClient: NbaApiClient, logger: Logger) {
+  constructor(clock: Clock, logger: Logger, nbaApiClient: NbaApiClient) {
+    this.clock = clock
     this.entries = new Map()
     this.logger = logger
     this.nbaApiClient = nbaApiClient
@@ -54,7 +59,13 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
     // Check if we need to create a new entry first.
     if (!entry) {
       // Create a new entry.
-      entry = new CacheEntry(gameId, date, this.nbaApiClient, this.logger)
+      entry = new CacheEntry(
+        this.clock,
+        date,
+        gameId,
+        this.logger,
+        this.nbaApiClient
+      )
 
       // Make sure it is represented in the entries map before continuing.
       this.entries.set(key, entry)
@@ -87,7 +98,7 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
    * @return a map key represening the game.
    */
   private composeMapKey(gameId: string, date: Date) {
-    return `${date.getFullYear()}/${date.getMonth()}/${date.getDay()}:${gameId}`
+    return `${yyyymmdd(date)}:${gameId}`
   }
 
   /**
@@ -95,25 +106,32 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
    * @param date date to check.
    * @return true if the date is out of bounds for a cache entry. */
   private isOutOfBounds(date: Date): boolean {
-    return Math.abs(Date.now() - date.getTime()) > cacheEntryLifespan
+    return (
+      Math.abs(this.clock.millisSinceEpoch() - date.getTime()) >
+      cacheEntryLifespan
+    )
   }
 }
 
 /** Entry of the cache. Wraps an individual box score. */
 class CacheEntry {
-  private cachedBoxScore: BoxScore
   public date: Date
+
+  private cachedBoxScore: BoxScore
+  private clock: Clock
   private gameId: string
   private logger: Logger
   private nbaApiClient: NbaApiClient
   private timeLastUpdated: number
 
   constructor(
-    gameId: string,
+    clock: Clock,
     date: Date,
-    nbaApiClient: NbaApiClient,
-    logger: Logger
+    gameId: string,
+    logger: Logger,
+    nbaApiClient: NbaApiClient
   ) {
+    this.clock = clock
     this.date = date
     this.gameId = gameId
     this.logger = logger
@@ -153,7 +171,7 @@ class CacheEntry {
 
     // Update the box score.
     this.cachedBoxScore = boxScore
-    this.timeLastUpdated = Date.now()
+    this.timeLastUpdated = this.clock.millisSinceEpoch()
   }
 
   /** @return true if this entry should be updated. */
@@ -162,7 +180,11 @@ class CacheEntry {
     if (!this.boxScore || !this.timeLastUpdated) return true
 
     // Update is this entry's data has exceeded the lifespan.
-    if (Date.now() - this.timeLastUpdated >= cacheEntryDataLifespan) return true
+    if (
+      this.clock.millisSinceEpoch() - this.timeLastUpdated >=
+      cacheEntryDataLifespan
+    )
+      return true
 
     return false
   }

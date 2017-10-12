@@ -9,6 +9,7 @@ import { tmpdir } from 'os'
 import { join as joinPaths } from 'path'
 import { find as findPorts } from 'portastic'
 
+import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../util/ContextualError'
 
 import { TorConfig, TorConfigFileRef } from './types'
@@ -16,7 +17,15 @@ import { TorConfig, TorConfigFileRef } from './types'
 /** Flag used by tor to identify the config file path. */
 const torConfigFilePathFlag = '-f'
 
+/**
+ * Kicks off the tor process.
+ * @param clock time utility.
+ * @param torExecutableName name of the tor executable.
+ * @param torConfigFileRef reference to the tor configuration file.
+ * @return the tor process object.
+ */
 export async function startTorProcess(
+  clock: Clock,
   torExecutableName: string,
   torConfigFileRef: TorConfigFileRef
 ): Promise<ChildProcess> {
@@ -35,7 +44,7 @@ export async function startTorProcess(
     torProcess.on('error', onError)
 
     // Listen for the process failing within the grace period.
-    await pause(200 /* 0.2 second grace period */)
+    await clock.wait(200 /* 0.2 second grace period */)
     if (torProcessError) {
       throw new ContextualError(
         `The tor process failed within the grace period`,
@@ -54,6 +63,11 @@ export async function startTorProcess(
   }
 }
 
+/**
+ * Creates a tor configuration file.
+ * @param config the tor configuration to write to a file.
+ * @return reference to the tor configuration file.
+ */
 export async function createTorConfigFile(
   config: TorConfig
 ): Promise<TorConfigFileRef> {
@@ -79,20 +93,28 @@ export async function createTorConfigFile(
   }
 }
 
+/**
+ * Deletes a tor configuration file.
+ * @param torConfigFileRef reference to the tor configuration file.
+ */
 export async function deleteTorConfigFile(
-  ref: TorConfigFileRef
+  torConfigFileRef: TorConfigFileRef
 ): Promise<void> {
   try {
     // First delete the configuration file.
-    await deleteFile(ref.configFilePath)
+    await deleteFile(torConfigFileRef.configFilePath)
 
     // Then delete the enclosing directory.
-    await deleteDir(ref.configDirPath)
+    await deleteDir(torConfigFileRef.configDirPath)
   } catch (err) {
     throw new ContextualError('Failed to delete the tor config file', err)
   }
 }
 
+/**
+ * Creates the tor configuration.
+ * @return tor configuration.
+ */
 export async function createTorConfig(): Promise<TorConfig> {
   try {
     // Find a list of ports that we can use to start tor.
@@ -115,8 +137,4 @@ export async function createTorConfig(): Promise<TorConfig> {
   } catch (err) {
     throw new ContextualError('Failed to create tor config', err)
   }
-}
-
-function pause(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }

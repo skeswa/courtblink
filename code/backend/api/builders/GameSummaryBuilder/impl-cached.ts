@@ -11,6 +11,7 @@ import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
 import { TeamColorsCache } from '../../../nba/caches/TeamColorsCache'
 import { TeamDetailsCache } from '../../../nba/caches/TeamDetailsCache'
 import { ContextualError } from '../../../util/ContextualError'
+import { Clock } from '../../../util/Clock'
 
 import {
   extractBroadcastChannel,
@@ -31,6 +32,7 @@ const unknownTeamName = 'Unknown Team'
 /** Uses caches to help build new game summary objects. */
 export class CachedGameSummaryBuilder implements GameSummaryBuilder {
   private boxScoreCache: BoxScoreCache
+  private clock: Clock
   private gameLeadersBuilder: GameLeadersBuilder
   private playerDetailsCache: PlayerDetailsCache
   private teamColorsCache: TeamColorsCache
@@ -40,6 +42,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
    * Creates a new `CachedGameSummaryBuilder`.
    *
    * @param boxScoreCache caches box scores of games.
+   * @param clock time utility.
    * @param gameLeadersBuilder builds game leader objects.
    * @param playerDetailsCache caches details about players.
    * @param teamColorsCache caches colors for teams.
@@ -47,12 +50,14 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
    */
   constructor(
     boxScoreCache: BoxScoreCache,
+    clock: Clock,
     gameLeadersBuilder: GameLeadersBuilder,
     playerDetailsCache: PlayerDetailsCache,
     teamColorsCache: TeamColorsCache,
     teamDetailsCache: TeamDetailsCache
   ) {
     this.boxScoreCache = boxScoreCache
+    this.clock = clock
     this.gameLeadersBuilder = gameLeadersBuilder
     this.playerDetailsCache = playerDetailsCache
     this.teamColorsCache = teamColorsCache
@@ -87,7 +92,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
       // To figure out if the game is over, check if the the current quarter is
       // the 4th or later and the clock has expired.
       const isGameFinished =
-        startTime.getTime() < Date.now() &&
+        startTime.getTime() < this.clock.millisSinceEpoch() &&
         !game.clock &&
         game.period.current > 3
 
@@ -95,7 +100,8 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
       const broadcastChannel = extractBroadcastChannel(game)
 
       // True if the game hasn't started yet.
-      const hasGameNotStarted = startTime.getTime() > Date.now()
+      const hasGameNotStarted =
+        startTime.getTime() > this.clock.millisSinceEpoch()
 
       // Calculate home team numbers.
       const homeTeamLosses = parseIntOrReturnZero(game.hTeam.loss)
