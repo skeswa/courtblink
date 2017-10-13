@@ -1,7 +1,7 @@
 import { Logger } from '../../util/Logger'
 
 /** Responds to incoming Courtblink HTTP requests. */
-export interface HttpServer {
+export interface Server {
   /**
    * Starts the courtblink server on the specified port. The server will run
    * until it is stopped with the `stop()` method.
@@ -16,15 +16,15 @@ export interface HttpServer {
 }
 
 /** Strategy for creating a new `CourtblinkServer`. */
-export enum HttpServerCreationStrategy {
+export enum ServerCreationStrategy {
   /**
    * Uses the http server that ships with node for the web server
    * implementation.
    */
-  UsingDefaultNodeHttpServer = 'UsingDefaultNodeHttpServer',
+  UsingDefaultNodeServer = 'UsingDefaultNodeServer',
 }
 
 /** Specifies the routes to use for different server endpoints. */
-export type HttpServerEndpointRoutes = {
+export type ServerEndpointRoutes = {
   splash: string
 }

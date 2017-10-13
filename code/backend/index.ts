@@ -1,40 +1,30 @@
 import * as onExit from 'node-cleanup'
 
 import { createApp } from './courtblink/App'
+import { ConfigReadingStrategy, Env, readConfig } from './courtblink/Config'
 import { createLogger, LoggerCreationStrategy } from './util/Logger'
 import { ContextualError } from './util/ContextualError'
 
-// Port to use when unspecified.
-const defaultPort = 3000
+// Read the courtblink backend configuration before setting anything up. This is
+// because config affects how we instantiate things.
+const config = readConfig(ConfigReadingStrategy.FromEnvVars)
 
-// Tor executable name to use when unspecified.
-const defaultTorExecutableName = 'tor'
-
-// True if this server is running in production.
-const inProd = process.env.NODE_ENV === 'production'
-
-// Logging utility used throughout the whole application.
+// Adapt the logger to whatever environment that backend is currently running in.
 const logger = createLogger(
-  inProd ? LoggerCreationStrategy.ForProd : LoggerCreationStrategy.ForDev
+  config.env === Env.Dev
+    ? LoggerCreationStrategy.ForDev
+    : LoggerCreationStrategy.ForProd
 )
-
-// Port over which this server responds to HTTP requests.
-const port = process.env.PORT
-  ? parseInt(process.env.PORT || `${defaultPort}`, 10)
-  : defaultPort
-
-// Name of the tor executable in the host OS.
-const torExecutableName = process.env.TOR_EXE || defaultTorExecutableName
 
 // Instantiate the app; this app encapsulates all courtblink backend
 // functionality.
 const app = createApp({
-  inProd,
   logger,
-  port,
-  torExecutableName,
 
   endpoints: { splash: '/api/splash' },
+  inProd: config.env === Env.Prod,
+  port: config.port,
+  torExecutableName: config.torExecutableName,
 })
 
 // Perform all necessary cleanup when the process exits.

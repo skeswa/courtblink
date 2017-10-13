@@ -1,4 +1,9 @@
-import { createServer, Server, ServerRequest, ServerResponse } from 'http'
+import {
+  createServer,
+  Server as NodeServer,
+  ServerRequest,
+  ServerResponse,
+} from 'http'
 import * as parseUrl from 'parseurl'
 
 import { ApiService } from '../../courtblink/api/ApiService'
@@ -12,20 +17,20 @@ import {
   isSplashRoute,
   respondWithProto,
 } from './helpers'
-import { HttpServer, HttpServerEndpointRoutes } from './types'
+import { Server, ServerEndpointRoutes } from './types'
 
 // Log tag that identifies this module.
 const tag = 'server:node-http'
 
 /** Courtblink server implementation that uses the node http. */
-export class NodeHttpServer implements HttpServer {
+export class NodeHttpServer implements Server {
   private apiService: ApiService
   private clock: Clock
-  private endpointRoutes: HttpServerEndpointRoutes
+  private endpointRoutes: ServerEndpointRoutes
   private isListening: boolean
   private logger: Logger
   private port: number
-  private server: Server | null
+  private server: NodeServer | null
 
   /**
    * Creates a new `CourtblinkKoaServer`.
@@ -38,7 +43,7 @@ export class NodeHttpServer implements HttpServer {
   constructor(
     apiService: ApiService,
     clock: Clock,
-    endpointRoutes: HttpServerEndpointRoutes,
+    endpointRoutes: ServerEndpointRoutes,
     logger: Logger,
     port: number
   ) {

@@ -5,9 +5,9 @@ import { Logger } from '../../util/Logger'
 
 import { NodeHttpServer } from './impl-node-http'
 import {
-  HttpServer,
-  HttpServerCreationStrategy,
-  HttpServerEndpointRoutes,
+  Server,
+  ServerCreationStrategy,
+  ServerEndpointRoutes,
 } from './types'
 
 /**
@@ -19,13 +19,13 @@ import {
  * @param port the port, over which, the server will respond to HTTP requests.
  * @return the newly created courtblink server.
  */
-export function createHttpServer(
-  strategy: HttpServerCreationStrategy.UsingDefaultNodeHttpServer,
+export function createServer(
+  strategy: ServerCreationStrategy.UsingDefaultNodeServer,
   apiService: ApiService,
   clock: Clock,
-  endpointRoutes: HttpServerEndpointRoutes,
+  endpointRoutes: ServerEndpointRoutes,
   logger: Logger,
   port: number
-): HttpServer {
+): Server {
   return new NodeHttpServer(apiService, clock, endpointRoutes, logger, port)
 }

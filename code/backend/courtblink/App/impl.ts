@@ -54,11 +54,11 @@ import {
   HttpClientCreationStrategy,
 } from '../../networking/HttpClient'
 import {
-  createHttpServer,
-  HttpServer,
-  HttpServerCreationStrategy,
-  HttpServerEndpointRoutes,
-} from '../../networking/HttpServer'
+  createServer,
+  Server,
+  ServerCreationStrategy,
+  ServerEndpointRoutes,
+} from '../../courtblink/Server'
 import {
   createTorClient,
   TorClient,
@@ -74,7 +74,7 @@ import { App } from './types'
 /** The courtlink backend application type. */
 export class AppImpl implements App {
   private cacheJanitor: EntityCacheJanitor
-  private httpServer: HttpServer
+  private server: Server
   private torClient: TorClient
 
   /**
@@ -86,7 +86,7 @@ export class AppImpl implements App {
    * @param torExecutableName name of the tor executable in the host OS.
    */
   constructor(
-    endpoints: HttpServerEndpointRoutes,
+    endpoints: ServerEndpointRoutes,
     inProd: boolean,
     logger: Logger,
     port: number,
@@ -216,8 +216,8 @@ export class AppImpl implements App {
     )
 
     // Responds to HTTP requests.
-    const httpServer = createHttpServer(
-      HttpServerCreationStrategy.UsingDefaultNodeHttpServer,
+    const httpServer = createServer(
+      ServerCreationStrategy.UsingDefaultNodeServer,
       apiService,
       clock,
       endpoints,
@@ -227,7 +227,7 @@ export class AppImpl implements App {
     //#endregion
 
     this.cacheJanitor = cacheJanitor
-    this.httpServer = httpServer
+    this.server = httpServer
     this.torClient = torClient
   }
 
@@ -236,7 +236,7 @@ export class AppImpl implements App {
       // Start all the services.
       await this.torClient.connect()
       this.cacheJanitor.start()
-      this.httpServer.start()
+      this.server.start()
     } catch (err) {
       throw new ContextualError(
         'Failed to start the courtblink backend app',
@@ -253,7 +253,7 @@ export class AppImpl implements App {
       // Wait for the tor client to exit asynchronously. Then wait for the
       // HTTP server to finish asynchronously. Then kill the
       // process once it is done.
-      await Promise.all([this.torClient.disconnect(), this.httpServer.stop()])
+      await Promise.all([this.torClient.disconnect(), this.server.stop()])
     } catch (err) {
       throw new ContextualError(
         'Failed to stop the courtblink backend app',

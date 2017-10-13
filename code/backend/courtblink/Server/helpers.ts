@@ -1,7 +1,7 @@
 import { ServerResponse } from 'http'
 import { Writer } from 'protobufjs'
 
-import { HttpServerEndpointRoutes } from './types'
+import { ServerEndpointRoutes } from './types'
 
 // Encoding for serialized protos.
 const protoEncoding = 'binary'
@@ -23,7 +23,7 @@ const slash = '/'
  */
 export function extractRequestSplashDate(
   path: string,
-  endpointRoutes: HttpServerEndpointRoutes
+  endpointRoutes: ServerEndpointRoutes
 ): Date {
   const routePrefixLength = endpointRoutes.splash.length
 
@@ -54,7 +54,7 @@ export function extractRequestSplashDate(
  */
 export function isSplashRoute(
   path: string,
-  endpointRoutes: HttpServerEndpointRoutes
+  endpointRoutes: ServerEndpointRoutes
 ): boolean {
   const routePrefix = endpointRoutes.splash
 
