@@ -1,5 +1,5 @@
-import { SplashData } from '../../../api/schema'
-import { Scoreboard } from '../../../nba/api/schema'
+import { SplashData } from '../../../../courtblink/api/schema'
+import { Scoreboard } from '../../../../nba/api/schema'
 
 /** Builds splash data objects. */
 export interface SplashDataBuilder {

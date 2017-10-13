@@ -19,7 +19,11 @@ export class ClockImpl implements Clock {
 class CancellableImpl implements Cancellable {
   private intervalRef: NodeJS.Timer | null
 
-  /** Creates a new cancellable. */
+  /**
+   * Creates a new cancellable.
+   * @param interval number of milliseconds between invocations of `fn`.
+   * @param fn function to invoke evert `internval` milliseconds.
+   */
   constructor(interval: number, fn: () => void) {
     this.intervalRef = setInterval(fn, interval)
   }
@@ -40,12 +44,15 @@ class CancellableImpl implements Cancellable {
 class RepeatableImpl implements Repeatable {
   private fn: () => void
 
-  /** Creates a new repeatable. */
+  /**
+   * Creates a new repeatable.
+   * @param fn function to re-invoke later.
+   */
   constructor(fn: () => void) {
     this.fn = fn
   }
 
   every(interval: number): Cancellable {
-    throw new Error('Method not implemented.')
+    return new CancellableImpl(interval, this.fn)
   }
 }

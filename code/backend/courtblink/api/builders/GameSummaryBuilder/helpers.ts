@@ -1,4 +1,4 @@
-import { Game, TeamDetails } from '../../../nba/api/schema'
+import { Game, TeamDetails } from '../../../../nba/api/schema'
 
 // Constants for different channel names.
 const leaguePassChannelName = 'League Pass'

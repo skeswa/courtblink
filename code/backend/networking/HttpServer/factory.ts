@@ -1,5 +1,6 @@
-import { ApiService } from '../../api/ApiService'
+import { ApiService } from '../../courtblink/api/ApiService'
 import { HttpClient } from '../../networking/HttpClient'
+import { Clock } from '../../util/Clock'
 import { Logger } from '../../util/Logger'
 
 import { NodeHttpServer } from './impl-node-http'
@@ -12,18 +13,19 @@ import {
 /**
  * Creates a new HTTP server.
  * @param strategy the creation strategy to use.
- * @param port the port, over which, the server will respond to HTTP requests.
  * @param apiService service that implements the courtblink API.
- * @param logger the logging utility to use.
  * @param endpointRoutes routes to use for each server endpoint.
+ * @param logger the logging utility to use.
+ * @param port the port, over which, the server will respond to HTTP requests.
  * @return the newly created courtblink server.
  */
 export function createHttpServer(
   strategy: HttpServerCreationStrategy.UsingDefaultNodeHttpServer,
-  port: number,
   apiService: ApiService,
+  clock: Clock,
+  endpointRoutes: HttpServerEndpointRoutes,
   logger: Logger,
-  endpointRoutes: HttpServerEndpointRoutes
+  port: number
 ): HttpServer {
-  return new NodeHttpServer(port, apiService, logger, endpointRoutes)
+  return new NodeHttpServer(apiService, clock, endpointRoutes, logger, port)
 }

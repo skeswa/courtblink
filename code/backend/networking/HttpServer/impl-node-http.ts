@@ -1,8 +1,8 @@
 import { createServer, Server, ServerRequest, ServerResponse } from 'http'
 import * as parseUrl from 'parseurl'
 
-import { ApiService } from '../../api/ApiService'
-import { SplashData } from '../../api/schema'
+import { ApiService } from '../../courtblink/api/ApiService'
+import { SplashData } from '../../courtblink/api/schema'
 import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../util/ContextualError'
 import { Logger } from '../../util/Logger'

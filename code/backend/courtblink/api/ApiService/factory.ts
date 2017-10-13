@@ -1,6 +1,6 @@
-import { SplashDataBuilder } from '../../api/builders/SplashDataBuilder'
-import { ScoreboardCache } from '../../nba/caches/ScoreboardCache'
-import { Logger } from '../../util/Logger'
+import { SplashDataBuilder } from '../../../courtblink/api/builders/SplashDataBuilder'
+import { ScoreboardCache } from '../../../nba/caches/ScoreboardCache'
+import { Logger } from '../../../util/Logger'
 
 import { CachedApiService } from './impl-cached'
 import { ApiService, ApiServiceCreationStrategy } from './types'

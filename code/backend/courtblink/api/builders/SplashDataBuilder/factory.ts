@@ -1,4 +1,4 @@
-import { GameSummaryBuilder } from '../../../api/builders/GameSummaryBuilder'
+import { GameSummaryBuilder } from '../../../../courtblink/api/builders/GameSummaryBuilder'
 
 import { CachedSplashDataBuilder } from './impl-cached'
 import { SplashDataBuilder, SplashDataBuilderCreationStrategy } from './types'

@@ -1,10 +1,10 @@
-import { SplashDataBuilder } from '../../api/builders/SplashDataBuilder'
-import { SplashData } from '../../api/schema'
-import { Scoreboard } from '../../nba/api/schema'
-import { ScoreboardCache } from '../../nba/caches/ScoreboardCache'
-import { ContextualError } from '../../util/ContextualError'
-import { yyyymmdd } from '../../util/date/helpers'
-import { Logger } from '../../util/Logger'
+import { SplashDataBuilder } from '../../../courtblink/api/builders/SplashDataBuilder'
+import { SplashData } from '../../../courtblink/api/schema'
+import { Scoreboard } from '../../../nba/api/schema'
+import { ScoreboardCache } from '../../../nba/caches/ScoreboardCache'
+import { ContextualError } from '../../../util/ContextualError'
+import { yyyymmdd } from '../../../util/date/helpers'
+import { Logger } from '../../../util/Logger'
 
 import { ApiService } from './types'
 

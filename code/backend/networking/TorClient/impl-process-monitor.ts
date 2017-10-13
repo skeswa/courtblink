@@ -2,6 +2,7 @@ import { Agent } from 'http'
 import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
 
+import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../util/ContextualError'
 import { Logger } from '../../util/Logger'
 
@@ -23,6 +24,7 @@ const successMessage = 'Tor has successfully opened a circuit'
 
 /** Manages and monitors a tor process. */
 export class TorProcessMonitor implements TorClient {
+  private clock: Clock
   private connected: boolean
   private declareTorConnected: (() => void) | null
   private logger: Logger
@@ -32,7 +34,8 @@ export class TorProcessMonitor implements TorClient {
   private torExecutableName: string
   private torProcess: ChildProcess | null
 
-  constructor(logger: Logger, torExecutableName: string) {
+  constructor(clock: Clock, logger: Logger, torExecutableName: string) {
+    this.clock = clock
     this.connected = false
     this.declareTorConnected = null
     this.logger = logger
@@ -55,6 +58,7 @@ export class TorProcessMonitor implements TorClient {
 
       // Start the tor process.
       const torProcess = await startTorProcess(
+        this.clock,
         this.torExecutableName,
         this.torConfigFileRef
       )

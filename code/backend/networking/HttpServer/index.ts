@@ -1,2 +1,6 @@
 export { createHttpServer } from './factory'
-export { HttpServer, HttpServerCreationStrategy } from './types'
+export {
+  HttpServer,
+  HttpServerCreationStrategy,
+  HttpServerEndpointRoutes,
+} from './types'

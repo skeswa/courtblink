@@ -1,7 +1,7 @@
-import { IGameLeader } from '../../../api/schema'
-import { BoxScore, PlayerStatline } from '../../../nba/api/schema'
-import { PlayerDetailsCache } from '../../../nba/caches/PlayerDetailsCache'
-import { ContextualError } from '../../../util/ContextualError'
+import { IGameLeader } from '../../../../courtblink/api/schema'
+import { BoxScore, PlayerStatline } from '../../../../nba/api/schema'
+import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
+import { ContextualError } from '../../../../util/ContextualError'
 
 import { TeamLeaders } from './types'
 

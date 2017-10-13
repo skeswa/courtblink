@@ -1,4 +1,4 @@
-import { ApiService } from '../../../api/ApiService'
+import { ApiService } from '../../../courtblink/api/ApiService'
 import { HttpClient } from '../../../networking/HttpClient'
 import { Logger } from '../../../util/Logger'
 
