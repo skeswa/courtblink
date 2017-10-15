@@ -104,7 +104,7 @@ class CacheEntry {
     logger: Logger,
     nbaApiClient: NbaApiClient
   ) {
-    this.clock
+    this.clock = clock
     this.date = date
     this.logger = logger
     this.nbaApiClient = nbaApiClient

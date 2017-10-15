@@ -23,6 +23,7 @@ import {
 } from '../../data/EntityCacheJanitor'
 import {
   createNbaApiClient,
+  NbaApiClient,
   NbaApiClientCreationStrategy,
 } from '../../nba/api/NbaApiClient'
 import {
@@ -66,14 +67,20 @@ import {
 } from '../../networking/TorClient'
 import { Clock, createClock } from '../../util/Clock'
 import { createLogger, Logger, LoggerCreationStrategy } from '../../util/Logger'
+import { createConditionWaiter } from '../../util/ConditionWaiter'
 import { ContextualError } from '../../util/ContextualError'
 
 import { App } from './types'
 //#endregion
 
+// Log tag that identifies this module.
+const tag = 'courtblink:app'
+
 /** The courtlink backend application type. */
 export class AppImpl implements App {
   private cacheJanitor: EntityCacheJanitor
+  private logger: Logger
+  private nbaApiClient: NbaApiClient
   private server: Server
   private torClient: TorClient
 
@@ -227,14 +234,42 @@ export class AppImpl implements App {
     //#endregion
 
     this.cacheJanitor = cacheJanitor
+    this.logger = logger
+    this.nbaApiClient = nbaApiClient
     this.server = httpServer
     this.torClient = torClient
   }
 
   async start(): Promise<void> {
     try {
-      // Start all the services.
+      // Kick off the connection.
       await this.torClient.connect()
+
+      // Wait for the API to be reachable.
+      const conditionWaiter = createConditionWaiter()
+      while (
+        !await conditionWaiter.wait(
+          () => this.nbaApiClient.isReachable(),
+          /* max attempts */ 10
+        )
+      ) {
+        // If we still cannot make a connection with the NBA API, ask for a new
+        // IP address.
+        try {
+          await this.torClient.switchIP()
+        } catch (err) {
+          this.logger.error(
+            tag,
+            'Failed to request a new IP while waiting for a connection to ' +
+              'the NBA API',
+            err
+          )
+        }
+      }
+
+      this.logger.info(tag, 'Established a connection to the NBA API')
+
+      // Wait for a connection to
       this.cacheJanitor.start()
       this.server.start()
     } catch (err) {

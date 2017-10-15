@@ -28,6 +28,10 @@ export interface TorClient {
 export type TorConfig = {
   /** Port used to communicate with the tor client. */
   controlPort: number
+  /** Password for interfacing with the control port. */
+  controlPortPassword: string
+  /** Hashed password for interfacing with the control port.  */
+  hashedControlPortPassword: string
   /** Host address on which tor is listening for socks connections. */
   socksHost: string
   /** Port on which tor is accepting socks connections. */

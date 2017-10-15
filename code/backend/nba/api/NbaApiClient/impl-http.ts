@@ -11,6 +11,9 @@ import { Logger } from '../../../util/Logger'
 
 import { NbaApiClient } from './types'
 
+// Log tag that identifies this module.
+const tag = 'nba:httpapi'
+
 export class HttpNbaApiClient implements NbaApiClient {
   private httpClient: HttpClient
   private logger: Logger
@@ -22,10 +25,7 @@ export class HttpNbaApiClient implements NbaApiClient {
 
   async fetchAllTeamDetails(date: Date): Promise<AllTeamDetails> {
     const formattedDate = yyyy(date)
-    this.logger.debug(
-      'nba:httpapi',
-      `Fetching all team details for ${formattedDate}`
-    )
+    this.logger.debug(tag, `Fetching all team details for ${formattedDate}`)
 
     try {
       return await this.httpClient.get(
@@ -41,10 +41,7 @@ export class HttpNbaApiClient implements NbaApiClient {
 
   async fetchAllPlayerDetails(date: Date): Promise<AllPlayerDetails> {
     const formattedDate = yyyy(date)
-    this.logger.debug(
-      'nba:httpapi',
-      `Fetching all player details for ${formattedDate}`
-    )
+    this.logger.debug(tag, `Fetching all player details for ${formattedDate}`)
 
     try {
       return await this.httpClient.get(
@@ -60,10 +57,7 @@ export class HttpNbaApiClient implements NbaApiClient {
 
   async fetchScoreboard(date: Date): Promise<Scoreboard> {
     const formattedDate = yyyymmdd(date)
-    this.logger.debug(
-      'nba:httpapi',
-      `Fetching the scoreboard for ${formattedDate}`
-    )
+    this.logger.debug(tag, `Fetching the scoreboard for ${formattedDate}`)
 
     try {
       return await this.httpClient.get(
@@ -80,7 +74,7 @@ export class HttpNbaApiClient implements NbaApiClient {
   async fetchBoxScore(date: Date, gameId: string): Promise<BoxScore> {
     const formattedDate = yyyymmdd(date)
     this.logger.debug(
-      'nba:httpapi',
+      tag,
       `Fetching the box score for "${gameId}" on ${formattedDate}`
     )
 
@@ -94,6 +88,23 @@ export class HttpNbaApiClient implements NbaApiClient {
         `Failed to fetch the box score for "${gameId}" on ${formattedDate}`,
         err
       )
+    }
+  }
+
+  async isReachable(): Promise<boolean> {
+    this.logger.debug(tag, 'Checking for API reachability')
+
+    // Check if the base NBA API endpoint responds without timing out.
+    try {
+      await this.httpClient.get('http://data.nba.net')
+
+      this.logger.debug(tag, 'The API was found to be reachable')
+
+      return true
+    } catch (_) {
+      this.logger.debug(tag, 'The API was not found to be reachable')
+
+      return false
     }
   }
 }

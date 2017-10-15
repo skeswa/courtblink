@@ -51,9 +51,9 @@ export class ProxiedSerialHttpClient implements HttpClient {
         method: 'GET',
         // Follow at most 2 redirects - fail fast.
         follow: 2,
-        // No request should take longer than 15s. This long timeout is fair
+        // No request should take longer than 20s. This long timeout is fair
         // because sometimes tor is slow.
-        timeout: 15000 /*  */,
+        timeout: 20000,
         agent: this.torClient.agent(),
       }).then(response => response.json())
 

@@ -36,6 +36,12 @@ export interface NbaApiClient {
    * @return game stats for the specified NBA game.
    */
   fetchBoxScore(date: Date, gameId: string): Promise<BoxScore>
+
+  /**
+   * Checks if the NBA API is reachable.
+   * @return true if the NBA API is reachable.
+   */
+  isReachable(): Promise<boolean>
 }
 
 /** Strategy for creating a new `NbaApiClient`. */

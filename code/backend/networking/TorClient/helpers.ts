@@ -1,4 +1,8 @@
-import { ChildProcess, spawn as spawnProcess } from 'mz/child_process'
+import {
+  ChildProcess,
+  exec as execProcess,
+  spawn as spawnProcess,
+} from 'mz/child_process'
 import {
   mkdtemp as makeTempDir,
   rmdir as deleteDir,
@@ -16,6 +20,12 @@ import { TorConfig, TorConfigFileRef } from './types'
 
 /** Flag used by tor to identify the config file path. */
 const torConfigFilePathFlag = '-f'
+
+/** Flag used by tor to to hash a password. */
+const torHashedPasswordFlag = '--hash-password'
+
+/** Valid characters for a generated tor password. */
+const torPasswordChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 /**
  * Kicks off the tor process.
@@ -84,6 +94,7 @@ export async function createTorConfigFile(
       `
     SocksPort ${config.socksHost}:${config.socksPort}
     ControlPort ${config.controlPort}
+    HashedControlPassword ${config.hashedControlPortPassword}
   `
     )
 
@@ -113,9 +124,12 @@ export async function deleteTorConfigFile(
 
 /**
  * Creates the tor configuration.
+ * @param torExecutableName name of the tor executable.
  * @return tor configuration.
  */
-export async function createTorConfig(): Promise<TorConfig> {
+export async function createTorConfig(
+  torExecutableName: string
+): Promise<TorConfig> {
   try {
     // Find a list of ports that we can use to start tor.
     const ports = await findPorts({ min: 5000, max: 10000, retrieve: 2 })
@@ -128,13 +142,73 @@ export async function createTorConfig(): Promise<TorConfig> {
       )
     }
 
+    // Create and hash the control port password.
+    const controlPortPassword = generatePassword(10)
+    const hashedControlPortPassword = await hashPassword(
+      controlPortPassword,
+      torExecutableName
+    )
+
     // Assume that loopback is the host for the tor proxy.
     const controlPort = ports[0]
     const socksPort = ports[1]
     const socksHost = '127.0.0.1'
 
-    return { controlPort, socksPort, socksHost }
+    return {
+      controlPort,
+      controlPortPassword,
+      hashedControlPortPassword,
+      socksPort,
+      socksHost,
+    }
   } catch (err) {
     throw new ContextualError('Failed to create tor config', err)
   }
+}
+
+/**
+ * Generates a random alphanumeric password.
+ * @param length how the long the password should be.
+ * @return a random alphanumeric password.
+ */
+export function generatePassword(length: number): string {
+  const chars: string[] = []
+
+  // Put a bunch of nradom characters into the `chars` array.
+  for (let i = 0; i < length; i++) {
+    chars.push(
+      torPasswordChars.charAt(
+        Math.floor(Math.random() * torPasswordChars.length)
+      )
+    )
+  }
+
+  return chars.join('')
+}
+
+/**
+ * Hashes the given password using tor's password hashing feature.
+ * @param password password to be hashed.
+ * @param torExecutableName name of the tor executable.
+ * @return the hashed password.
+ */
+export function hashPassword(
+  password: string,
+  torExecutableName: string
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    execProcess(
+      `${torExecutableName} ${torHashedPasswordFlag} ${password}`,
+      (err, stderr, stdout) => {
+        if (err) {
+          return reject(
+            new ContextualError('Failed to hash the tor password', err)
+          )
+        }
+
+        // Hashed password is output to stderr.
+        return resolve(stderr.trim())
+      }
+    )
+  })
 }
