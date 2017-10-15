@@ -9,6 +9,7 @@ import {
   unlink as deleteFile,
   writeFile,
 } from 'mz/fs'
+import { connect as connectViaTcp } from 'net'
 import { tmpdir } from 'os'
 import { join as joinPaths } from 'path'
 import { find as findPorts } from 'portastic'
@@ -210,5 +211,46 @@ export function hashPassword(
         return resolve(stderr.trim())
       }
     )
+  })
+}
+
+/**
+ * Communicates with tor over its control port.
+ * @param commands all the control protocol commands to send.
+ * @param torIP the IP address of the tor client.
+ * @param torControlPort control port for the tor process.
+ * @return all data output from the telnet session.
+ */
+export function sendDataOverControlPort(
+  commands: string[],
+  torIP: string,
+  torControlPort: number
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // Establish a TCP connection, and then write the commands over TCP.
+    const conn = connectViaTcp(
+      {
+        host: torIP,
+        port: torControlPort,
+      },
+      () => conn.write(commands.join('\n').concat('\n'))
+    )
+
+    // Look out for an error. This is should reject the promise.
+    conn.on('error', err =>
+      reject(
+        new ContextualError(
+          `Failed to send commands to the command port: ${data.join('')}`,
+          err
+        )
+      )
+    )
+
+    // Horde connection related data.
+    const data: string[] = []
+    conn.on('data', chunk => data.push(chunk.toString()))
+
+    // When the connection terminates, ship all the logged data back over.
+    conn.on('end', () => resolve(data.join('')))
   })
 }

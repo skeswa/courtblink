@@ -1,7 +1,6 @@
 import { Agent } from 'http'
 import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
-import Telnet = require('telnet-client')
 
 import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../util/ContextualError'
@@ -11,6 +10,7 @@ import {
   createTorConfig,
   createTorConfigFile,
   deleteTorConfigFile,
+  sendDataOverControlPort,
   startTorProcess,
 } from './helpers'
 import { TorClient, TorConfig, TorConfigFileRef } from './types'
@@ -30,7 +30,6 @@ export class TorProcessMonitor implements TorClient {
   private declareTorConnected: (() => void) | null
   private logger: Logger
   private socksAgent: Agent | null
-  private telnetClient: Telnet | null
   private torConfig: TorConfig | null
   private torConfigFileRef: TorConfigFileRef | null
   private torExecutableName: string
@@ -41,7 +40,6 @@ export class TorProcessMonitor implements TorClient {
     this.connected = false
     this.declareTorConnected = null
     this.logger = logger
-    this.telnetClient = null
     this.torConfig = null
     this.torConfigFileRef = null
     this.torExecutableName = torExecutableName
@@ -117,37 +115,36 @@ export class TorProcessMonitor implements TorClient {
       throw new Error('Cannot switch IPs if not connected to tor')
     }
 
-    // Create the telnet connection if it doesn't exist already.
-    if (!this.telnetClient) {
-      try {
-        // Form a connection.
-        this.telnetClient = new Telnet()
-        await this.telnetClient.connect({
-          host: '127.0.0.1',
-          port: this.torConfig.controlPort,
-        })
-
-        // Authenticate immediately using the control port credentials.
-        await this.telnetClient.exec(
-          `AUTHENTICATE "${this.torConfig.controlPortPassword}"`
-        )
-      } catch (err) {
-        throw new ContextualError(
-          'Failed to establish a telnet connection with the tor process',
-          err
-        )
-      }
-    }
+    this.logger.info(tag, 'Requesting a new IP from tor via telnet')
 
     try {
-      // Request a new circuit from tor.
-      await this.telnetClient.exec('SIGNAL NEWNYM')
+      await sendDataOverControlPort(
+        [
+          // Grants this connection access to the control protocol.
+          `AUTHENTICATE "${this.torConfig.controlPortPassword}"`,
+          // Request session renewal from tor.
+          'SIGNAL NEWNYM',
+          // Closes the connection.
+          'QUIT',
+        ],
+        /* torIP */ '127.0.0.1',
+        this.torConfig.controlPort
+      )
+
+      this.logger.debug(
+        tag,
+        `Requested a new IP address with the tor control protocol ` +
+          `successfully - will now give tor 2 seconds to catch its breath`
+      )
     } catch (err) {
       throw new ContextualError(
-        'Failed to establish a telnet connection with the tor process',
+        'Failed to request a new IP address from tor',
         err
       )
     }
+
+    // Let tor catch its breath - we requested a completely clean circuit.
+    this.clock.wait(2000)
   }
 
   async disconnect(): Promise<void> {
