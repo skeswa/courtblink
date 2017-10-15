@@ -44,13 +44,8 @@ export class YearByYearPlayerDetailsCache implements PlayerDetailsCache {
     }
   }
 
-  collectGarbage() {
-    this.logger.debug(
-      tag,
-      `Ignoring garbage collection request because this cache doesn't work ` +
-        `like that.`
-    )
-  }
+  // This is not necessary in this cache.
+  collectGarbage() {}
 
   /** @return true if this cache needs to be updated. */
   private isInvalidated(): boolean {

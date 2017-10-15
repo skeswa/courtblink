@@ -250,7 +250,7 @@ export class AppImpl implements App {
       while (
         !await conditionWaiter.wait(
           () => this.nbaApiClient.isReachable(),
-          /* max attempts */ 10
+          /* max attempts */ 3
         )
       ) {
         // If we still cannot make a connection with the NBA API, ask for a new

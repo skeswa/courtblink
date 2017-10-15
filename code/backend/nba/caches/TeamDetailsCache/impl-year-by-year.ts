@@ -64,13 +64,8 @@ export class YearByYearTeamDetailsCache implements TeamDetailsCache {
     }
   }
 
-  collectGarbage() {
-    this.logger.debug(
-      tag,
-      `Ignoring garbage collection request because this cache doesn't work ` +
-        `like that.`
-    )
-  }
+  // This is not necessary in this cache.
+  collectGarbage() {}
 
   /** @return true if this cache needs to be updated. */
   private isInvalidated(): boolean {
@@ -108,10 +103,7 @@ export class YearByYearTeamDetailsCache implements TeamDetailsCache {
       this.entriesByName = newEntriesByName
       this.dateLastUpdated = dateRequestMade
     } catch (err) {
-      throw new ContextualError(
-        `Failed to update the team details cache`,
-        err
-      )
+      throw new ContextualError(`Failed to update the team details cache`, err)
     }
   }
 }

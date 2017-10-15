@@ -52,11 +52,6 @@ export class YearByYearTeamColorsCache implements TeamColorsCache {
     return entry.teamColors
   }
 
-  collectGarbage() {
-    this.logger.debug(
-      tag,
-      `Ignoring garbage collection request because this cache doesn't work ` +
-        `like that.`
-    )
-  }
+  // This is not necessary in this cache.
+  collectGarbage() {}
 }

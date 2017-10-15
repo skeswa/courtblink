@@ -144,7 +144,7 @@ export class TorProcessMonitor implements TorClient {
     }
 
     // Let tor catch its breath - we requested a completely clean circuit.
-    this.clock.wait(2000)
+    await this.clock.wait(2000)
   }
 
   async disconnect(): Promise<void> {

@@ -15,7 +15,7 @@ const cacheEntryDataLifespan = 60 * 1000 /* 1 minute (ms). */
 
 // How long after the game that a cache entry represents ends before
 // destroying it.
-const cacheEntryLifespan = 2 * 24 * 60 * 60 * 1000 /* 2 days (ms). */
+const cacheEntryLifespan = 3 * 24 * 60 * 60 * 1000 /* 3 days (ms). */
 
 /** Box score cache that updates cached scoreboards every minute. */
 export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
@@ -41,6 +41,20 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
     const key = yyyymmdd(date)
     let entry = this.entries.get(key)
 
+    // Do not continue if this box score is out of bounds.
+    if (this.isOutOfBounds(date)) {
+      // If the entry exists, get rid of it.
+      if (entry) {
+        this.entries.delete(key)
+      }
+
+      // Throw an error since, clearly, this box score is not available.
+      throw new Error(
+        `Could not get the scoreboard with id "${key}" because it has been ` +
+          `marked as expired; try requesting a more recent scoreboard`
+      )
+    }
+
     // Check if we need to create a new entry first.
     if (!entry) {
       // Create a new entry.
@@ -50,43 +64,44 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
       this.entries.set(key, entry)
     }
 
-    // If this entry needs to be deleted, delete it and throw an error.
-    if (entry.hasExpired()) {
-      this.entries.delete(key)
-
-      // Throw an error since, clearly, this scoreboard is not available.
-      throw new Error(
-        `Could not get the scoreboard for date "${key}" because it has been ` +
-          `marked as expired; try requesting a more recent scoreboard`
-      )
-    }
-
     return await entry.scoreboard()
   }
 
   collectGarbage() {
     // Get the list of expired keys to figure out what to cleanup.
     const expiredKeys = Array.from(this.entries.entries())
-      .filter(([key, value]) => value.hasExpired())
+      .filter(([key, value]) => this.isOutOfBounds(value.date))
       .map(([key]) => key)
 
     if (expiredKeys.length > 0) {
       this.logger.debug(
         tag,
-        `Clearing away ${expiredKeys.length} expired scoreboards`
+        `Clearing away ${expiredKeys.length} expired scoreboards.`
       )
 
       // Delete each of the expired keys.
       expiredKeys.forEach(expiredKey => this.entries.delete(expiredKey))
     }
   }
+
+  /**
+   * Returns true if the date is out of bounds for a cache entry.
+   * @param date date to check.
+   * @return true if the date is out of bounds for a cache entry. */
+  private isOutOfBounds(date: Date): boolean {
+    return (
+      Math.abs(this.clock.millisSinceEpoch() - date.getTime()) >
+      cacheEntryLifespan
+    )
+  }
 }
 
 /** Entry of the cache. Wraps an individual scoreboard. */
 class CacheEntry {
+  public date: Date
+
   private cachedScoreboard: Scoreboard
   private clock: Clock
-  private date: Date
   private logger: Logger
   private nbaApiClient: NbaApiClient
   private timeLastUpdated: number
@@ -129,20 +144,6 @@ class CacheEntry {
     }
   }
 
-  /** @return true if this entry should be destroyed. */
-  hasExpired(): boolean {
-    // Do not destroy has yet to be initialized.
-    if (!this.scoreboard || !this.timeLastUpdated) return false
-
-    const now = new Date()
-
-    // Destroy this entry if it is on a different day.
-    return (
-      now.getMonth() > this.date.getMonth() ||
-      now.getDate() > this.date.getDate()
-    )
-  }
-
   /** Updates the value of this cache entry. */
   private async updateCachedScoreboard(): Promise<void> {
     this.logger.debug(
@@ -167,8 +168,9 @@ class CacheEntry {
     if (
       this.clock.millisSinceEpoch() - this.timeLastUpdated >=
       cacheEntryDataLifespan
-    )
+    ) {
       return true
+    }
 
     return false
   }
