@@ -1,0 +1,46 @@
+.main {
+  flex: 1;
+  min-width: 40rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.front,
+.back {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+}
+
+.front {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.back {
+  display: flex;
+}
+
+.left {
+  display: flex;
+  flex: 0 0;
+}
+.right {
+  display: flex;
+  flex: 1;
+}
+
+.heading {
+  flex: 0 0;
+  min-height: 6rem;
+}
+
+.gameBoxes {
+  flex: 1;
+  overflow-y: auto;
+}

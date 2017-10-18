@@ -1,6 +1,6 @@
 import { TeamDetails } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
-import { ContextualError } from '../../../util/ContextualError'
+import { ContextualError } from '../../../../common/util/ContextualError'
 import { Logger } from '../../../util/Logger'
 
 import { TeamDetailsCache } from './types'

@@ -88,5 +88,7 @@ typings/
 # dotenv environment variables file
 .env
 
+# Ignore the generated CSS typings
+*.css.d.ts
 
 # End of https://www.gitignore.io/api/node,macos

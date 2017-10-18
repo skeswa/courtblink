@@ -1,8 +1,8 @@
 import { Scoreboard } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
-import { ContextualError } from '../../../util/ContextualError'
+import { ContextualError } from '../../../../common/util/ContextualError'
 import { Clock } from '../../../util/Clock'
-import { yyyymmdd } from '../../../util/date/helpers'
+import { yyyymmdd } from '../../../../common/util/date/helpers'
 import { Logger } from '../../../util/Logger'
 
 import { ScoreboardCache } from './types'

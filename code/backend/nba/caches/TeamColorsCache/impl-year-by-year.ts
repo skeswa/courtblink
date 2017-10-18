@@ -2,7 +2,7 @@ import {
   NbaColorService,
   TeamColors,
 } from '../../../nba/colors/NbaColorService'
-import { ContextualError } from '../../../util/ContextualError'
+import { ContextualError } from '../../../../common/util/ContextualError'
 import { Logger } from '../../../util/Logger'
 
 import { isYearByYearCacheEntryStale } from './helpers'

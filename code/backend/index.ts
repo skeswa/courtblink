@@ -3,7 +3,7 @@ import * as onExit from 'node-cleanup'
 import { createApp } from './courtblink/App'
 import { ConfigReadingStrategy, Env, readConfig } from './courtblink/Config'
 import { createLogger, LoggerCreationStrategy } from './util/Logger'
-import { ContextualError } from './util/ContextualError'
+import { ContextualError } from './../common/util/ContextualError'
 
 // Read the courtblink backend configuration before setting anything up. This is
 // because config affects how we instantiate things.

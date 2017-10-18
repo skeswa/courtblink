@@ -9,7 +9,7 @@ import * as parseUrl from 'parseurl'
 import { ApiService } from '../../courtblink/api/ApiService'
 import { SplashData } from '../../courtblink/api/schema'
 import { Clock } from '../../util/Clock'
-import { ContextualError } from '../../util/ContextualError'
+import { ContextualError } from '../../../common/util/ContextualError'
 import { Logger } from '../../util/Logger'
 
 import {

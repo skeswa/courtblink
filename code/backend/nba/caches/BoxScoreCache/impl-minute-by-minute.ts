@@ -1,7 +1,7 @@
 import { BoxScore } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
-import { ContextualError } from '../../../util/ContextualError'
-import { yyyymmdd } from '../../../util/date/helpers'
+import { ContextualError } from '../../../../common/util/ContextualError'
+import { yyyymmdd } from '../../../../common/util/date/helpers'
 import { Clock } from '../../../util/Clock'
 import { Logger } from '../../../util/Logger'
 

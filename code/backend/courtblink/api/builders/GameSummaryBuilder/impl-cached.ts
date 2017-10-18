@@ -10,7 +10,7 @@ import { BoxScoreCache } from '../../../../nba/caches/BoxScoreCache'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
 import { TeamColorsCache } from '../../../../nba/caches/TeamColorsCache'
 import { TeamDetailsCache } from '../../../../nba/caches/TeamDetailsCache'
-import { ContextualError } from '../../../../util/ContextualError'
+import { ContextualError } from '../../../../../common/util/ContextualError'
 import { Clock } from '../../../../util/Clock'
 
 import {
