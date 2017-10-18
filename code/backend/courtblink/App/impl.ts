@@ -68,7 +68,7 @@ import {
 import { Clock, createClock } from '../../util/Clock'
 import { createLogger, Logger, LoggerCreationStrategy } from '../../util/Logger'
 import { createConditionWaiter } from '../../util/ConditionWaiter'
-import { ContextualError } from '../../../common/util/ContextualError'
+import { ContextualError } from 'common/util/ContextualError'
 
 import { App } from './types'
 //#endregion

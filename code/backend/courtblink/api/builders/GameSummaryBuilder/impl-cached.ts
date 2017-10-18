@@ -1,17 +1,17 @@
 import { GameLeadersBuilder } from '../../../../courtblink/api/builders/GameLeadersBuilder'
-import {
-  IGameLeader,
-  IGameSummary,
-  IGameTeamStatus,
-  ILiveGameStats,
-} from '../../../api/schema'
 import { Game } from '../../../../nba/api/schema'
 import { BoxScoreCache } from '../../../../nba/caches/BoxScoreCache'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
 import { TeamColorsCache } from '../../../../nba/caches/TeamColorsCache'
 import { TeamDetailsCache } from '../../../../nba/caches/TeamDetailsCache'
-import { ContextualError } from '../../../../../common/util/ContextualError'
 import { Clock } from '../../../../util/Clock'
+import {
+  IGameLeader,
+  IGameSummary,
+  IGameTeamStatus,
+  ILiveGameStats,
+} from 'common/api/schema/generated'
+import { ContextualError } from 'common/util/ContextualError'
 
 import {
   extractBroadcastChannel,

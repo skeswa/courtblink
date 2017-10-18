@@ -5,9 +5,9 @@ import {
   Scoreboard,
 } from '../../../nba/api/schema'
 import { HttpClient } from '../../../networking/HttpClient'
-import { ContextualError } from '../../../../common/util/ContextualError'
 import { yyyy, yyyymmdd } from '../../../../common/util/date/helpers'
 import { Logger } from '../../../util/Logger'
+import { ContextualError } from 'common/util/ContextualError'
 
 import { NbaApiClient } from './types'
 

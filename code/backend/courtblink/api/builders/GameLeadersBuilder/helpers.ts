@@ -1,8 +1,7 @@
-import { IGameLeader } from 'common/api/schema/generated'
-
 import { BoxScore, PlayerStatline } from '../../../../nba/api/schema'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
-import { ContextualError } from '../../../../../common/util/ContextualError'
+import { IGameLeader } from 'common/api/schema/generated'
+import { ContextualError } from 'common/util/ContextualError'
 
 import { TeamLeaders } from './types'
 

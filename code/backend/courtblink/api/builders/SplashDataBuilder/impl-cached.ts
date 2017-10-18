@@ -1,7 +1,7 @@
 import { GameSummaryBuilder } from '../../../api/builders/GameSummaryBuilder'
-import { SplashData } from '../../../api/schema'
 import { Scoreboard } from '../../../../nba/api/schema'
-import { ContextualError } from '../../../../../common/util/ContextualError'
+import { SplashData } from 'common/api/schema/generated'
+import { ContextualError } from 'common/util/ContextualError'
 
 import { SplashDataBuilder } from './types'
 

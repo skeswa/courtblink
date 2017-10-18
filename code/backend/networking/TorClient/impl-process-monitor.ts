@@ -3,8 +3,8 @@ import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
 
 import { Clock } from '../../util/Clock'
-import { ContextualError } from '../../../common/util/ContextualError'
 import { Logger } from '../../util/Logger'
+import { ContextualError } from 'common/util/ContextualError'
 
 import {
   createTorConfig,

@@ -6,12 +6,11 @@ import {
 } from 'http'
 import * as parseUrl from 'parseurl'
 
-import { SplashData } from 'common/api/schema/generated'
-
 import { ApiService } from '../../courtblink/api/ApiService'
 import { Clock } from '../../util/Clock'
-import { ContextualError } from '../../../common/util/ContextualError'
 import { Logger } from '../../util/Logger'
+import { SplashData } from 'common/api/schema/generated'
+import { ContextualError } from 'common/util/ContextualError'
 
 import {
   extractRequestSplashDate,

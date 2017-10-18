@@ -15,7 +15,7 @@ import { join as joinPaths } from 'path'
 import { find as findPorts } from 'portastic'
 
 import { Clock } from '../../util/Clock'
-import { ContextualError } from '../../../common/util/ContextualError'
+import { ContextualError } from 'common/util/ContextualError'
 
 import { TorConfig, TorConfigFileRef } from './types'
 
