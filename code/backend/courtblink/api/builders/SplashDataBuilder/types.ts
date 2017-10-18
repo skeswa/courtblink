@@ -1,4 +1,4 @@
-import { SplashData } from 'common/api/schema/generated/schema'
+import { SplashData } from 'common/api/schema/generated'
 
 import { Scoreboard } from '../../../../nba/api/schema'
 

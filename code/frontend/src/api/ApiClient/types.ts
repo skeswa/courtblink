@@ -1,4 +1,4 @@
-import { ISplashData } from 'common/api/schema/generated/schema'
+import { ISplashData } from 'common/api/schema/generated'
 
 /**
  * The courtblink API client. Represents all of the possible RPCs exposed to

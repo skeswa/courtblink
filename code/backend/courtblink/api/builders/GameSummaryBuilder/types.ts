@@ -1,4 +1,4 @@
-import { IGameSummary } from 'common/api/schema/generated/schema'
+import { IGameSummary } from 'common/api/schema/generated'
 
 import { Game } from '../../../../nba/api/schema'
 

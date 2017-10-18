@@ -4,7 +4,7 @@ import * as debug from 'debug'
 import { h, Component } from 'preact'
 
 import { ApiClient, createApiClient } from 'api/ApiClient'
-import { IGameSummary } from 'common/api/schema/generated/schema'
+import { IGameSummary } from 'common/api/schema/generated'
 import Loader from 'components/Loader'
 import GameBoxList from 'components/GameBoxList'
 import CyclingBackground from 'components/CyclingBackground'

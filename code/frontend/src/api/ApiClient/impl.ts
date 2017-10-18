@@ -1,6 +1,6 @@
 import * as debug from 'debug'
 
-import { ISplashData, SplashData } from 'common/api/schema/generated/schema'
+import { ISplashData, SplashData } from 'common/api/schema/generated'
 import { ContextualError } from 'common/util/ContextualError'
 import { yyyymmdd } from 'common/util/date/helpers'
 

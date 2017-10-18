@@ -6,7 +6,7 @@ import {
   IGameLeader,
   IGameTeamStatus,
   IGameSummary,
-} from 'common/api/schema/generated/schema'
+} from 'common/api/schema/generated'
 import LeaderPortrait from 'components/LeaderPortrait'
 import NbaImage from 'components/NbaImage'
 

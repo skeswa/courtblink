@@ -1,4 +1,4 @@
-import { IGameLeader } from 'common/api/schema/generated/schema'
+import { IGameLeader } from 'common/api/schema/generated'
 
 import { Game } from '../../../../nba/api/schema'
 

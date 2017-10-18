@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 
-import { IGameSummary } from 'common/api/schema/generated/schema'
+import { IGameSummary } from 'common/api/schema/generated'
 import GameBox from 'components/GameBox'
 import CyclingBackground from 'components/CyclingBackground'
 

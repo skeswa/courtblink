@@ -1,4 +1,4 @@
-import { IGameLeader } from 'common/api/schema/generated/schema'
+import { IGameLeader } from 'common/api/schema/generated'
 
 import { BoxScore, PlayerStatline } from '../../../../nba/api/schema'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'

@@ -6,7 +6,7 @@ import {
 } from 'http'
 import * as parseUrl from 'parseurl'
 
-import { SplashData } from 'common/api/schema/generated/schema'
+import { SplashData } from 'common/api/schema/generated'
 
 import { ApiService } from '../../courtblink/api/ApiService'
 import { Clock } from '../../util/Clock'
