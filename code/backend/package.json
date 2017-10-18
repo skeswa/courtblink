@@ -8,7 +8,7 @@
     "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Sandile Keswa",
   "license": "MIT",
   "dependencies": {
     "@types/mz": "^0.0.32",

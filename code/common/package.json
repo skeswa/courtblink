@@ -6,7 +6,7 @@
   "scripts": {
     "generate": "pbjs -t static-module -w commonjs -o ./api/schema/generated/schema.js ./api/schema/*.proto && pbts -o ./api/schema/generated/schema.d.ts ./api/schema/generated/schema.js"
   },
-  "author": "",
+  "author": "Sandile Keswa",
   "license": "MIT",
   "dependencies": {
     "protobufjs": "^6.8.0"
