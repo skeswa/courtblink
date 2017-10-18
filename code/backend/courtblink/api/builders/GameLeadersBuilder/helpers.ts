@@ -1,4 +1,5 @@
-import { IGameLeader } from '../../../../courtblink/api/schema'
+import { IGameLeader } from 'common/api/schema/generated/schema'
+
 import { BoxScore, PlayerStatline } from '../../../../nba/api/schema'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
 import { ContextualError } from '../../../../../common/util/ContextualError'

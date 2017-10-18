@@ -1,5 +1,6 @@
+import { SplashData } from 'common/api/schema/generated/schema'
+
 import { SplashDataBuilder } from '../../../courtblink/api/builders/SplashDataBuilder'
-import { SplashData } from '../../../courtblink/api/schema'
 import { Scoreboard } from '../../../nba/api/schema'
 import { ScoreboardCache } from '../../../nba/caches/ScoreboardCache'
 import { ContextualError } from '../../../../common/util/ContextualError'

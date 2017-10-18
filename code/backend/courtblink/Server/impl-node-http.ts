@@ -6,8 +6,9 @@ import {
 } from 'http'
 import * as parseUrl from 'parseurl'
 
+import { SplashData } from 'common/api/schema/generated/schema'
+
 import { ApiService } from '../../courtblink/api/ApiService'
-import { SplashData } from '../../courtblink/api/schema'
 import { Clock } from '../../util/Clock'
 import { ContextualError } from '../../../common/util/ContextualError'
 import { Logger } from '../../util/Logger'

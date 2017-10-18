@@ -1,4 +1,5 @@
-import { SplashData } from '../../../../courtblink/api/schema'
+import { SplashData } from 'common/api/schema/generated/schema'
+
 import { Scoreboard } from '../../../../nba/api/schema'
 
 /** Builds splash data objects. */

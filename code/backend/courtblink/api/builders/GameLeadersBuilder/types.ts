@@ -1,4 +1,5 @@
-import { IGameLeader } from '../../../../courtblink/api/schema'
+import { IGameLeader } from 'common/api/schema/generated/schema'
+
 import { Game } from '../../../../nba/api/schema'
 
 /** Encapsulates all the leaders for a game. */

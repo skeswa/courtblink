@@ -1,4 +1,5 @@
-import { IGameSummary } from '../../../../courtblink/api/schema'
+import { IGameSummary } from 'common/api/schema/generated/schema'
+
 import { Game } from '../../../../nba/api/schema'
 
 /** Builds game summaries. */
