@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "dev": "node ./dev",
     "install-deps": "node ./install-deps",
-    "start-dev-server": "node ./start-dev-server",
     "update-common": "node ./update-common"
   },
   "author": "",

@@ -57,9 +57,10 @@ module.exports = {
    *     executed.
    * @param {string} tag tag for the output of this script.
    * @param {Function} color function that wraps arguments in a color.
-   * @param {Array<ChildProcess>} killables list of processes.
+   * @param {Function} registerChildProcess registers a child process for later
+   *     disposal.
    */
-  start(packagePath, tag, color, killables) {
+  start(packagePath, tag, color, registerChildProcess) {
     return new Promise((resolve, reject) => {
       try {
         const yarn = spawn('yarn', ['start'], { cwd: packagePath })
@@ -70,20 +71,19 @@ module.exports = {
           process.stdout.write(color(`[${tag}:stderr]`, data.toString()))
         )
         yarn.on('error', err => reject(err))
-        yarn.on(
-          'close',
-          code =>
-            !code
-              ? resolve()
-              : reject(
-                  new Error(
-                    `Failed to run "start" in "${packagePath}" (${code})`
-                  )
-                )
-        )
+        yarn.on('close', code => {
+          console.log(`Process tagged "${tag}" exited successfully`)
+
+          // Resolve the process promise.
+          !code
+            ? resolve()
+            : reject(
+                new Error(`Failed to run "start" in "${packagePath}" (${code})`)
+              )
+        })
 
         // Register the process as killable.
-        killables.push(yarn)
+        registerChildProcess(yarn)
       } catch (err) {
         reject(err)
       }

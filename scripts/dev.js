@@ -3,8 +3,8 @@ const path = require('path')
 
 const yarn = require('./common/yarn')
 
-/** Starts the development server. */
-async function startDevServer() {
+/** Executes the development servers. */
+async function dev() {
   // List of processes to be killed upon exiting.
   const childProcesses = []
 
@@ -20,16 +20,7 @@ async function startDevServer() {
       childProcesses.pop().kill('SIGINT')
     }
 
-    console.log(`Killed ${childProcesses.length} child processes successfully.`)
-  }
-
-  /** Called when the process exits via a signal (like via `ctrl + c`). */
-  function onExitBySignal() {
-    // Handle the exit by executing the cleanup logic.
-    onExit()
-
-    // Make sure that the process dies gracefully.
-    process.exit(0)
+    console.log(`Child processes killed successfully.`)
   }
 
   /** Registers a child process so that we can properly dispose of it later. */
@@ -39,9 +30,9 @@ async function startDevServer() {
 
   // Kill the killables when the process exits.
   process.on('exit', onExit)
-  process.on('SIGHUP', onExitBySignal)
-  process.on('SIGINT', onExitBySignal)
-  process.on('SIGTERM', onExitBySignal)
+  process.on('SIGHUP', onExit)
+  process.on('SIGINT', onExit)
+  process.on('SIGTERM', onExit)
 
   // Now that we're ready to handle a process exit, run the backend and the
   // frontend at the same time.
@@ -61,9 +52,16 @@ async function startDevServer() {
   ])
 }
 
-startDevServer().catch(err => {
-  console.error('Failed to run the Courtblink dev server:', err)
+dev()
+  .then(() => {
+    console.log('Dev server stopped gracefully')
 
-  // Signal that there was an unclean exit.
-  process.exit(1)
-})
+    // Signal that the exit was clean.
+    process.exit(0)
+  })
+  .catch(err => {
+    console.error('Failed to run the Courtblink dev server:', err)
+
+    // Signal that there was an unclean exit.
+    process.exit(1)
+  })
