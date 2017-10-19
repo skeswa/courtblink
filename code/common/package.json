@@ -1,7 +1,7 @@
 {
   "name": "common",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "scripts": {
     "generate": "pbjs -t static-module -w commonjs -o ./api/schema/generated/schema.js ./api/schema/*.proto && pbts -o ./api/schema/generated/schema.d.ts ./api/schema/generated/schema.js"

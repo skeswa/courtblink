@@ -52,8 +52,14 @@ class App extends Component<Props, State> {
       // Attempt to fetch splash data from the backend.
       const { games } = await this.apiClient.fetchSplashData(date)
 
+      // Auto-select the very first game once loaded.
+      let selectedGame: IGameSummary
+      if (games && games.length > 0) {
+        selectedGame = games[0]
+      }
+
       // Update the app state to reflect the loaded splash data.
-      this.setState({ games })
+      this.setState({ games, selectedGame })
     } catch (err) {
       this.log('Failed to load splash data', err)
 

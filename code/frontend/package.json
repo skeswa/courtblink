@@ -11,6 +11,7 @@
   },
   "author": "Sandile Keswa",
   "license": "MIT",
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "@types/classnames": "^2.2.3",
     "@types/debug": "^0.0.30",

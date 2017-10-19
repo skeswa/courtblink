@@ -10,7 +10,7 @@
     "strictNullChecks": true
   },
   "include": [
-    "./**/*",
-    "../common/**/*"
+    "./**/*.ts",
+    "./node_modules/common/**/*.ts"
   ]
 }

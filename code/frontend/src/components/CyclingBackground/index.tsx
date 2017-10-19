@@ -1,3 +1,4 @@
+import bind from 'bind-decorator'
 import * as classNames from 'classnames'
 import { h, Component } from 'preact'
 
@@ -34,11 +35,9 @@ class CyclingBackground extends Component<Props, State> {
     const { src: nextSrc } = nextProps
     const { src: currentSrc } = this.props
 
+    // If the image source changes, cycle the background.
     if (nextSrc && nextSrc !== currentSrc) {
-      setTimeout(
-        this.cycleBackground.bind(this, nextSrc),
-        FADE_ANIMATION_DURATION_MS
-      )
+      this.onSrcChanged(nextSrc)
     }
   }
 
@@ -50,6 +49,7 @@ class CyclingBackground extends Component<Props, State> {
     )
   }
 
+  @bind
   clearHiddenShieldLayers(): void {
     const now = Date.now()
 
@@ -92,13 +92,17 @@ class CyclingBackground extends Component<Props, State> {
     }
 
     // Push the update to layers.
-    this.setState({ layers }, () => {
-      // Load the image.
-      this.loadImage(nextSrc, () => this.hideShieldLayers)
-    })
+    this.setState({ layers }, () => this.loadImage(nextSrc, this.onImageLoaded))
   }
 
-  hideShieldLayers(): void {
+  loadImage(src: string, callback: () => void): void {
+    const img = new Image()
+    img.onload = () => setTimeout(callback, DOM_ADJUSTMENT_PADDING_MS)
+    img.src = src
+  }
+
+  @bind
+  onImageLoaded(): void {
     // Call props.onFirstBackgroundLoaded if not called yet.
     if (
       !this.state.onFirstBackgroundLoadedInvoked &&
@@ -130,17 +134,13 @@ class CyclingBackground extends Component<Props, State> {
       newlyHiddenLayers.forEach(layer => (layer.hideTime = now))
 
       // It is now safe to clear the hidden shields.
-      setTimeout(
-        () => this.clearHiddenShieldLayers(),
-        FADE_ANIMATION_DURATION_MS
-      )
+      setTimeout(this.clearHiddenShieldLayers, FADE_ANIMATION_DURATION_MS)
     })
   }
 
-  loadImage(src: string, callback: () => void): void {
-    const img = new Image()
-    img.onload = () => setTimeout(callback, DOM_ADJUSTMENT_PADDING_MS)
-    img.src = src
+  @bind
+  onSrcChanged(newSrc: string) {
+    setTimeout(() => this.cycleBackground(newSrc), FADE_ANIMATION_DURATION_MS)
   }
 
   renderLayer(
