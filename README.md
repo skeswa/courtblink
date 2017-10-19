@@ -15,3 +15,5 @@ $ cd ./scripts
 $ yarn run setup
 $ yarn run dev
 ```
+After running `yarn run dev`, the development server should come up on
+[http://localhost:3000](http://localhost:3000).
