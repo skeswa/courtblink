@@ -1,0 +1,16 @@
+{
+  "name": "scripts",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install-deps": "node ./install-deps",
+    "start-dev-server": "node ./start-dev-server",
+    "update-common": "node ./update-common"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.2.0"
+  }
+}

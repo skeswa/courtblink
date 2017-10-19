@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message GameLeader {
+  string id = 1;
+  string name = 2;
+  string minutes = 3;
+  string stat_value = 4;
+  string jersey_number = 5;
+}

@@ -1,0 +1,34 @@
+.main {
+  height: 9rem;
+  position: relative;
+  width: 11.5rem;
+}
+
+.stat {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  position: absolute;
+  right: 0.5rem;
+  text-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.4);
+  top: 1rem;
+}
+
+.statValue {
+  font-size: 2.6rem;
+}
+
+.statType {
+  font-size: 1.4rem;
+}
+
+.picture {
+  bottom: 0;
+  height: 6.5rem;
+  left: 0;
+  position: absolute;
+  width: 9rem;
+}

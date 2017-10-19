@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "./game-leader.proto";
+
+message GameTeamStatus {
+  int32 wins = 1;
+  int32 score = 2;
+  int32 losses = 3;
+  string team_id = 4;
+  string tricode = 5;
+  string name = 6;
+  string city = 7;
+  string splash_url = 8;
+  string splash_primary_color = 9;
+  string splash_secondary_color = 10;
+  GameLeader points_leader = 11;
+  GameLeader assists_leader = 12;
+  GameLeader rebounds_leader = 13;
+}
