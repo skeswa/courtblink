@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "dev": "node ./dev",
-    "install-deps": "node ./install-deps",
+    "setup": "node ./setup",
     "update-common": "node ./update-common"
   },
   "author": "",

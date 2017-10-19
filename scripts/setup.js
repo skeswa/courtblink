@@ -3,7 +3,7 @@ const path = require('path')
 const yarn = require('./common/yarn')
 
 /** Installs dependencies for the courtblink codebase. */
-async function installDeps() {
+async function setup() {
   console.log('Installing Courtblink dependencies...')
 
   // Ensure that yarn is installed before we continue.
@@ -31,6 +31,6 @@ async function installDeps() {
   console.log('Courtblink dependencies installed successfully')
 }
 
-installDeps().catch(err =>
+setup().catch(err =>
   console.error('Failed to install Courtblink dependencies:', err)
 )
