@@ -15,7 +15,7 @@
   right: 0;
   top: 0;
   transform: scale(1.1);
-  transition: opacity 400ms;
+  transition: opacity 500ms;
 }
 .layer__visible {
   opacity: 1;

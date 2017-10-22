@@ -8,16 +8,16 @@ import * as style from './style.css'
 
 type Props = {
   games: IGameSummary[]
-  selectedGame: IGameSummary
+  selectedGame?: IGameSummary
   onSelectedGameChanged: (newlySelectedGame: IGameSummary) => void
 }
 
 class GameList extends Component<Props, {}> {
-  renderGameBoxes(
+  private renderGameBoxes(
     games: IGameSummary[],
-    selectedGame: IGameSummary,
+    selectedGame: IGameSummary | undefined,
     onSelectedGameChanged: (newlySelectedGame: IGameSummary) => void
-  ) {
+  ): JSX.Element[] {
     let selectedGameFound = false
     return games.map(game => {
       let currentGameSelected = game === selectedGame
@@ -37,7 +37,7 @@ class GameList extends Component<Props, {}> {
     })
   }
 
-  render({ games, selectedGame, onSelectedGameChanged }: Props) {
+  render({ games, selectedGame, onSelectedGameChanged }: Props): JSX.Element {
     return (
       <div className={style.main}>
         <div className={style.back}>
@@ -45,7 +45,7 @@ class GameList extends Component<Props, {}> {
             src={
               selectedGame && selectedGame.homeTeamStatus
                 ? selectedGame.homeTeamStatus.splashUrl
-                : null
+                : undefined
             }
             blurred={true}
           />

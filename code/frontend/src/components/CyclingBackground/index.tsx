@@ -6,164 +6,207 @@ import Loader from 'components/Loader'
 
 import * as style from './style.css'
 
-// Used to prevent DOM thrash.
-const DOM_ADJUSTMENT_PADDING_MS = 100
-const FADE_ANIMATION_DURATION_MS = 400
+// Amount of time to wait before the image in the cache is visible on the page.
+const imageLoadDelay = 300 /* ms */
+
+// How long the shield fading animation takes to finish.
+const fadeAnimationDuration = 500 /* ms */
 
 type Layer = {
-  hideTime: number
-  shielding: boolean
-  src: string
-  visible: boolean
+  isAnimating: boolean
+  src?: string
 }
 
 type Props = {
   blurred: boolean
-  onFirstBackgroundLoaded?: () => void
-  src: string
+  onLoad?: (src: string) => void
+  src?: string
 }
 
 type State = {
-  layers: Layer[]
-  onFirstBackgroundLoadedInvoked: boolean
+  currentlyLoadingLayer?: Layer
+  nextLayerToLoad?: Layer
+  shieldingLayer?: Layer
 }
 
 class CyclingBackground extends Component<Props, State> {
-  state: State = { layers: [], onFirstBackgroundLoadedInvoked: false }
+  public state: State = {}
 
-  componentWillReceiveProps(nextProps: Props): void {
-    const { src: nextSrc } = nextProps
-    const { src: currentSrc } = this.props
+  public componentWillReceiveProps(nextProps: Props): void {
+    // Only pay attention if the `src` changes.
+    if (!nextProps.src || nextProps.src === this.props.src) return
 
-    // If the image source changes, cycle the background.
-    if (nextSrc && nextSrc !== currentSrc) {
-      this.onSrcChanged(nextSrc)
-    }
+    this.onSrcChanged(nextProps.src)
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
+  public shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     return (
-      this.state.layers !== nextState.layers ||
-      this.props.blurred !== nextProps.blurred ||
-      this.props.onFirstBackgroundLoaded !== nextProps.onFirstBackgroundLoaded
+      this.state.currentlyLoadingLayer !== nextState.currentlyLoadingLayer ||
+      this.state.shieldingLayer !== nextState.shieldingLayer ||
+      this.props.blurred !== nextProps.blurred
     )
   }
 
-  @bind
-  clearHiddenShieldLayers(): void {
-    const now = Date.now()
-
-    // Filter out no-longer-visible shields.
-    const layers = this.state.layers.filter(
-      ({ visible, hideTime, shielding }) =>
-        !shielding ||
-        visible ||
-        !hideTime ||
-        now - hideTime < FADE_ANIMATION_DURATION_MS
-    )
-
-    // Push the update to layers.
-    this.setState({ layers })
+  /**
+   * Loades an image with the specified URL.
+   * @param src URL of the image to load.
+   */
+  private loadImage(src: string) {
+    // Wait for the image to load.
+    const loadingImage = new Image()
+    loadingImage.onload = () => this.onImageLoaded(src)
+    loadingImage.src = src
   }
 
-  cycleBackground(nextSrc: string): void {
-    let layers = this.state.layers.slice(0)
+  /**
+   * Called when an image is loaded via `this.loadImage`.
+   * @param src URL of the image that got loaded.
+   */
+  private async onImageLoaded(src: string): Promise<void> {
+    const { currentlyLoadingLayer, shieldingLayer } = this.state
 
-    // Update layers accroding to what it already has.
-    if (layers.length > 0) {
-      const oldTopLayer = layers[layers.length - 1]
-      layers[layers.length - 1] = {
-        src: nextSrc,
-        shielding: false,
-        visible: true,
-        hideTime: null,
-      }
-      layers.push({
-        src: oldTopLayer.src,
-        shielding: true,
-        visible: true,
-        hideTime: null,
-      })
-    } else {
-      layers = [
-        { src: nextSrc, shielding: false, visible: true, hideTime: null },
-        { src: null, shielding: true, visible: true, hideTime: null },
-      ]
+    // Fire the event listener if its defined.
+    if (this.props.onLoad) {
+      this.props.onLoad(src)
     }
 
-    // Push the update to layers.
-    this.setState({ layers }, () => this.loadImage(nextSrc, this.onImageLoaded))
-  }
-
-  loadImage(src: string, callback: () => void): void {
-    const img = new Image()
-    img.onload = () => setTimeout(callback, DOM_ADJUSTMENT_PADDING_MS)
-    img.src = src
-  }
-
-  @bind
-  onImageLoaded(): void {
-    // Call props.onFirstBackgroundLoaded if not called yet.
+    // Exit early if the `src` doesn't line up.
     if (
-      !this.state.onFirstBackgroundLoadedInvoked &&
-      this.props.onFirstBackgroundLoaded
+      !shieldingLayer ||
+      !currentlyLoadingLayer ||
+      currentlyLoadingLayer.src != src
     ) {
-      this.props.onFirstBackgroundLoaded()
-      this.setState({ onFirstBackgroundLoadedInvoked: true })
+      return
     }
 
-    // Keep track of all the shield layers we're hiding.
-    const newlyHiddenLayers: Layer[] = []
+    // Give the DOM some time to reflect the image now loaded into the cache.
+    await this.setTimeoutAndWait(imageLoadDelay)
 
-    // Update layers that need to be hidden.
-    const layers = this.state.layers.map(layer => {
-      if (layer.shielding && layer.visible) {
-        const newLayer = Object.assign({}, layer, { visible: false })
-        newlyHiddenLayers.push(newLayer)
-        return newLayer
-      }
-
-      return layer
+    // Kick off the animation that fades the shielding layer.
+    await this.setStateAndWait({
+      currentlyLoadingLayer: { ...currentlyLoadingLayer, isAnimating: true },
+      shieldingLayer: { ...shieldingLayer, isAnimating: true },
     })
 
-    // Push the update to layers.
-    this.setState({ layers }, () => {
-      const now = Date.now()
+    // Wait for the animation to finish.
+    await this.setTimeoutAndWait(fadeAnimationDuration)
 
-      // Set the hide times once we have render confirmation.
-      newlyHiddenLayers.forEach(layer => (layer.hideTime = now))
+    // Get the next layer up, and get started with it.
+    const { nextLayerToLoad } = this.state
 
-      // It is now safe to clear the hidden shields.
-      setTimeout(this.clearHiddenShieldLayers, FADE_ANIMATION_DURATION_MS)
+    // Make the loading layer into the new shield.
+    await this.setState({
+      currentlyLoadingLayer: nextLayerToLoad,
+      nextLayerToLoad: undefined,
+      shieldingLayer: { ...currentlyLoadingLayer, isAnimating: false },
+    })
+
+    // Wait for the next layer image to load.
+    if (nextLayerToLoad && nextLayerToLoad.src) {
+      this.loadImage(nextLayerToLoad.src)
+    }
+  }
+
+  /**
+   * Called then `this.props.src` changes.
+   * @param nextSrc the new value of `this.props.src`.
+   */
+  private async onSrcChanged(nextSrc: string): Promise<void> {
+    const { currentlyLoadingLayer, shieldingLayer } = this.state
+
+    if (currentlyLoadingLayer && currentlyLoadingLayer.isAnimating) {
+      // If the current loading layer is animating, don't update anything. Just
+      // add this layer as the next one up.
+      await this.setStateAndWait({
+        nextLayerToLoad: { src: nextSrc, isAnimating: false },
+      })
+
+      // Wait for the image to load.
+      return this.loadImage(nextSrc)
+    }
+
+    // Simply set the `currentlyLoadingLayer` since it has not been set. Also,
+    // add a blank shielding layer if one doesn't exist already.
+    await this.setStateAndWait({
+      currentlyLoadingLayer: { src: nextSrc, isAnimating: false },
+      shieldingLayer: shieldingLayer || { isAnimating: false },
+    })
+
+    // Wait for the image to load.
+    return this.loadImage(nextSrc)
+  }
+
+  /**
+   * Wrapper for `requestAnimationFrame` that returns a `Promise` instead of
+   * accepting a callback.
+   */
+  private requestAnimationFrameAndWait(): Promise<void> {
+    return new Promise(resolve => window.requestAnimationFrame(() => resolve()))
+  }
+
+  /**
+   * Wrapper for `this.setState` that returns a `Promise` instead of accepting a
+   * callback.
+   * @param stateDiff diff object used to change `this.state`.
+   */
+  private setStateAndWait<K extends keyof State>(
+    stateDiff: Pick<State, K>
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.setState(stateDiff, resolve)
+      } catch (err) {
+        reject(err)
+      }
     })
   }
 
-  @bind
-  onSrcChanged(newSrc: string) {
-    setTimeout(() => this.cycleBackground(newSrc), FADE_ANIMATION_DURATION_MS)
+  /**
+   * Wrapper for `setTimeout` that returns a `Promise` instead of accepting a
+   * callback.
+   * @param duration how long to wait for.
+   */
+  private setTimeoutAndWait(duration: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        window.setTimeout(resolve, duration)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  }
+
+  render(
+    { blurred }: Props,
+    { currentlyLoadingLayer, shieldingLayer }: State
+  ): JSX.Element {
+    return (
+      <div className={style.main}>
+        {currentlyLoadingLayer
+          ? this.renderLayer(currentlyLoadingLayer, blurred, false)
+          : null}
+        {shieldingLayer
+          ? this.renderLayer(shieldingLayer, blurred, true)
+          : null}
+      </div>
+    )
   }
 
   renderLayer(
-    { src, visible }: Layer,
+    layer: Layer,
     blurred: boolean,
-    i: number
+    isShieldLayer: boolean
   ): JSX.Element {
+    const { isAnimating, src } = layer
+
     const className = classNames(style.layer, {
-      [style.layer__visible]: visible,
       [style.layer__blurred]: blurred,
       [style.layer__loading]: !src,
+      [style.layer__visible]: !isShieldLayer || !isAnimating,
     })
-    const style_ = src ? { backgroundImage: `url(${src})` } : null
+    const layerStyle = src ? { backgroundImage: `url(${src})` } : null
 
-    return <div key={i.toString()} style={style_} className={className} />
-  }
-
-  render({ blurred }: Props, { layers }: State): JSX.Element {
-    return (
-      <div className={style.main}>
-        {layers.map((layer, i) => this.renderLayer(layer, blurred, i))}
-      </div>
-    )
+    return <div key={src} style={layerStyle} className={className} />
   }
 }
 

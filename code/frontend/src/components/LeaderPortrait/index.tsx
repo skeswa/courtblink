@@ -5,9 +5,9 @@ import * as style from './style.css'
 import NbaImage from 'components/NbaImage'
 
 type Props = {
-  playerId: string
-  statValue: string
-  statType: string
+  playerId?: string
+  statValue?: string
+  statType?: string
 }
 
 class LeaderPortrait extends Component<Props, {}> {

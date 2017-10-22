@@ -67,7 +67,6 @@ import {
 } from '../../networking/TorClient'
 import { Clock, createClock } from '../../util/Clock'
 import { createLogger, Logger, LoggerCreationStrategy } from '../../util/Logger'
-import { createConditionWaiter } from '../../util/ConditionWaiter'
 import { ContextualError } from 'common/util/ContextualError'
 
 import { App } from './types'
@@ -246,25 +245,8 @@ export class AppImpl implements App {
       await this.torClient.connect()
 
       // Wait for the API to be reachable.
-      const conditionWaiter = createConditionWaiter()
-      while (
-        !await conditionWaiter.wait(
-          () => this.nbaApiClient.isReachable(),
-          /* max attempts */ 3
-        )
-      ) {
-        // If we still cannot make a connection with the NBA API, ask for a new
-        // IP address.
-        try {
-          await this.torClient.switchIP()
-        } catch (err) {
-          this.logger.error(
-            tag,
-            'Failed to request a new IP while waiting for a connection to ' +
-              'the NBA API',
-            err
-          )
-        }
+      if (!(await this.nbaApiClient.isReachable())) {
+        throw new Error('Could not reach the NBA API')
       }
 
       this.logger.info(tag, 'Established a connection to the NBA API')

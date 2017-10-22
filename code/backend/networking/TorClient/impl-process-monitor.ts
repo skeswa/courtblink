@@ -1,3 +1,4 @@
+import bind from 'bind-decorator'
 import { Agent } from 'http'
 import { ChildProcess } from 'mz/child_process'
 import * as Socks from 'socks'
@@ -29,6 +30,7 @@ export class TorProcessMonitor implements TorClient {
   private connected: boolean
   private declareTorConnected: (() => void) | null
   private logger: Logger
+  private ongoingSwitchIPRequest: Promise<void> | null
   private socksAgent: Agent | null
   private torConfig: TorConfig | null
   private torConfigFileRef: TorConfigFileRef | null
@@ -40,6 +42,7 @@ export class TorProcessMonitor implements TorClient {
     this.connected = false
     this.declareTorConnected = null
     this.logger = logger
+    this.ongoingSwitchIPRequest = null
     this.torConfig = null
     this.torConfigFileRef = null
     this.torExecutableName = torExecutableName
@@ -111,40 +114,20 @@ export class TorProcessMonitor implements TorClient {
   }
 
   async switchIP(): Promise<void> {
-    if (!this.connected || !this.torConfig) {
-      throw new Error('Cannot switch IPs if not connected to tor')
+    if (!this.ongoingSwitchIPRequest) {
+      // Request a new circuit from tor.
+      this.ongoingSwitchIPRequest = this.requestNewCircuit()
+
+      // Make sure that when the on-going request resolves, it also nulls
+      // itself.
+      this.ongoingSwitchIPRequest
+        .then(this.clearOngoingSwitchIPRequest)
+        .catch(this.clearOngoingSwitchIPRequest)
     }
 
-    this.logger.info(tag, 'Requesting a new IP from tor via telnet')
-
-    try {
-      await sendDataOverControlPort(
-        [
-          // Grants this connection access to the control protocol.
-          `AUTHENTICATE "${this.torConfig.controlPortPassword}"`,
-          // Request session renewal from tor.
-          'SIGNAL NEWNYM',
-          // Closes the connection.
-          'QUIT',
-        ],
-        /* torIP */ '127.0.0.1',
-        this.torConfig.controlPort
-      )
-
-      this.logger.debug(
-        tag,
-        `Requested a new IP address with the tor control protocol ` +
-          `successfully - will now give tor 2 seconds to catch its breath`
-      )
-    } catch (err) {
-      throw new ContextualError(
-        'Failed to request a new IP address from tor',
-        err
-      )
-    }
-
-    // Let tor catch its breath - we requested a completely clean circuit.
-    await this.clock.wait(2000)
+    // If a new IP has already been requested, then return the promise for
+    // that request. Let's not overwhelm tor.
+    return this.ongoingSwitchIPRequest
   }
 
   async disconnect(): Promise<void> {
@@ -175,6 +158,12 @@ export class TorProcessMonitor implements TorClient {
     } catch (err) {
       throw new ContextualError('Failed to disconnect', err)
     }
+  }
+
+  /** Helper function responsible for nulling the ongoing switch request. */
+  @bind
+  private clearOngoingSwitchIPRequest(): void {
+    this.ongoingSwitchIPRequest = null
   }
 
   /** Called when the tor process exits. */
@@ -229,6 +218,44 @@ export class TorProcessMonitor implements TorClient {
     }
 
     this.logger.debug(torStdoutTag, data.toString())
+  }
+
+  /** Requests a new circuit from tor. */
+  private async requestNewCircuit(): Promise<void> {
+    if (!this.connected || !this.torConfig) {
+      throw new Error('Cannot switch IPs if not connected to tor')
+    }
+
+    this.logger.info(tag, 'Requesting a new IP from tor via telnet')
+
+    try {
+      await sendDataOverControlPort(
+        [
+          // Grants this connection access to the control protocol.
+          `AUTHENTICATE "${this.torConfig.controlPortPassword}"`,
+          // Request session renewal from tor.
+          'SIGNAL NEWNYM',
+          // Closes the connection.
+          'QUIT',
+        ],
+        /* torIP */ '127.0.0.1',
+        this.torConfig.controlPort
+      )
+    } catch (err) {
+      throw new ContextualError(
+        'Failed to request a new IP address from tor',
+        err
+      )
+    }
+
+    this.logger.debug(
+      tag,
+      `Requested a new IP address with the tor control protocol ` +
+        `successfully - will now give tor 2 seconds to catch its breath`
+    )
+
+    // Let tor catch its breath - we requested a completely clean circuit.
+    await this.clock.wait(2000)
   }
 
   /** Creates and binds all of the tor process event handlers. */

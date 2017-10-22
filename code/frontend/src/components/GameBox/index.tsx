@@ -41,21 +41,27 @@ class GameBox extends Component<Props, {}> {
       <div
         style={{ backgroundColor: splashPrimaryColor }}
         className={style.teamLeaders}>
-        <LeaderPortrait
-          statType="PTS"
-          playerId={pointsLeader.id}
-          statValue={pointsLeader.statValue}
-        />
-        <LeaderPortrait
-          statType="REB"
-          playerId={reboundsLeader.id}
-          statValue={reboundsLeader.statValue}
-        />
-        <LeaderPortrait
-          statType="AST"
-          playerId={assistsLeader.id}
-          statValue={assistsLeader.statValue}
-        />
+        {pointsLeader ? (
+          <LeaderPortrait
+            statType="PTS"
+            playerId={pointsLeader.id}
+            statValue={pointsLeader.statValue}
+          />
+        ) : null}
+        {reboundsLeader ? (
+          <LeaderPortrait
+            statType="REB"
+            playerId={reboundsLeader.id}
+            statValue={reboundsLeader.statValue}
+          />
+        ) : null}
+        {assistsLeader ? (
+          <LeaderPortrait
+            statType="AST"
+            playerId={assistsLeader.id}
+            statValue={assistsLeader.statValue}
+          />
+        ) : null}
       </div>
     )
   }
@@ -63,8 +69,8 @@ class GameBox extends Component<Props, {}> {
   renderLeaders({ homeTeamStatus, awayTeamStatus }: IGameSummary): JSX.Element {
     return (
       <div className={style.gameLeaders}>
-        {this.renderTeamLeaders(awayTeamStatus)}
-        {this.renderTeamLeaders(homeTeamStatus)}
+        {awayTeamStatus ? this.renderTeamLeaders(awayTeamStatus) : null}
+        {homeTeamStatus ? this.renderTeamLeaders(homeTeamStatus) : null}
       </div>
     )
   }
@@ -95,8 +101,12 @@ class GameBox extends Component<Props, {}> {
   ) {
     return (
       <div className={style.teamStatuses}>
-        {this.renderTeamStatus(awayTeamStatus, selected, !notStarted)}
-        {this.renderTeamStatus(homeTeamStatus, selected, !notStarted)}
+        {awayTeamStatus
+          ? this.renderTeamStatus(awayTeamStatus, selected, !notStarted)
+          : null}
+        {homeTeamStatus
+          ? this.renderTeamStatus(homeTeamStatus, selected, !notStarted)
+          : null}
       </div>
     )
   }

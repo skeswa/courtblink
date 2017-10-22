@@ -4,8 +4,8 @@ import { h, Component } from 'preact'
 import FadeInImage from 'components/FadeInImage'
 
 type Props = {
-  id: string
-  type: 'player' | 'team'
+  id?: string
+  type?: 'player' | 'team'
 }
 
 const NbaImage = (props: Props) => {

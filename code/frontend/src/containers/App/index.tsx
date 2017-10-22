@@ -53,13 +53,13 @@ class App extends Component<Props, State> {
       const { games } = await this.apiClient.fetchSplashData(date)
 
       // Auto-select the very first game once loaded.
-      let selectedGame: IGameSummary
+      let selectedGame: IGameSummary | undefined
       if (games && games.length > 0) {
         selectedGame = games[0]
       }
 
       // Update the app state to reflect the loaded splash data.
-      this.setState({ games, selectedGame })
+      this.setState({ games: games || [], selectedGame })
     } catch (err) {
       this.log('Failed to load splash data', err)
 
@@ -72,7 +72,10 @@ class App extends Component<Props, State> {
   }
 
   @bind
-  onBackgroundLoaded(): void {
+  onBackgroundLoaded(srcOfLoadedImage: string): void {
+    // Exit early if the background is already loaded.
+    if (this.state.isBackgroundLoaded) return
+
     this.setState({ isBackgroundLoaded: true })
   }
 
@@ -91,7 +94,7 @@ class App extends Component<Props, State> {
     const splashUrl =
       selectedGame && selectedGame.homeTeamStatus
         ? selectedGame.homeTeamStatus.splashUrl
-        : null
+        : undefined
 
     return (
       <div className={className}>
@@ -101,7 +104,7 @@ class App extends Component<Props, State> {
         <div className={style.back}>
           <CyclingBackground
             blurred={false}
-            onFirstBackgroundLoaded={this.onBackgroundLoaded}
+            onLoad={this.onBackgroundLoaded}
             src={splashUrl}
           />
         </div>
