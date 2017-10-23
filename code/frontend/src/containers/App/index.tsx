@@ -23,7 +23,7 @@ type State = {
 
 class App extends Component<Props, State> {
   private apiClient: ApiClient = createApiClient()
-  private log: debug.IDebugger = debug('app')
+  private log: debug.IDebugger = debug('courtblink:app')
   public state = {
     didFailToLoadSplashData: false,
     games: [] as IGameSummary[],
@@ -31,7 +31,7 @@ class App extends Component<Props, State> {
     isSplashDataLoading: false,
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.log('Loading initial splash data')
 
     // Fetch the initial splash data.
@@ -43,7 +43,7 @@ class App extends Component<Props, State> {
    * Loads splash data for the specified date.
    * @param date date for which the splash data is being fetched,
    */
-  async loadSplashData(date: Date): Promise<void> {
+  private async loadSplashData(date: Date): Promise<void> {
     // Before we begin, make sure that app state represents that data is in
     // flux.
     this.setState({ didFailToLoadSplashData: false, isSplashDataLoading: true })
@@ -72,7 +72,7 @@ class App extends Component<Props, State> {
   }
 
   @bind
-  onBackgroundLoaded(srcOfLoadedImage: string): void {
+  private onBackgroundLoaded(srcOfLoadedImage: string): void {
     // Exit early if the background is already loaded.
     if (this.state.isBackgroundLoaded) return
 
@@ -80,11 +80,11 @@ class App extends Component<Props, State> {
   }
 
   @bind
-  onSelectedGameChanged(newlySelectedGame: IGameSummary): void {
+  private onSelectedGameChanged(newlySelectedGame: IGameSummary): void {
     this.setState({ selectedGame: newlySelectedGame })
   }
 
-  render(
+  public render(
     props: Props,
     { games, isBackgroundLoaded, isSplashDataLoading, selectedGame }: State
   ) {
@@ -103,7 +103,7 @@ class App extends Component<Props, State> {
         </div>
         <div className={style.back}>
           <CyclingBackground
-            blurred={false}
+            shouldShowBlurredLeftSection={true}
             onLoad={this.onBackgroundLoaded}
             src={splashUrl}
           />

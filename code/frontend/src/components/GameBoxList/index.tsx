@@ -2,7 +2,6 @@ import { h, Component } from 'preact'
 
 import { IGameSummary } from 'common/api/schema/generated'
 import GameBox from 'components/GameBox'
-import CyclingBackground from 'components/CyclingBackground'
 
 import * as style from './style.css'
 
@@ -37,24 +36,16 @@ class GameList extends Component<Props, {}> {
     })
   }
 
-  render({ games, selectedGame, onSelectedGameChanged }: Props): JSX.Element {
+  public render({
+    games,
+    selectedGame,
+    onSelectedGameChanged,
+  }: Props): JSX.Element {
     return (
       <div className={style.main}>
-        <div className={style.back}>
-          <CyclingBackground
-            src={
-              selectedGame && selectedGame.homeTeamStatus
-                ? selectedGame.homeTeamStatus.splashUrl
-                : undefined
-            }
-            blurred={true}
-          />
-        </div>
-        <div className={style.front}>
-          <div className={style.heading} />
-          <div className={style.gameBoxes}>
-            {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}
-          </div>
+        <div className={style.heading} />
+        <div className={style.gameBoxes}>
+          {this.renderGameBoxes(games, selectedGame, onSelectedGameChanged)}
         </div>
       </div>
     )

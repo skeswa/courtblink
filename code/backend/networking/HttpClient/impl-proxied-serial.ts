@@ -5,6 +5,7 @@ import { ContextualError } from 'common/util/ContextualError'
 import { TorClient } from '../../networking/TorClient'
 import { Logger } from '../../util/Logger'
 
+import { isATimeoutError } from './helpers'
 import { HttpClient } from './types'
 
 // Log tag that identifies this module.
@@ -93,7 +94,7 @@ export class ProxiedSerialHttpClient implements HttpClient {
     for (attempts = 0; attempts < maxAttempts; attempts++) {
       this.logger.debug(
         tag,
-        `${method} "${url}" attempt ${attempts + 1}/${maxAttempts}`
+        `${method} "${url}" (attempt ${attempts + 1}/${maxAttempts})`
       )
 
       try {
@@ -113,10 +114,12 @@ export class ProxiedSerialHttpClient implements HttpClient {
       } catch (err) {
         // Check if the error was due to a timeout. If so, increment the number
         // of timeout failures.
-        if (err.type === 'request-timeout') {
+        if (isATimeoutError(err)) {
           this.logger.debug(tag, `${method} "${url}" timed out`)
 
           timeoutFailures++
+        } else {
+          this.logger.error(tag, `${method} "${url}" failed`, err)
         }
 
         lastError = err
