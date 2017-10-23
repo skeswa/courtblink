@@ -7,79 +7,38 @@ import {
   IGameTeamStatus,
   IGameSummary,
 } from 'common/api/schema/generated'
-import LeaderPortrait from 'components/LeaderPortrait'
+import GameLeaders from 'components/GameLeaders'
 import NbaImage from 'components/NbaImage'
+import PregameInfo from 'components/PregameInfo'
 
 import * as style from './style.css'
 
+const rem = 10
+const bottomSectionHeight = 18 * rem
+
 type Props = {
-  displaced: boolean
   game: IGameSummary
+  index: number
+  isSelected: boolean
   onSelection: (game: IGameSummary) => void
-  selected: boolean
+  verticalDisplacementUnits: number
 }
 
-class GameBox extends Component<Props, {}> {
+type State = {}
+
+class GameBox extends Component<Props, State> {
   @bind
-  onSelection(): void {
-    if (!this.props.selected) {
+  private onSelection(): void {
+    if (!this.props.isSelected) {
       this.props.onSelection(this.props.game)
     }
   }
 
-  renderRecords(game: IGameSummary): JSX.Element {
-    return <div className={style.teamRecords} />
-  }
-
-  renderTeamLeaders({
-    splashPrimaryColor,
-    pointsLeader,
-    assistsLeader,
-    reboundsLeader,
-  }: IGameTeamStatus): JSX.Element {
-    return (
-      <div
-        style={{ backgroundColor: splashPrimaryColor }}
-        className={style.teamLeaders}>
-        {pointsLeader ? (
-          <LeaderPortrait
-            statType="PTS"
-            playerId={pointsLeader.id}
-            statValue={pointsLeader.statValue}
-          />
-        ) : null}
-        {reboundsLeader ? (
-          <LeaderPortrait
-            statType="REB"
-            playerId={reboundsLeader.id}
-            statValue={reboundsLeader.statValue}
-          />
-        ) : null}
-        {assistsLeader ? (
-          <LeaderPortrait
-            statType="AST"
-            playerId={assistsLeader.id}
-            statValue={assistsLeader.statValue}
-          />
-        ) : null}
-      </div>
-    )
-  }
-
-  renderLeaders({ homeTeamStatus, awayTeamStatus }: IGameSummary): JSX.Element {
-    return (
-      <div className={style.gameLeaders}>
-        {awayTeamStatus ? this.renderTeamLeaders(awayTeamStatus) : null}
-        {homeTeamStatus ? this.renderTeamLeaders(homeTeamStatus) : null}
-      </div>
-    )
-  }
-
-  renderTeamStatus(
+  private renderTeamStatus(
     { tricode, splashPrimaryColor, score }: IGameTeamStatus,
     selected: boolean,
     started: boolean
-  ) {
+  ): JSX.Element {
     return (
       <div className={style.teamStatus}>
         <div className={style.teamIcon}>
@@ -95,10 +54,10 @@ class GameBox extends Component<Props, {}> {
     )
   }
 
-  renderTeamStatuses(
+  private renderTeamStatuses(
     { homeTeamStatus, awayTeamStatus, notStarted }: IGameSummary,
     selected: boolean
-  ) {
+  ): JSX.Element {
     return (
       <div className={style.teamStatuses}>
         {awayTeamStatus
@@ -111,23 +70,39 @@ class GameBox extends Component<Props, {}> {
     )
   }
 
-  render({ game, selected, displaced }: Props) {
-    const className = classNames(style.main, {
-      [style.main__selected]: selected,
-      [style.main__displaced]: displaced,
-    })
+  public render({
+    game,
+    isSelected,
+    verticalDisplacementUnits,
+  }: Props): JSX.Element {
+    const className = isSelected
+      ? `${style.main} ${style.main__selected}`
+      : style.main
 
     // TODO(skeswa): handle when the game hasnt started yet.
     return (
-      <div className={className} onClick={this.onSelection}>
-        <div className={style.gameInfo}>
-          <div className={style.primaryGameInfo}>
-            {this.renderTeamStatuses(game, selected)}
+      <div
+        style={{
+          transform: `translateY(${verticalDisplacementUnits *
+            bottomSectionHeight}px)`,
+        }}
+        className={className}
+        onClick={this.onSelection}>
+        <div className={style.top}>
+          <div className={style.topBack} />
+          <div className={style.topFront}>
+            <div className={style.primaryInfo}>
+              {this.renderTeamStatuses(game, isSelected)}
+            </div>
           </div>
-          <div className={style.secondaryGameInfo}>
-            {game.notStarted
-              ? this.renderRecords(game)
-              : this.renderLeaders(game)}
+        </div>
+        <div className={style.bottomClippingMask}>
+          <div className={style.bottom}>
+            {game.notStarted ? (
+              <PregameInfo game={game} />
+            ) : (
+              <GameLeaders game={game} />
+            )}
           </div>
         </div>
       </div>

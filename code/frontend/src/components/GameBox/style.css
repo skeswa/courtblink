@@ -1,21 +1,61 @@
+:root {
+  --bottom-height: 18rem;
+  --top-height: 12.5rem;
+  --transition-duration: 400ms;
+}
+
 .main {
-  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.2);
+  border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
   position: relative;
-  transform: translateY(0);
-  transition: background 400ms, transform 400ms ease-in-out;
+  transition: transform var(--transition-duration) ease-in-out;
 }
-.main__selected {
+
+.top {
+  height: var(--top-height);
+  position: relative;
+  z-index: 2;
+}
+
+.topFront,
+.topBack {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.topBack {
   background: #fff;
+  opacity: 0;
+  transition: opacity var(--transition-duration);
 }
-.main__displaced {
-  transform: translateY(18rem);
-}
-
-.gameInfo {
-  height: 12.9444rem;
+.main__selected .topBack {
+  opacity: 1;
 }
 
-.primaryGameInfo {
+.bottomClippingMask {
+  height: var(--bottom-height);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.bottom {
+  background: #fff;
+  height: var(--bottom-height);
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--bottom-height)));
+  transition: opacity var(--transition-duration),
+    transform var(--transition-duration) ease-in-out;
+}
+.main__selected .bottom {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.primaryInfo {
   cursor: pointer;
   display: flex;
   position: relative;
@@ -54,46 +94,9 @@
   font-weight: 700;
   margin-left: 1rem;
   text-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.4);
-  transition: color 400ms;
+  transition: color var(--transition-duration);
 }
 .main__selected .teamTriCode,
 .main__selected .teamScore {
   color: rgba(0, 0, 0, 0.8);
-}
-
-.secondaryGameInfo {
-  display: flex;
-  height: 18rem;
-  opacity: 0;
-  overflow: hidden;
-  position: relative;
-  z-index: 100;
-  transition: opacity 400ms ease-in-out;
-}
-.main__selected .secondaryGameInfo {
-  opacity: 1;
-}
-
-.gameLeaders {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  transform: translateY(-18rem);
-  transition: transform 400ms ease-in-out;
-}
-.main__selected .gameLeaders {
-  transform: translateY(0);
-}
-
-.teamLeaders {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-around;
-}
-
-.teamRecords {
-  background: #fff;
-  border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex: 1;
 }

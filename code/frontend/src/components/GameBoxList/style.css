@@ -1,9 +1,10 @@
 :root {
+  --borderColor: rgba(255, 255, 255, 0.2);
   --leftSectionWidth: 40rem;
 }
 
 .main {
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid var(--borderColor);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -29,5 +30,17 @@
 
 .gameBoxes {
   flex: 1;
+  overflow: hidden;
+}
+
+.gameBoxesContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   overflow-y: auto;
+}
+
+.footer {
+  border-top: 1px solid var(--borderColor);
+  min-height: 6rem;
 }
