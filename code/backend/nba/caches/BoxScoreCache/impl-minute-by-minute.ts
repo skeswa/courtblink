@@ -194,11 +194,11 @@ class CacheEntry {
     const hasBoxScoreBecomeStale =
       rightNow - this.timeLastUpdated > cacheEntryDataLifespan
 
-    // If the game hasn't happened yet, there's no new information to be had.
-    if (!hasGameNotHappenedYet) return false
-
     // If the game already happened, the box score will not change again.
-    if (!hasGameBeenUpdatedSinceItEnded) return false
+    if (hasGameBeenUpdatedSinceItEnded) return false
+
+    // If the game hasn't happened yet, there's no new information to be had.
+    if (hasGameNotHappenedYet) return false
 
     // Update if this entry's data has exceeded the lifespan, since the game
     // is either still in progress or we have not updated it since the date

@@ -11,7 +11,7 @@ import { ScoreboardCache } from './types'
 const tag = 'scoreboard-cache:minute-by-minute'
 
 // How long to leave data in a cache entry alone before updating it.
-const cacheEntryDataLifespan = 60 * 1000 /* 1 minute (ms). */
+const cacheEntryDataLifespan = 3 * 60 * 1000 /* 3 minutes (ms). */
 
 // How long after the game that a cache entry represents ends before
 // destroying it.
@@ -126,7 +126,7 @@ class CacheEntry {
   }
 
   /** Gets the value of this cache entry. */
-  async scoreboard(): Promise<Scoreboard> {
+  public async scoreboard(): Promise<Scoreboard> {
     try {
       // Check if an update is required.
       if (this.isInvalidated()) {
@@ -142,6 +142,18 @@ class CacheEntry {
         err
       )
     }
+  }
+
+  /**
+   * Compares times; for use as a sorting function
+   * @param time1 the first time.
+   * @param time2 the first time.
+   * @return a number representing the relationship between `time1` & `time2`.
+   */
+  private compareTimes(time1: number, time2: number): number {
+    if (time1 === time2) return 0
+    if (time1 > time2) return -1
+    return 1
   }
 
   /** Updates the value of this cache entry. */
@@ -162,16 +174,42 @@ class CacheEntry {
   /** @return true if this entry should be updated. */
   private isInvalidated(): boolean {
     // Update if this entry has yet to be initialized.
-    if (!this.scoreboard || !this.timeLastUpdated) return true
+    if (!this.cachedScoreboard || !this.timeLastUpdated) return true
 
-    // Update is this entry's data has exceeded the lifespan.
-    if (
-      this.clock.millisSinceEpoch() - this.timeLastUpdated >=
-      cacheEntryDataLifespan
-    ) {
-      return true
-    }
+    const rightNow = this.clock.millisSinceEpoch()
+    const hasScoreboardBecomeStale =
+      rightNow - this.timeLastUpdated > cacheEntryDataLifespan
 
-    return false
+    // If there are no games, just check for staleness.
+    if (hasScoreboardBecomeStale) return true
+
+    // Sort the start and end times of this scoreboard.
+    const gameEndTimes = this.cachedScoreboard.games
+      .map(game => new Date(game.endTimeUTC).getTime())
+      .sort(this.compareTimes)
+    const gameStartTimes = this.cachedScoreboard.games
+      .map(game => new Date(game.startTimeUTC).getTime())
+      .sort(this.compareTimes)
+
+    // Use the sorted arrays to get the range of game times.
+    const firstGameStartTime = new Date(gameStartTimes[0]).getTime()
+    const lastGameEndTime = new Date(
+      gameEndTimes[gameEndTimes.length - 1]
+    ).getTime()
+
+    const haveGamesBeenUpdatedSinceTheyEnded =
+      this.timeLastUpdated > lastGameEndTime
+    const haveGamesNotHappenedYet = rightNow < firstGameStartTime
+
+    // If the games already happened, the scoreboard will not change again.
+    if (haveGamesBeenUpdatedSinceTheyEnded) return false
+
+    // If the games haven't happened yet, there's no new information to be had.
+    if (haveGamesNotHappenedYet) return false
+
+    // Update if this entry's data has exceeded the lifespan, since the game
+    // is either still in progress or we have not updated it since the date
+    // ended.
+    return hasScoreboardBecomeStale
   }
 }
