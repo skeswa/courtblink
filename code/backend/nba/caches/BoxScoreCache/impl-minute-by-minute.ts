@@ -11,7 +11,7 @@ import { BoxScoreCache, BoxScoreId } from './types'
 const tag = 'box-score-cache:minute-by-minute'
 
 // How long to leave data in a cache entry alone before updating it.
-const cacheEntryDataLifespan = 60 * 1000 /* 1 minute (ms). */
+const cacheEntryDataLifespan = 3 * 60 * 1000 /* 3 minutes (ms). */
 
 // How long after the game that a cache entry represents ends before
 // destroying it.
@@ -177,15 +177,32 @@ class CacheEntry {
   /** @return true if this entry should be updated. */
   private isInvalidated(): boolean {
     // Update if this entry has yet to be initialized.
-    if (!this.boxScore || !this.timeLastUpdated) return true
+    if (!this.cachedBoxScore || !this.timeLastUpdated) return true
 
-    // Update is this entry's data has exceeded the lifespan.
-    if (
-      this.clock.millisSinceEpoch() - this.timeLastUpdated >=
-      cacheEntryDataLifespan
-    )
-      return true
+    // Calculate pre-requisite values for checking if this box score needs an
+    // update
+    const gameEndTime = new Date(
+      this.cachedBoxScore.basicGameData.endTimeUTC
+    ).getTime()
+    const gameStartTime = new Date(
+      this.cachedBoxScore.basicGameData.startTimeUTC
+    ).getTime()
+    const rightNow = this.clock.millisSinceEpoch()
 
-    return false
+    const hasGameBeenUpdatedSinceItEnded = this.timeLastUpdated > gameEndTime
+    const hasGameNotHappenedYet = rightNow < gameStartTime
+    const hasBoxScoreBecomeStale =
+      rightNow - this.timeLastUpdated > cacheEntryDataLifespan
+
+    // If the game hasn't happened yet, there's no new information to be had.
+    if (!hasGameNotHappenedYet) return false
+
+    // If the game already happened, the box score will not change again.
+    if (!hasGameBeenUpdatedSinceItEnded) return false
+
+    // Update if this entry's data has exceeded the lifespan, since the game
+    // is either still in progress or we have not updated it since the date
+    // ended.
+    return hasBoxScoreBecomeStale
   }
 }
