@@ -99,7 +99,7 @@ class App extends Component<Props, State> {
     return (
       <div className={className}>
         <div className={style.loader}>
-          <Loader />
+          {!isReady ? <Loader /> : null}
         </div>
         <div className={style.back}>
           <CyclingBackground

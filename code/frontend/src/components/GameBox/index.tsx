@@ -89,8 +89,8 @@ class GameBox extends Component<Props, State> {
         className={className}
         onClick={this.onSelection}>
         <div className={style.top}>
-          <div className={style.topBack} />
-          <div className={style.topFront}>
+          <div className={style.back} />
+          <div className={style.front}>
             <div className={style.primaryInfo}>
               {this.renderTeamStatuses(game, isSelected)}
             </div>
@@ -98,11 +98,14 @@ class GameBox extends Component<Props, State> {
         </div>
         <div className={style.bottomClippingMask}>
           <div className={style.bottom}>
-            {game.notStarted ? (
-              <PregameInfo game={game} />
-            ) : (
-              <GameLeaders game={game} />
-            )}
+            <div className={style.back} />
+            <div className={style.front}>
+              {game.notStarted ? (
+                <PregameInfo game={game} />
+              ) : (
+                <GameLeaders game={game} />
+              )}
+            </div>
           </div>
         </div>
       </div>

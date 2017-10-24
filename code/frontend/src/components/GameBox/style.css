@@ -1,14 +1,15 @@
 :root {
   --bottom-height: 18rem;
   --top-height: 12.5rem;
-  --transition-duration: 400ms;
+  --transition-duration: 500ms;
+  --transition-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .main {
   border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
   position: relative;
-  transition: transform var(--transition-duration) ease-in-out;
+  transition: transform var(--transition-duration) var(--transition-easing);
 }
 
 .top {
@@ -17,8 +18,8 @@
   z-index: 2;
 }
 
-.topFront,
-.topBack {
+.front,
+.back {
   bottom: 0;
   left: 0;
   position: absolute;
@@ -26,12 +27,21 @@
   top: 0;
 }
 
-.topBack {
+.back {
   background: #fff;
   opacity: 0;
   transition: opacity var(--transition-duration);
 }
-.main__selected .topBack {
+.main__selected .back {
+  opacity: 1;
+}
+
+.bottom .front {
+  opacity: 0;
+  transition: opacity var(--transition-duration)
+    calc(1.2 * var(--transition-duration));
+}
+.main__selected .bottom .front {
   opacity: 1;
 }
 
@@ -48,7 +58,7 @@
   opacity: 0;
   transform: translateY(calc(-1 * var(--bottom-height)));
   transition: opacity var(--transition-duration),
-    transform var(--transition-duration) ease-in-out;
+    transform var(--transition-duration) var(--transition-easing);
 }
 .main__selected .bottom {
   opacity: 1;
