@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "build-docker-images": "node ./build-docker-images",
     "dev": "node ./dev",
     "setup": "node ./setup",
     "update-common": "node ./update-common"

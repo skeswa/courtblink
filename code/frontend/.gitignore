@@ -91,4 +91,7 @@ typings/
 # Ignore the generated CSS typings
 *.css.d.ts
 
+# Ignore built assets
+build/
+
 # End of https://www.gitignore.io/api/node,macos
