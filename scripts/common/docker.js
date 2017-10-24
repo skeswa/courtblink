@@ -28,6 +28,7 @@ module.exports = {
           `${name}:${version}`,
           '-t',
           `${name}:latest`,
+          '.',
         ],
         { cwd: joinPaths(__dirname, '..', '..') }
       )
@@ -40,7 +41,7 @@ module.exports = {
             ? resolve()
             : reject(
                 new Error(
-                  `Failed to execute docker install in "${packagePath}"`
+                  `Failed to execute docker build on "${name}:${version}"`
                 )
               )
       )

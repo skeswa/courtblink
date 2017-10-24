@@ -1,6 +1,7 @@
 const path = require('path')
 
 const docker = require('./common/docker')
+const yarn = require('./common/yarn')
 
 /** Builds the courtblink docker images. */
 async function buildDockerImages() {
@@ -17,7 +18,7 @@ async function buildDockerImages() {
 
   console.log('Building the frontend...')
   await docker.build(
-    path.join(__dirname, '..', 'infra', 'frontend'),
+    path.join(__dirname, '..', 'infra', 'frontend', 'Dockerfile'),
     'courtblink-frontend',
     require(path.join(__dirname, '..', 'code', 'frontend', 'package.json'))
       .version
@@ -25,7 +26,7 @@ async function buildDockerImages() {
 
   console.log('Building the backend...')
   await docker.build(
-    path.join(__dirname, '..', 'infra', 'backend'),
+    path.join(__dirname, '..', 'infra', 'backend', 'Dockerfile'),
     'courtblink-backend',
     require(path.join(__dirname, '..', 'code', 'backend', 'package.json'))
       .version
