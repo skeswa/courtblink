@@ -10,11 +10,14 @@ import { ContextualError } from './../common/util/ContextualError'
 const config = readConfig(ConfigReadingStrategy.FromEnvVars)
 
 // Adapt the logger to whatever environment that backend is currently running in.
-const logger = createLogger(
-  config.env === Env.Dev
-    ? LoggerCreationStrategy.ForDev
-    : LoggerCreationStrategy.ForProd
-)
+// const logger = createLogger(
+//   config.env === Env.Dev
+//     ? LoggerCreationStrategy.ForDev
+//     : LoggerCreationStrategy.ForProd
+// )
+
+// TODO(skeswa): make prod logging work.
+const logger = createLogger(LoggerCreationStrategy.ForDev)
 
 // Instantiate the app; this app encapsulates all courtblink backend
 // functionality.

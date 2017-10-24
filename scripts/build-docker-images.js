@@ -18,16 +18,16 @@ async function buildDockerImages() {
 
   console.log('Building the frontend...')
   await docker.build(
-    path.join(__dirname, '..', 'infra', 'frontend', 'Dockerfile'),
-    'courtblink-frontend',
+    path.join(__dirname, '..', 'infra', 'docker', 'frontend', 'Dockerfile'),
+    'us.gcr.io/courtblink/frontend',
     require(path.join(__dirname, '..', 'code', 'frontend', 'package.json'))
       .version
   )
 
   console.log('Building the backend...')
   await docker.build(
-    path.join(__dirname, '..', 'infra', 'backend', 'Dockerfile'),
-    'courtblink-backend',
+    path.join(__dirname, '..', 'infra', 'docker', 'backend', 'Dockerfile'),
+    'us.gcr.io/courtblink/backend',
     require(path.join(__dirname, '..', 'code', 'backend', 'package.json'))
       .version
   )

@@ -26,8 +26,6 @@ module.exports = {
           '--rm',
           '-t',
           `${name}:${version}`,
-          '-t',
-          `${name}:latest`,
           '.',
         ],
         { cwd: joinPaths(__dirname, '..', '..') }

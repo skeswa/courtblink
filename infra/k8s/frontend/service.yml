@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    component: frontend
+  ports:
+  - protocol: TCP
+    port: 80

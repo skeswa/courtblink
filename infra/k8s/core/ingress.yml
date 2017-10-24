@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: courtblink-ingress
+spec:
+  backend:
+    serviceName: frontend-service
+    servicePort: 80
+  rules:
+  - http:
+      paths:
+      - path: /api
+        backend:
+          serviceName: backend-service
+          servicePort: 3000

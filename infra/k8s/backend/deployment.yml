@@ -1,0 +1,14 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: backend
+    spec:
+      containers:
+      - name: backend
+        image: us.gcr.io/courtblink/backend:1.0.0
