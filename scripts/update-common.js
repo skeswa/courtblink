@@ -16,7 +16,7 @@ async function updateCommon() {
   await yarn.upgrade(path.join(__dirname, '..', 'code', 'backend'), 'common')
 
   console.log('Upgrading common in the frontend...')
-  await yarn.upgrade(path.join(__dirname, '..', 'code', 'backend'))
+  await yarn.upgrade(path.join(__dirname, '..', 'code', 'frontend'), 'common')
 
   console.log('Updated common successfully')
 }

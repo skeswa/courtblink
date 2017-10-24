@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "",
+  "homepage": "http://courtblink.com",
   "main": "index.js",
   "scripts": {
     "start": "node scripts/start.js",
@@ -15,7 +16,7 @@
   "dependencies": {
     "@types/classnames": "^2.2.3",
     "@types/debug": "^0.0.30",
-    "@types/node": "^8.0.34",
+    "@types/node": "^8.0.46",
     "@types/systemjs": "^0.20.6",
     "autoprefixer": "^7.1.5",
     "awesome-typescript-loader": "^3.2.3",

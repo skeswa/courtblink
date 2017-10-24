@@ -3,7 +3,7 @@ import * as classNames from 'classnames'
 import * as debug from 'debug'
 import { h, Component } from 'preact'
 
-import { ApiClient, createApiClient } from 'api/ApiClient'
+import { ApiClient, createApiClient } from 'network/ApiClient'
 import { IGameSummary } from 'common/api/schema/generated'
 import Loader from 'components/Loader'
 import GameBoxList from 'components/GameBoxList'

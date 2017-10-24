@@ -1,17 +1,13 @@
-class ContextualError extends Error {
-  constructor(context, cause) {
-    // 'Error' breaks prototype chain here.
-    super(context)
+function ContextualError(context, cause) {
+  this.name = 'ContextualError';
+  this.message = context;
 
-    // Restore the prototype chain.
-    Object.setPrototypeOf(this, new.target.prototype)
-
-    // Add the cause to the stack.
-    if (cause) {
-      this.stack +=
-        '\nCaused by: ' + (cause.stack ? cause.stack : cause.toString())
-    }
+  // Add the cause to the stack.
+  if (cause) {
+    this.stack += '\nCaused by: ' +
+        (cause.stack ? cause.stack : cause.toString());
   }
 }
+ContextualError.prototype = Error.prototype;
 
-module.exports = { ContextualError }
+module.exports = { ContextualError: ContextualError };
