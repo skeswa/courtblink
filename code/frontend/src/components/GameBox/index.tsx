@@ -14,7 +14,7 @@ import PregameInfo from 'components/PregameInfo'
 import * as style from './style.css'
 
 const rem = 10
-const bottomSectionHeight = 18 * rem
+const bottomSectionHeight = 20 * rem
 
 type Props = {
   game: IGameSummary

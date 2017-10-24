@@ -7,5 +7,7 @@
 .teamLeaders {
   box-sizing: border-box;
   display: flex;
+  flex: 1;
   justify-content: space-around;
+  padding: 0 2.4rem 0 1.8rem;
 }

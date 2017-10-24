@@ -1,7 +1,10 @@
+:root {
+  --game-box-bottom-height: 20rem;
+}
+
 .main {
-  height: 9rem;
+  flex: 1;
   position: relative;
-  width: 11.5rem;
 }
 
 .stat {
@@ -12,9 +15,9 @@
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
   position: absolute;
-  right: 0.5rem;
+  left: 8rem;
   text-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.4);
-  top: 1rem;
+  top: 2rem;
 }
 
 .statValue {

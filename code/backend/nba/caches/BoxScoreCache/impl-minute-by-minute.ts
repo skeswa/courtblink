@@ -11,7 +11,7 @@ import { BoxScoreCache, BoxScoreId } from './types'
 const tag = 'box-score-cache:minute-by-minute'
 
 // How long to leave data in a cache entry alone before updating it.
-const cacheEntryDataLifespan = 3 * 60 * 1000 /* 3 minutes (ms). */
+const cacheEntryDataLifespan = 1 * 60 * 1000 /* 1 minutes (ms). */
 
 // How long after the game that a cache entry represents ends before
 // destroying it.

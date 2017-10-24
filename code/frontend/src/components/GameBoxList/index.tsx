@@ -8,7 +8,7 @@ import * as style from './style.css'
 
 const rem = 10
 const collapsedGameBoxHeight = 12.5 * rem
-const expandedGameBoxHeight = (12.5 + 18) * rem
+const expandedGameBoxHeight = (12.5 + 20) * rem
 
 type Props = {
   games: IGameSummary[]

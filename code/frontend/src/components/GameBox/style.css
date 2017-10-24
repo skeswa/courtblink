@@ -1,5 +1,5 @@
 :root {
-  --bottom-height: 18rem;
+  --bottom-height: 20rem;
   --top-height: 12.5rem;
   --transition-duration: 500ms;
   --transition-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -37,6 +37,7 @@
 }
 
 .bottom .front {
+  display: flex;
   opacity: 0;
   transition: opacity var(--transition-duration)
     calc(1.2 * var(--transition-duration));
