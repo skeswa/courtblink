@@ -30,48 +30,19 @@ const torPasswordChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 /**
  * Kicks off the tor process.
- * @param clock time utility.
  * @param torExecutableName name of the tor executable.
  * @param torConfigFileRef reference to the tor configuration file.
  * @return the tor process object.
  */
-export async function startTorProcess(
-  clock: Clock,
+export function startTorProcess(
   torExecutableName: string,
   torConfigFileRef: TorConfigFileRef
-): Promise<ChildProcess> {
-  try {
-    // Start the tor process.
-    const torProcess = spawnProcess(torExecutableName, [
-      /* e.g. "-f" */ torConfigFilePathFlag,
-      /* e.g. "/tmp/123/torrc" */ torConfigFileRef.configFilePath,
-    ])
-
-    // Temporarily bind to the error event of the process.
-    let torProcessError: Error | undefined
-    const onError = (err: Error) => {
-      torProcessError = err
-    }
-    torProcess.on('error', onError)
-
-    // Listen for the process failing within the grace period.
-    await clock.wait(200 /* 0.2 second grace period */)
-    if (torProcessError) {
-      throw new ContextualError(
-        `The tor process failed within the grace period`,
-        torProcessError
-      )
-    }
-
-    // Unbind from the tor process to prevent a memory leak, and because this
-    // function (the factory function) does not care anymore what happens to
-    // this process.
-    torProcess.removeListener('error', onError)
-
-    return torProcess
-  } catch (err) {
-    throw new ContextualError('Failed to start the tor process', err)
-  }
+): ChildProcess {
+  // Start the tor process.
+  return spawnProcess(torExecutableName, [
+    /* e.g. "-f" */ torConfigFilePathFlag,
+    /* e.g. "/tmp/123/torrc" */ torConfigFileRef.configFilePath,
+  ])
 }
 
 /**
@@ -207,8 +178,14 @@ export function hashPassword(
           )
         }
 
+        // Trim off the surrounding whitespace.
+        const output = stderr.trim()
+
+        // The hashed password always appears on the last line of the output.
+        const lastLineOfOutput = output.split(/\r?\n/).pop()
+
         // Hashed password is output to stderr.
-        return resolve(stderr.trim())
+        return resolve(lastLineOfOutput)
       }
     )
   })

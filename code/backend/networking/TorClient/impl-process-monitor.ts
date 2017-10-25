@@ -21,14 +21,16 @@ const tag = 'tor:procmon'
 const torStdoutTag = `${tag}:stdout`
 const torStderrTag = `${tag}:stderr`
 
+// Longest period of time for which we will wait for tor to connect.
+const maxTorConnectionWaitTime = 2 * 60 * 1000 /* 2 minutes (ms). */
+
 // Message that gets logged to stdout by the tor process when tor is ready.
 const successMessage = 'Tor has successfully opened a circuit'
 
 /** Manages and monitors a tor process. */
 export class TorProcessMonitor implements TorClient {
   private clock: Clock
-  private connected: boolean
-  private declareTorConnected: (() => void) | null
+  private isTorReady: boolean
   private logger: Logger
   private ongoingSwitchIPRequest: Promise<void> | null
   private socksAgent: Agent | null
@@ -39,8 +41,7 @@ export class TorProcessMonitor implements TorClient {
 
   constructor(clock: Clock, logger: Logger, torExecutableName: string) {
     this.clock = clock
-    this.connected = false
-    this.declareTorConnected = null
+    this.isTorReady = false
     this.logger = logger
     this.ongoingSwitchIPRequest = null
     this.torConfig = null
@@ -49,7 +50,7 @@ export class TorProcessMonitor implements TorClient {
   }
 
   async connect(): Promise<void> {
-    if (this.connected) {
+    if (this.isTorReady) {
       throw new Error('Cannot connect to tor if already connected')
     }
 
@@ -59,13 +60,6 @@ export class TorProcessMonitor implements TorClient {
       // Create the tor configuration before starting tor.
       this.torConfig = await createTorConfig(this.torExecutableName)
       this.torConfigFileRef = await createTorConfigFile(this.torConfig)
-
-      // Start the tor process.
-      const torProcess = await startTorProcess(
-        this.clock,
-        this.torExecutableName,
-        this.torConfigFileRef
-      )
 
       // Create a new agent using the tor configuration.
       this.socksAgent = new Socks.Agent(
@@ -80,9 +74,11 @@ export class TorProcessMonitor implements TorClient {
         /* rejectUnauthorized */ false
       )
 
-      // Signal that this client is now connected.
-      this.connected = true
-      this.torProcess = torProcess
+      // Start the tor process.
+      this.torProcess = startTorProcess(
+        this.torExecutableName,
+        this.torConfigFileRef
+      )
 
       // Subscribe to events not that a connection has been established.
       this.subscribeToProcessEvents()
@@ -101,12 +97,12 @@ export class TorProcessMonitor implements TorClient {
 
   /** @return true if this client is connected. */
   isConnected(): boolean {
-    return this.connected
+    return this.isTorReady
   }
 
   /** @return a tor-connected HTTP agent for use with HTTP clients. */
   agent(): Agent | undefined {
-    if (!this.connected) {
+    if (!this.isTorReady) {
       throw new Error('Cannot create an agent if not connected to tor')
     }
 
@@ -131,7 +127,7 @@ export class TorProcessMonitor implements TorClient {
   }
 
   async disconnect(): Promise<void> {
-    if (!this.connected) {
+    if (!this.isTorReady) {
       throw new Error('Cannot disconnect from tor if not connected to tor')
     }
 
@@ -174,7 +170,7 @@ export class TorProcessMonitor implements TorClient {
     this.unsubscribeFromProcessEvents()
 
     // Signal that this client is no longer connected.
-    this.connected = false
+    this.isTorReady = false
 
     // Get rid of the tor process instance since it is now useless.
     this.torProcess = null
@@ -198,9 +194,6 @@ export class TorProcessMonitor implements TorClient {
       // Null the agent too since it depends on the tor configuration.
       this.socksAgent = null
     }
-
-    // Trigger the exit handler if it exists.
-    // TODO(skeswa): notify exit event subscribers.
   }
 
   /** Called when there is a new stderr message from the tor process. */
@@ -213,8 +206,8 @@ export class TorProcessMonitor implements TorClient {
     const message = data.toString()
 
     // Check to see if the log message from tor has indicated that tor is ready.
-    if (this.declareTorConnected && message.indexOf(successMessage) !== -1) {
-      this.declareTorConnected()
+    if (!this.isTorReady && message.indexOf(successMessage) !== -1) {
+      this.isTorReady = true
     }
 
     this.logger.debug(torStdoutTag, data.toString())
@@ -222,7 +215,7 @@ export class TorProcessMonitor implements TorClient {
 
   /** Requests a new circuit from tor. */
   private async requestNewCircuit(): Promise<void> {
-    if (!this.connected || !this.torConfig) {
+    if (!this.isTorReady || !this.torConfig) {
       throw new Error('Cannot switch IPs if not connected to tor')
     }
 
@@ -285,29 +278,34 @@ export class TorProcessMonitor implements TorClient {
 
   // TODO(skeswa): add a reasonable timeout.
   /** Function that waits until `declareTorConnected` resolves. */
-  private waitForTorToBeReady(): Promise<void> {
-    if (this.declareTorConnected) {
-      return Promise.reject(
-        '`declareTorConnected` was already set; could not create a new promise'
+  private async waitForTorToBeReady(): Promise<void> {
+    // Keep track of when we started so that we can tell if we've taken too
+    // long.
+    const startTime = Date.now()
+
+    // Wait for a connection to form with the tor network.
+    while (!this.isTorReady) {
+      this.logger.debug(
+        tag,
+        'Waiting for tor to form a connection to the network'
       )
+
+      // Use a long polling strategy (once a second) to let tor form a
+      // connection.
+      await this.clock.wait(1000)
+
+      // Check to see if tor died while we were waiting for it to come up.
+      const hasTorProcessExited = !this.torProcess
+      if (hasTorProcessExited) {
+        throw new Error(
+          'Tor exited before a connection could be formed with the network'
+        )
+      }
+
+      // Check to see if tor is taking too long.
+      if (Date.now() - startTime > maxTorConnectionWaitTime) {
+        throw new Error('Tor took too long to form a connection to the network')
+      }
     }
-
-    // Creates a promise around the `declareTorConnected` function.
-    return new Promise(
-      resolve =>
-        (this.declareTorConnected = () => {
-          // `declareTorConnected` needs to clean itself up and then resolve
-          // this promise.
-          this.declareTorConnected = null
-
-          resolve()
-
-          // Log that the tor client is now ready to accept connections.
-          this.logger.info(
-            tag,
-            'Tor is now ready to accept incoming connections'
-          )
-        })
-    )
   }
 }

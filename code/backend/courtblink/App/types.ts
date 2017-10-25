@@ -1,10 +1,10 @@
-import { HttpServerEndpointRoutes } from '../../networking/HttpServer'
+import { ServerEndpointRoutes } from '../../courtblink/Server'
 import { Logger } from '../../util/Logger'
 
 /** Options used to create the courtblink backend app. */
 export type AppOptions = {
   /** Specifies the routes to use for different API endpoints. */
-  endpoints: HttpServerEndpointRoutes
+  endpoints: ServerEndpointRoutes
   /** True if running in production. */
   inProd: boolean
   /** Logging utility. */
