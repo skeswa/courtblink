@@ -11,4 +11,4 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: us.gcr.io/courtblink/frontend:1.0.0
+        image: us.gcr.io/courtblink/frontend:0.1.0

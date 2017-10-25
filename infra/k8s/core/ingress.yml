@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: courtblink-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: courtblink-static-ip
 spec:
   backend:
     serviceName: frontend-service
@@ -9,7 +11,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api
+      - path: /api/*
         backend:
           serviceName: backend-service
           servicePort: 3000

@@ -149,7 +149,9 @@ export class NodeHttpServer implements Server {
 
     try {
       // Route the request differently according to the URL.
-      if (isSplashRoute(path, this.endpointRoutes)) {
+      if (path === '/') {
+        this.serve200(response)
+      } else if (isSplashRoute(path, this.endpointRoutes)) {
         await this.serveSplash(
           extractRequestSplashDate(path, this.endpointRoutes),
           response
@@ -178,6 +180,15 @@ export class NodeHttpServer implements Server {
       tag,
       `Responded to request with path "${path}" in ${transactionDuration}ms`
     )
+  }
+
+  /**
+   * Responds with an "OK".
+   * @param response the outgoing response to the corresponding request.
+   */
+  private serve200(response: ServerResponse): void {
+    response.writeHead(200, 'OK')
+    response.end()
   }
 
   /**
