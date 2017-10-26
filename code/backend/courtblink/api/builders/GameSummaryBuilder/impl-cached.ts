@@ -119,7 +119,9 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
 
       return {
         id: game.gameId,
-        gameStartTime: startTime.getTime(),
+        // We send this value over the wire in minutes - not much precision is
+        // needed.
+        gameStartTime: startTime.getTime() / 1000 / 60,
         gameStartTimeTbd: game.isStartTimeTBD,
         finished: isGameFinished,
         notStarted: hasGameNotStarted,

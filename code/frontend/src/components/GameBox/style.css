@@ -1,8 +1,10 @@
 :root {
   --bottom-height: 20rem;
+  --selected-text-color: rgba(0, 0, 0, .7);
   --top-height: 12.5rem;
   --transition-duration: 500ms;
-  --transition-easing: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --unselected-text-color: rgba(255, 255, 255, .8);
 }
 
 .main {
@@ -36,6 +38,13 @@
   opacity: 1;
 }
 
+.top .front {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  padding: 2rem;
+}
+
 .bottom .front {
   display: flex;
   opacity: 0;
@@ -66,18 +75,11 @@
   transform: translateY(0);
 }
 
-.primaryInfo {
-  cursor: pointer;
-  display: flex;
-  position: relative;
-  z-index: 101;
-}
-
 .teamStatuses {
   box-sizing: border-box;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  padding: 2rem;
 }
 
 .teamStatus {
@@ -88,26 +90,71 @@
   margin-top: 0.5rem;
 }
 
-.teamIcon {
+.icon {
   height: 4rem;
   width: 4rem;
 }
 
-.teamTriCode {
+.info {
+  align-items: flex-end;
+  display: flex;
+}
+
+.triCode {
   letter-spacing: 0.1rem;
 }
 
-.teamTriCode,
-.teamScore {
-  color: rgba(255, 255, 255, 0.8);
+.channel,
+.record,
+.score,
+.startTime,
+.triCode {
+  color: var(--unselected-text-color);
   font-family: 'Roboto', sans-serif;
   font-size: 3.2rem;
   font-weight: 700;
   margin-left: 1rem;
-  text-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.4);
   transition: color var(--transition-duration);
 }
-.main__selected .teamTriCode,
-.main__selected .teamScore {
-  color: rgba(0, 0, 0, 0.8);
+.main__selected .channel,
+.main__selected .score,
+.main__selected .startTime,
+.main__selected .triCode {
+  color: var(--selected-text-color);
 }
+
+.record {
+  font-size: 1.6rem;
+  padding-bottom: 0.4rem;
+}
+.main__selected .record {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.record .dash {
+  padding: 0 0.2rem;
+}
+
+.w2w {
+  display: flex;
+  flex-direction: column;
+  padding-right: 0.8rem;
+  text-align: right;
+}
+
+.startTime {
+  font-size: 2.4rem;
+}
+
+.channel {
+  font-size: 2rem;
+}
+
+.channel .on {
+  font-size: 1.4rem;
+}
+
+.channel .text {
+  text-transform: uppercase;
+}
+

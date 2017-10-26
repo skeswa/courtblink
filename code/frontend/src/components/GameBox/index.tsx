@@ -27,6 +27,16 @@ type Props = {
 type State = {}
 
 class GameBox extends Component<Props, State> {
+  private formatGameTime(gameStartTime: number): string {
+    // `gameStartTime` is sent over the wire in minutes.
+    const gameStartDate = new Date(gameStartTime * 60 * 1000)
+    return gameStartDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      hour12: true,
+      minute: '2-digit',
+    })
+  }
+
   @bind
   private onSelection(): void {
     if (!this.props.isSelected) {
@@ -35,21 +45,32 @@ class GameBox extends Component<Props, State> {
   }
 
   private renderTeamStatus(
-    { tricode, splashPrimaryColor, score }: IGameTeamStatus,
+    { losses, score, splashPrimaryColor, tricode, wins }: IGameTeamStatus,
     selected: boolean,
     started: boolean
   ): JSX.Element {
     return (
       <div className={style.teamStatus}>
-        <div className={style.teamIcon}>
+        <div className={style.icon}>
           <NbaImage type="team" id={tricode} />
         </div>
-        <div
-          className={style.teamTriCode}
-          style={selected ? { color: splashPrimaryColor } : null}>
-          {tricode}
+        <div className={style.info}>
+          <div
+            className={style.triCode}
+            style={selected ? { color: splashPrimaryColor } : null}>
+            {tricode}
+          </div>
+
+          {started ? (
+            <div className={style.score}>{score}</div>
+          ) : (
+            <div className={style.record}>
+              <span>{wins}</span>
+              <span className={style.dash}>-</span>
+              <span>{losses}</span>
+            </div>
+          )}
         </div>
-        {started ? <div className={style.teamScore}>{score}</div> : null}
       </div>
     )
   }
@@ -66,6 +87,29 @@ class GameBox extends Component<Props, State> {
         {homeTeamStatus
           ? this.renderTeamStatus(homeTeamStatus, selected, !notStarted)
           : null}
+      </div>
+    )
+  }
+
+  private renderWhereToWatch({
+    gameStartTime,
+    gameStartTimeTbd,
+    liveGameStats,
+  }: IGameSummary): JSX.Element {
+    const startTime =
+      !gameStartTimeTbd && gameStartTime
+        ? this.formatGameTime(gameStartTime)
+        : 'TBD'
+
+    return (
+      <div className={style.w2w}>
+        <div className={style.startTime}>{startTime}</div>
+        {liveGameStats && liveGameStats.channel ? (
+          <div className={style.channel}>
+            <span className={style.on}>on&nbsp;</span>
+            <span className={style.text}>{liveGameStats.channel}</span>
+          </div>
+        ) : null}
       </div>
     )
   }
@@ -91,9 +135,8 @@ class GameBox extends Component<Props, State> {
         <div className={style.top}>
           <div className={style.back} />
           <div className={style.front}>
-            <div className={style.primaryInfo}>
-              {this.renderTeamStatuses(game, isSelected)}
-            </div>
+            {this.renderTeamStatuses(game, isSelected)}
+            {game.notStarted ? this.renderWhereToWatch(game) : null}
           </div>
         </div>
         <div className={style.bottomClippingMask}>

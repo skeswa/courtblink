@@ -1,7 +1,7 @@
 import { Game, TeamDetails } from '../../../../nba/api/schema'
 
 // Constants for different channel names.
-const leaguePassChannelName = 'League Pass'
+const leaguePassChannelName = 'NBA LP'
 const localChannelName = 'Local'
 const tntChannelName = 'TNT'
 
