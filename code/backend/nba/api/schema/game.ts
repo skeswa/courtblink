@@ -5,6 +5,7 @@ export type Game = {
   gameId: string
   clock: string
   startTimeUTC: string
+  startDateEastern: string
   endTimeUTC: string
   isStartTimeTBD: boolean
   gameDuration: Duration

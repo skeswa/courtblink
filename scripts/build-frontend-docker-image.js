@@ -3,9 +3,9 @@ const path = require('path')
 const docker = require('./common/docker')
 const yarn = require('./common/yarn')
 
-/** Builds the courtblink docker images. */
-async function buildDockerImages() {
-  console.log('Building Courtblink docker images...')
+/** Builds the frontend docker images. */
+async function buildFrontendDockerImage() {
+  console.log('Building the frontend docker image...')
 
   // Ensure that docker is installed before we continue.
   const isDockerInstalled = await docker.exists()
@@ -16,7 +16,7 @@ async function buildDockerImages() {
   console.log('Compiling the latest frontend assets...')
   await yarn.run(path.join(__dirname, '..', 'code', 'frontend'), 'build')
 
-  console.log('Building the frontend...')
+  console.log('Executing docker build...')
   await docker.build(
     path.join(__dirname, '..', 'infra', 'docker', 'frontend', 'Dockerfile'),
     'us.gcr.io/courtblink/frontend',
@@ -24,17 +24,10 @@ async function buildDockerImages() {
       .version
   )
 
-  console.log('Building the backend...')
-  await docker.build(
-    path.join(__dirname, '..', 'infra', 'docker', 'backend', 'Dockerfile'),
-    'us.gcr.io/courtblink/backend',
-    require(path.join(__dirname, '..', 'code', 'backend', 'package.json'))
-      .version
-  )
-
-  console.log('Courtblink docker images built successfully')
+  console.log('Frontend docker image built successfully')
 }
 
-buildDockerImages().catch(err =>
-  console.error('Failed build Courtblink docker images:', err)
+buildFrontendDockerImage().catch(err =>
+  console.error('Failed build the frontend docker image:', err)
 )
+

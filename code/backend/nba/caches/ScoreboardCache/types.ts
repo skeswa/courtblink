@@ -2,7 +2,7 @@ import { Scoreboard } from '../../../nba/api/schema'
 import { EntityCache } from '../../../data/EntityCache'
 
 /** Caches scoreboards. */
-export interface ScoreboardCache extends EntityCache<Date, Scoreboard> {}
+export interface ScoreboardCache extends EntityCache<string, Scoreboard> {}
 
 /** Strategy for creating a new `ScoreboardCache`. */
 export enum ScoreboardCacheCreationStrategy {

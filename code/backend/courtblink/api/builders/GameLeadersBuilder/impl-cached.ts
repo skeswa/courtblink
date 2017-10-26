@@ -28,8 +28,8 @@ export class CachedGameLeadersBuilder implements GameLeadersBuilder {
     try {
       // Get the box score to figure out the game leaders.
       const boxScore = await this.boxScoreCache.retrieveById({
-        date: new Date(game.startTimeUTC),
         gameId: game.gameId,
+        yyyymmdd: game.startDateEastern,
       })
 
       // If there is no box score, exit early and empty.

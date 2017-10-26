@@ -5,7 +5,6 @@ import {
   Scoreboard,
 } from '../../../nba/api/schema'
 import { HttpClient } from '../../../networking/HttpClient'
-import { yyyy, yyyymmdd } from '../../../../common/util/date/helpers'
 import { Logger } from '../../../util/Logger'
 import { ContextualError } from 'common/util/ContextualError'
 
@@ -23,69 +22,65 @@ export class HttpNbaApiClient implements NbaApiClient {
     this.logger = logger
   }
 
-  async fetchAllTeamDetails(date: Date): Promise<AllTeamDetails> {
-    const formattedDate = yyyy(date)
-    this.logger.debug(tag, `Fetching all team details for ${formattedDate}`)
+  async fetchAllTeamDetails(yyyy: string): Promise<AllTeamDetails> {
+    this.logger.debug(tag, `Fetching all team details for ${yyyy}`)
 
     try {
       return await this.httpClient.get(
-        `http://data.nba.net/data/10s/prod/v1/${formattedDate}/teams.json`
+        `http://data.nba.net/data/10s/prod/v1/${yyyy}/teams.json`
       )
     } catch (err) {
       throw new ContextualError(
-        `Failed to fetch all team details for ${formattedDate}`,
+        `Failed to fetch all team details for ${yyyy}`,
         err
       )
     }
   }
 
-  async fetchAllPlayerDetails(date: Date): Promise<AllPlayerDetails> {
-    const formattedDate = yyyy(date)
-    this.logger.debug(tag, `Fetching all player details for ${formattedDate}`)
+  async fetchAllPlayerDetails(yyyy: string): Promise<AllPlayerDetails> {
+    this.logger.debug(tag, `Fetching all player details for ${yyyy}`)
 
     try {
       return await this.httpClient.get(
-        `http://data.nba.net/data/10s/prod/v1/${formattedDate}/players.json`
+        `http://data.nba.net/data/10s/prod/v1/${yyyy}/players.json`
       )
     } catch (err) {
       throw new ContextualError(
-        `Failed to fetch all player details for ${formattedDate}`,
+        `Failed to fetch all player details for ${yyyy}`,
         err
       )
     }
   }
 
-  async fetchScoreboard(date: Date): Promise<Scoreboard> {
-    const formattedDate = yyyymmdd(date)
-    this.logger.debug(tag, `Fetching the scoreboard for ${formattedDate}`)
+  async fetchScoreboard(yyyymmdd: string): Promise<Scoreboard> {
+    this.logger.debug(tag, `Fetching the scoreboard for ${yyyymmdd}`)
 
     try {
       return await this.httpClient.get(
-        `http://data.nba.net/data/10s/prod/v1/${formattedDate}/scoreboard.json`
+        `http://data.nba.net/data/10s/prod/v1/${yyyymmdd}/scoreboard.json`
       )
     } catch (err) {
       throw new ContextualError(
-        `Failed to fetch the scoreboard for ${formattedDate}`,
+        `Failed to fetch the scoreboard for ${yyyymmdd}`,
         err
       )
     }
   }
 
-  async fetchBoxScore(date: Date, gameId: string): Promise<BoxScore> {
-    const formattedDate = yyyymmdd(date)
+  async fetchBoxScore(yyyymmdd: string, gameId: string): Promise<BoxScore> {
     this.logger.debug(
       tag,
-      `Fetching the box score for "${gameId}" on ${formattedDate}`
+      `Fetching the box score for "${gameId}" on ${yyyymmdd}`
     )
 
     try {
       return await this.httpClient.get(
-        `http://data.nba.net/data/10s/prod/v1/${formattedDate}/` +
+        `http://data.nba.net/data/10s/prod/v1/${yyyymmdd}/` +
           `${gameId}_boxscore.json`
       )
     } catch (err) {
       throw new ContextualError(
-        `Failed to fetch the box score for "${gameId}" on ${formattedDate}`,
+        `Failed to fetch the box score for "${gameId}" on ${yyyymmdd}`,
         err
       )
     }

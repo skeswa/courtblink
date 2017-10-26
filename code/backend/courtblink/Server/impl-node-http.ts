@@ -13,7 +13,7 @@ import { SplashData } from 'common/api/schema/generated'
 import { ContextualError } from 'common/util/ContextualError'
 
 import {
-  extractRequestSplashDate,
+  extractYYYYMMDDFromSplashRequest,
   isSplashRoute,
   respondWithProto,
 } from './helpers'
@@ -153,8 +153,8 @@ export class NodeHttpServer implements Server {
         this.serve200(response)
       } else if (isSplashRoute(path, this.endpointRoutes)) {
         await this.serveSplash(
-          extractRequestSplashDate(path, this.endpointRoutes),
-          response
+          response,
+          extractYYYYMMDDFromSplashRequest(path, this.endpointRoutes)
         )
       } else {
         this.serve404(response)
@@ -202,17 +202,17 @@ export class NodeHttpServer implements Server {
 
   /**
    * Responds to splash requests.
-   * @param requestedDate date of the splash being requested.
    * @param response the outgoing response to the corresponding request.
+   * @param yyyymmdd date of the splash being requested.
    */
   private async serveSplash(
-    requestedDate: Date,
-    response: ServerResponse
+    response: ServerResponse,
+    yyyymmdd: string
   ): Promise<void> {
     try {
       // Use the API service to get splash data for the date requested.
       const requestedSplashData = await this.apiService.fetchSplashData(
-        requestedDate
+        yyyymmdd
       )
 
       respondWithProto(requestedSplashData, SplashData.encode, response)

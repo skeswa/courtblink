@@ -6,7 +6,7 @@
 export function isATimeoutError(error: any): boolean {
   if (!error || !error.message) return false
   return (
-    error.name === 'FetchError' ||
+    error.name === 'FetchError' &&
     error.message.indexOf('reason: Connection Timed Out') !== -1
   )
 }

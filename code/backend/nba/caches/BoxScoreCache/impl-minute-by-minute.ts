@@ -1,9 +1,9 @@
 import { BoxScore } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
-import { yyyymmdd } from '../../../../common/util/date/helpers'
 import { Clock } from '../../../util/Clock'
 import { Logger } from '../../../util/Logger'
 import { ContextualError } from 'common/util/ContextualError'
+import { isOutOfBounds } from 'common/util/date/helpers'
 
 import { BoxScoreCache, BoxScoreId } from './types'
 
@@ -38,12 +38,14 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
   }
 
   async retrieveById(boxScoreId: BoxScoreId): Promise<BoxScore> {
-    const { gameId, date } = boxScoreId
-    const key = this.composeMapKey(gameId, date)
+    const { gameId, yyyymmdd } = boxScoreId
+    const key = this.composeMapKey(gameId, yyyymmdd)
     let entry = this.entries.get(key)
 
     // Do not continue if this box score is out of bounds.
-    if (this.isOutOfBounds(date)) {
+    if (
+      isOutOfBounds(yyyymmdd, cacheEntryLifespan, this.clock.millisSinceEpoch())
+    ) {
       // If the entry exists, get rid of it.
       if (entry) {
         this.entries.delete(key)
@@ -61,10 +63,10 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
       // Create a new entry.
       entry = new CacheEntry(
         this.clock,
-        date,
         gameId,
         this.logger,
-        this.nbaApiClient
+        this.nbaApiClient,
+        yyyymmdd
       )
 
       // Make sure it is represented in the entries map before continuing.
@@ -77,7 +79,13 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
   collectGarbage() {
     // Get the list of expired keys to figure out what to cleanup.
     const expiredKeys = Array.from(this.entries.entries())
-      .filter(([key, value]) => this.isOutOfBounds(value.date))
+      .filter(([key, value]) =>
+        isOutOfBounds(
+          value.yyyymmdd,
+          cacheEntryLifespan,
+          this.clock.millisSinceEpoch()
+        )
+      )
       .map(([key]) => key)
 
     if (expiredKeys.length > 0) {
@@ -94,28 +102,18 @@ export class MinuteByMinuteBoxScoreCache implements BoxScoreCache {
   /**
    * Creates a map key from the gameId and the date of a box score.
    * @param gameId the id of the game for which the box score will be fetched.
-   * @param date the date of the game for which the box score will be fetched.
+   * @param yyyymmdd the date of the game for which the box score will be
+   *     fetched.
    * @return a map key represening the game.
    */
-  private composeMapKey(gameId: string, date: Date) {
-    return `${yyyymmdd(date)}:${gameId}`
-  }
-
-  /**
-   * Returns true if the date is out of bounds for a cache entry.
-   * @param date date to check.
-   * @return true if the date is out of bounds for a cache entry. */
-  private isOutOfBounds(date: Date): boolean {
-    return (
-      Math.abs(this.clock.millisSinceEpoch() - date.getTime()) >
-      cacheEntryLifespan
-    )
+  private composeMapKey(gameId: string, yyyymmdd: string) {
+    return `${yyyymmdd}:${gameId}`
   }
 }
 
 /** Entry of the cache. Wraps an individual box score. */
 class CacheEntry {
-  public date: Date
+  public yyyymmdd: string
 
   private cachedBoxScore: BoxScore
   private clock: Clock
@@ -126,16 +124,16 @@ class CacheEntry {
 
   constructor(
     clock: Clock,
-    date: Date,
     gameId: string,
     logger: Logger,
-    nbaApiClient: NbaApiClient
+    nbaApiClient: NbaApiClient,
+    yyyymmdd: string
   ) {
     this.clock = clock
-    this.date = date
     this.gameId = gameId
     this.logger = logger
     this.nbaApiClient = nbaApiClient
+    this.yyyymmdd = yyyymmdd
   }
 
   /** Gets the value of this cache entry. */
@@ -165,7 +163,7 @@ class CacheEntry {
 
     // Fetches the updated box score.
     const boxScore = await this.nbaApiClient.fetchBoxScore(
-      this.date,
+      this.yyyymmdd,
       this.gameId
     )
 

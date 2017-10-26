@@ -7,10 +7,10 @@ import { SplashData } from 'common/api/schema/generated'
 export interface ApiService {
   /**
    * Gets splash data for the specified date.
-   * @param date the date for which the splash data should be fetched.
+   * @param yyyymmdd the date for which the splash data should be fetched.
    * @return splash data for the specified date.
    */
-  fetchSplashData(date: Date): Promise<SplashData>
+  fetchSplashData(yyyymmdd: string): Promise<SplashData>
 }
 
 /** Strategy for creating a new `ApiService`. */

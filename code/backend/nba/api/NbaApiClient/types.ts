@@ -9,33 +9,33 @@ import {
 export interface NbaApiClient {
   /**
    * Fetches information about all teams in the NBA.
-   * @param date effective date of team information.
+   * @param yyyy effective date of team information.
    * @return information about all teams in the NBA.
    */
-  fetchAllTeamDetails(date: Date): Promise<AllTeamDetails>
+  fetchAllTeamDetails(yyyy: string): Promise<AllTeamDetails>
 
   /**
    * Fetches information about all players in the NBA.
-   * @param date effective date of player information.
+   * @param yyyy effective date of player information.
    * @return information about all players in the NBA.
    */
-  fetchAllPlayerDetails(date: Date): Promise<AllPlayerDetails>
+  fetchAllPlayerDetails(yyyy: string): Promise<AllPlayerDetails>
 
   /**
    * Fetches a list of all the on-going NBA games and some nominal info about
    * each.
-   * @param date effective date of scoreboard information.
+   * @param yyyymmdd effective date of scoreboard information.
    * @return list of all the on-going NBA games.
    */
-  fetchScoreboard(date: Date): Promise<Scoreboard>
+  fetchScoreboard(yyyymmdd: string): Promise<Scoreboard>
 
   /**
    * Fetches the box score for an NBA game.
-   * @param date date of the game.
+   * @param yyyymmdd date of the game.
    * @param id id of the game.
    * @return game stats for the specified NBA game.
    */
-  fetchBoxScore(date: Date, gameId: string): Promise<BoxScore>
+  fetchBoxScore(yyyymmdd: string, gameId: string): Promise<BoxScore>
 
   /**
    * Checks if the NBA API is reachable.

@@ -82,16 +82,12 @@ export class ProxiedSerialHttpClient implements HttpClient {
   private async request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
-    initialAttempts: number = 0,
-    maxAttempts: number = 3
+    attemptsBeforeRequestingANewIp: number = 3,
+    maxAttempts: number = 10
   ): Promise<any> {
-    let attempts = initialAttempts
-    let lastError: Error | undefined
-    let timeoutFailures = 0
-
     // Attempt the fetch three times. If it fails all three times due to a
     // timeout, then ask tor for a new IP address.
-    for (attempts = 0; attempts < maxAttempts; attempts++) {
+    for (let attempts = 0; attempts < maxAttempts; attempts++) {
       this.logger.debug(
         tag,
         `${method} "${url}" (attempt ${attempts + 1}/${maxAttempts})`
@@ -109,51 +105,41 @@ export class ProxiedSerialHttpClient implements HttpClient {
           agent: this.torClient.agent(),
         })
 
+        // Check if we got a 4XX or a 5XX.
+        if (!response.ok) {
+          throw new Error(`Remote host responded with code ${response.status}`)
+        }
+
         // Then, get the body of the response, and return it if possible.
         return await response.json()
       } catch (err) {
-        // Check if the error was due to a timeout. If so, increment the number
-        // of timeout failures.
-        if (isATimeoutError(err)) {
-          this.logger.debug(tag, `${method} "${url}" timed out`)
-
-          timeoutFailures++
-        } else {
-          this.logger.error(tag, `${method} "${url}" failed`, err)
+        // If the error was due to a timeout, then try again. Otherwise,
+        // fail immediately.
+        if (!isATimeoutError(err)) {
+          throw new ContextualError(`${method} "${url}" request failed`, err)
         }
-
-        lastError = err
-        continue
       }
-    }
 
-    // Check if all the failures were timeouts. If so, ask for a new connection.
-    if (timeoutFailures === attempts) {
-      try {
-        await this.torClient.switchIP()
+      // Publish that there was a timeout.
+      this.logger.debug(tag, `${method} "${url}" timed out`)
 
-        // After the IP switch happens, try another request. Make sure the
-        // number of attempts is preserved for our records.
-        return this.request(
-          method,
-          url,
-          attempts,
-          maxAttempts + (maxAttempts - attempts)
-        )
-      } catch (err) {
-        throw new ContextualError(
-          `Failed to request a new IP while sending a ${method} request` +
-            ` to "${url}"`,
-          err
-        )
+      // Request a new IP if enough timeout attempts have been made.
+      if (attempts && attempts % attemptsBeforeRequestingANewIp === 0) {
+        try {
+          await this.torClient.switchIP()
+        } catch (err) {
+          throw new ContextualError(
+            `Failed to get a new IP while requesting ${method} "${url}"`,
+            err
+          )
+        }
       }
     }
 
     // Throw the error that we bumped into, because it wasn't timeout related.
-    throw new ContextualError(
-      `Failed to send a ${method} request to "${url}" after ` +
-        `${attempts} attempts`,
-      lastError
+    throw new Error(
+      `${method} "${url}" request failed after ${maxAttempts} ` +
+        `attempts due to timeouts`
     )
   }
 }

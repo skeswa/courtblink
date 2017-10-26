@@ -34,13 +34,12 @@ export class CachedApiService implements ApiService {
     this.splashDataBuilder = splashDataBuilder
   }
 
-  async fetchSplashData(date: Date): Promise<SplashData> {
-    const dateString = yyyymmdd(date)
-    this.logger.debug(tag, `Fetching splash data for date "${dateString}"`)
+  async fetchSplashData(yyyymmdd: string): Promise<SplashData> {
+    this.logger.debug(tag, `Fetching splash data for date "${yyyymmdd}"`)
 
     try {
       // The splash is based on the scoreboard, so fetch that first.
-      const scoreboard = await this.scoreboardCache.retrieveById(date)
+      const scoreboard = await this.scoreboardCache.retrieveById(yyyymmdd)
 
       // Use the scoreboard to build the splash data.
       const splashData = await this.splashDataBuilder.build(scoreboard)
@@ -48,7 +47,7 @@ export class CachedApiService implements ApiService {
       return splashData
     } catch (err) {
       throw new ContextualError(
-        `Failed to fetch splash data for for date "${dateString}"`,
+        `Failed to fetch splash data for for date "${yyyymmdd}"`,
         err
       )
     }

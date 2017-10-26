@@ -4,10 +4,14 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build-docker-images": "node ./build-docker-images",
-    "dev": "node ./dev",
+    "docker:backend:build": "node ./build-backend-docker-image",
+    "docker:backend:run": "node ./run-backend-docker-container",
+    "docker:build": "yarn run docker:backend:build; yarn run docker:frontend:build",
+    "docker:frontend:build": "node ./build-frontend-docker-image",
+    "docker:frontend:run": "node ./run-frontend-docker-container",
+    "code:common:update": "node ./update-common",
     "setup": "node ./setup",
-    "update-common": "node ./update-common"
+    "start": "node ./dev"
   },
   "author": "",
   "license": "MIT",

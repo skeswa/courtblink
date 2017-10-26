@@ -71,8 +71,8 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
         this.teamDetailsCache.retrieveById(game.hTeam.teamId),
         this.teamDetailsCache.retrieveById(game.vTeam.teamId),
         this.boxScoreCache.retrieveById({
-          date: new Date(game.startTimeUTC),
           gameId: game.gameId,
+          yyyymmdd: game.startDateEastern,
         }),
       ])
 

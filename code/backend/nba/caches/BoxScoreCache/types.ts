@@ -4,7 +4,7 @@ import { BoxScore } from '../../../nba/api/schema'
 /** Id of the a box score. */
 export type BoxScoreId = {
   /** Date of the game that the box score reflects. */
-  date: Date,
+  yyyymmdd: string,
   /** Id of the game that the box score reflects. */
   gameId: string,
 }

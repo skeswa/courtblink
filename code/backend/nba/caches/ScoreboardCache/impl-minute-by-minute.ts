@@ -1,9 +1,9 @@
 import { Scoreboard } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
 import { Clock } from '../../../util/Clock'
-import { yyyymmdd } from '../../../../common/util/date/helpers'
 import { Logger } from '../../../util/Logger'
 import { ContextualError } from 'common/util/ContextualError'
+import { isOutOfBounds } from 'common/util/date/helpers'
 
 import { ScoreboardCache } from './types'
 
@@ -37,31 +37,37 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
     this.nbaApiClient = nbaApiClient
   }
 
-  async retrieveById(date: Date): Promise<Scoreboard> {
-    const key = yyyymmdd(date)
-    let entry = this.entries.get(key)
+  async retrieveById(yyyymmdd: string): Promise<Scoreboard> {
+    let entry = this.entries.get(yyyymmdd)
 
     // Do not continue if this box score is out of bounds.
-    if (this.isOutOfBounds(date)) {
+    if (
+      isOutOfBounds(yyyymmdd, cacheEntryLifespan, this.clock.millisSinceEpoch())
+    ) {
       // If the entry exists, get rid of it.
       if (entry) {
-        this.entries.delete(key)
+        this.entries.delete(yyyymmdd)
       }
 
       // Throw an error since, clearly, this box score is not available.
       throw new Error(
-        `Could not get the scoreboard with id "${key}" because it has been ` +
-          `marked as expired; try requesting a more recent scoreboard`
+        `Could not get the scoreboard with id "${yyyymmdd}" because it has ` +
+          `been marked as expired; try requesting a more recent scoreboard`
       )
     }
 
     // Check if we need to create a new entry first.
     if (!entry) {
       // Create a new entry.
-      entry = new CacheEntry(this.clock, date, this.logger, this.nbaApiClient)
+      entry = new CacheEntry(
+        this.clock,
+        this.logger,
+        this.nbaApiClient,
+        yyyymmdd
+      )
 
       // Make sure it is represented in the entries map before continuing.
-      this.entries.set(key, entry)
+      this.entries.set(yyyymmdd, entry)
     }
 
     return await entry.scoreboard()
@@ -70,7 +76,13 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
   collectGarbage() {
     // Get the list of expired keys to figure out what to cleanup.
     const expiredKeys = Array.from(this.entries.entries())
-      .filter(([key, value]) => this.isOutOfBounds(value.date))
+      .filter(([key, value]) =>
+        isOutOfBounds(
+          value.yyyymmdd,
+          cacheEntryLifespan,
+          this.clock.millisSinceEpoch()
+        )
+      )
       .map(([key]) => key)
 
     if (expiredKeys.length > 0) {
@@ -83,22 +95,11 @@ export class MinuteByMinuteScoreboardCache implements ScoreboardCache {
       expiredKeys.forEach(expiredKey => this.entries.delete(expiredKey))
     }
   }
-
-  /**
-   * Returns true if the date is out of bounds for a cache entry.
-   * @param date date to check.
-   * @return true if the date is out of bounds for a cache entry. */
-  private isOutOfBounds(date: Date): boolean {
-    return (
-      Math.abs(this.clock.millisSinceEpoch() - date.getTime()) >
-      cacheEntryLifespan
-    )
-  }
 }
 
 /** Entry of the cache. Wraps an individual scoreboard. */
 class CacheEntry {
-  public date: Date
+  public yyyymmdd: string
 
   private cachedScoreboard: Scoreboard
   private clock: Clock
@@ -109,20 +110,20 @@ class CacheEntry {
   /**
    * Creates a new cache entry.
    * @param clock time utility.
-   * @param date representative date for this cache entry.
    * @param logger logging utility.
    * @param nbaApiClient client for interfacing with the NBA.
+   * @param yyyymmdd representative date for this cache entry.
    */
   constructor(
     clock: Clock,
-    date: Date,
     logger: Logger,
-    nbaApiClient: NbaApiClient
+    nbaApiClient: NbaApiClient,
+    yyyymmdd: string
   ) {
     this.clock = clock
-    this.date = date
     this.logger = logger
     this.nbaApiClient = nbaApiClient
+    this.yyyymmdd = yyyymmdd
   }
 
   /** Gets the value of this cache entry. */
@@ -137,8 +138,7 @@ class CacheEntry {
       return this.cachedScoreboard
     } catch (err) {
       throw new ContextualError(
-        `Failed to get the latest scoreboard for date ` +
-          `"${yyyymmdd(this.date)}"`,
+        `Failed to get the latest scoreboard for date ` + `"${this.yyyymmdd}"`,
         err
       )
     }
@@ -160,11 +160,11 @@ class CacheEntry {
   private async updateCachedScoreboard(): Promise<void> {
     this.logger.debug(
       tag,
-      `updating cached scoreboard for date "${yyyymmdd(this.date)}"`
+      `updating cached scoreboard for date "${this.yyyymmdd}"`
     )
 
     // Fetches the updated scoreboard.
-    const scoreboard = await this.nbaApiClient.fetchScoreboard(this.date)
+    const scoreboard = await this.nbaApiClient.fetchScoreboard(this.yyyymmdd)
 
     // Update the scoreboard.
     this.cachedScoreboard = scoreboard

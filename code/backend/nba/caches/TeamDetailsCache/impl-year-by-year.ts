@@ -2,6 +2,7 @@ import { TeamDetails } from '../../../nba/api/schema'
 import { NbaApiClient } from '../../../nba/api/NbaApiClient'
 import { Logger } from '../../../util/Logger'
 import { ContextualError } from 'common/util/ContextualError'
+import { yyyy } from 'common/util/date/helpers'
 
 import { TeamDetailsCache } from './types'
 
@@ -85,7 +86,7 @@ export class YearByYearTeamDetailsCache implements TeamDetailsCache {
 
       // Get all the team details from the NBA API.
       const allTeamDetails = await this.nbaApiClient.fetchAllTeamDetails(
-        dateRequestMade
+        yyyy(dateRequestMade)
       )
 
       // Create a new entries map for the new team details.
