@@ -18,25 +18,39 @@ export class ClockImpl implements Clock {
 /** Default implementation for the cancellable interface. */
 class CancellableImpl implements Cancellable {
   private intervalRef: NodeJS.Timer | null
+  private timeoutRef: NodeJS.Timer | null
 
   /**
    * Creates a new cancellable.
    * @param interval number of milliseconds between invocations of `fn`.
+   * @param delay number of milliseconds before invocations of `fn` begin.
    * @param fn function to invoke evert `internval` milliseconds.
    */
-  constructor(interval: number, fn: () => void) {
-    this.intervalRef = setInterval(fn, interval)
+  constructor(interval: number, delay: number, fn: () => void) {
+    this.intervalRef = null
+    this.timeoutRef = setTimeout(() => {
+      this.timeoutRef = null
+      this.intervalRef = setInterval(fn, interval)
+    }, delay)
   }
 
   cancel(): void {
-    if (this.intervalRef === null) {
-      throw new Error('`cancel()` cannot be called more than once')
+    // If the interval hasn't been scheduled yet, then clear the delay timeout
+    // ref first.
+    if (this.timeoutRef !== null) {
+      clearTimeout(this.timeoutRef)
+      this.timeoutRef = null
+      return
     }
 
-    // Clear the interval and null to the ref to make sure cancel can't be
-    // called again.
-    clearInterval(this.intervalRef)
-    this.intervalRef = null
+    // The interval has been scheduled, so it needs to be cleared.
+    if (this.intervalRef !== null) {
+      clearInterval(this.intervalRef)
+      this.intervalRef = null
+      return
+    }
+
+    throw new Error('`cancel()` cannot be called more than once')
   }
 }
 
@@ -52,7 +66,7 @@ class RepeatableImpl implements Repeatable {
     this.fn = fn
   }
 
-  every(interval: number): Cancellable {
-    return new CancellableImpl(interval, this.fn)
+  every(interval: number, delay?: number): Cancellable {
+    return new CancellableImpl(interval, delay || 0, this.fn)
   }
 }

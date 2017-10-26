@@ -69,19 +69,16 @@ class GameList extends Component<Props, State> {
     selectedIndex: number | undefined,
     onSelectedGameChanged: (newlySelectedGame: IGameSummary) => void
   ): JSX.Element[] {
-    return games.map((game, i) => {
-      console.log('selectedIndex', selectedIndex)
-      return (
-        <GameBox
-          key={game.id}
-          game={game}
-          index={i}
-          isSelected={i === selectedIndex}
-          verticalDisplacementUnits={(i > (selectedIndex || 0) ? 1 : 0) - i}
-          onSelection={onSelectedGameChanged}
-        />
-      )
-    })
+    return games.map((game, i) => (
+      <GameBox
+        key={game.id}
+        game={game}
+        index={i}
+        isSelected={i === selectedIndex}
+        verticalDisplacementUnits={(i > (selectedIndex || 0) ? 1 : 0) - i}
+        onSelection={onSelectedGameChanged}
+      />
+    ))
   }
 
   public render(

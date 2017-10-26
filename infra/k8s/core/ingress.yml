@@ -5,6 +5,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: courtblink-static-ip
 spec:
+  tls:
+  - secretName: courtblink-tls-secret
   backend:
     serviceName: frontend-service
     servicePort: 80

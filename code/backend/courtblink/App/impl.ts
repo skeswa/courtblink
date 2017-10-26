@@ -5,6 +5,11 @@ import {
   ApiServiceCreationStrategy,
 } from '../../courtblink/api/ApiService'
 import {
+  createApiTrafficSimulator,
+  ApiTrafficSimulator,
+  ApiTrafficSimulatorCreationStrategy,
+} from '../../courtblink/api/ApiTrafficSimulator'
+import {
   createGameLeadersBuilder,
   GameLeadersBuilderCreationStrategy,
 } from '../../courtblink/api/builders/GameLeadersBuilder'
@@ -77,11 +82,12 @@ const tag = 'courtblink:app'
 
 /** The courtlink backend application type. */
 export class AppImpl implements App {
-  private cacheJanitor: EntityCacheJanitor
-  private logger: Logger
-  private nbaApiClient: NbaApiClient
-  private server: Server
-  private torClient: TorClient
+  private apiTrafficSimulator: ApiTrafficSimulator | null
+  private cacheJanitor: EntityCacheJanitor | null
+  private logger: Logger | null
+  private nbaApiClient: NbaApiClient | null
+  private server: Server | null
+  private torClient: TorClient | null
 
   /**
    * Creates a new new courtblink backend app.
@@ -221,6 +227,14 @@ export class AppImpl implements App {
       splashDataBuilder
     )
 
+    // Simulates traffic to the API to keep the caches hot.
+    const apiTrafficSimulator = createApiTrafficSimulator(
+      ApiTrafficSimulatorCreationStrategy.UpdateEveryMinute,
+      apiService,
+      clock,
+      logger
+    )
+
     // Responds to HTTP requests.
     const httpServer = createServer(
       ServerCreationStrategy.UsingDefaultNodeServer,
@@ -232,6 +246,7 @@ export class AppImpl implements App {
     )
     //#endregion
 
+    this.apiTrafficSimulator = apiTrafficSimulator
     this.cacheJanitor = cacheJanitor
     this.logger = logger
     this.nbaApiClient = nbaApiClient
@@ -240,18 +255,32 @@ export class AppImpl implements App {
   }
 
   async start(): Promise<void> {
+    if (
+      !this.apiTrafficSimulator ||
+      !this.cacheJanitor ||
+      !this.logger ||
+      !this.nbaApiClient ||
+      !this.server ||
+      !this.torClient
+    ) {
+      throw new Error(
+        'Cannot start if any internal state was not initialized correctly'
+      )
+    }
+
     try {
       // Kick off the connection.
       await this.torClient.connect()
 
       // Wait for the API to be reachable.
-      if (!(await this.nbaApiClient.isReachable())) {
+      if (!await this.nbaApiClient.isReachable()) {
         throw new Error('Could not reach the NBA API')
       }
 
       this.logger.info(tag, 'Established a connection to the NBA API')
 
-      // Wait for a connection to
+      // Start all the things now that there is a connection.
+      this.apiTrafficSimulator.start()
       this.cacheJanitor.start()
       this.server.start()
     } catch (err) {
@@ -263,8 +292,22 @@ export class AppImpl implements App {
   }
 
   async stop(): Promise<void> {
+    if (
+      !this.apiTrafficSimulator ||
+      !this.cacheJanitor ||
+      !this.logger ||
+      !this.nbaApiClient ||
+      !this.server ||
+      !this.torClient
+    ) {
+      throw new Error(
+        'Cannot stop if any internal state was not initialized correctly'
+      )
+    }
+
     try {
-      // Kill the cache janitor first because it is synchronous.
+      // Kill the synchronous stuff first.
+      this.apiTrafficSimulator.stop()
       this.cacheJanitor.stop()
 
       // Wait for the tor client to exit asynchronously. Then wait for the
@@ -277,5 +320,12 @@ export class AppImpl implements App {
         err
       )
     }
+
+    this.apiTrafficSimulator = null
+    this.cacheJanitor = null
+    this.logger = null
+    this.nbaApiClient = null
+    this.server = null
+    this.torClient = null
   }
 }

@@ -32,6 +32,7 @@ export interface Repeatable {
   /**
    * Schedules a function to be called every `duration` milliseconds.
    * @param duration interval duration each function invocation.
+   * @param delay time before scheduling the repeasting function invocations.
    */
-  every(duration: number): Cancellable
+  every(duration: number, delay?: number): Cancellable
 }

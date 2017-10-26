@@ -31,11 +31,11 @@ export class ProdLogger implements Logger {
   }
 
   error(tag: string, message: string, error: any): void {
-    this.winstonLogger.error(this.timeStamp(), tag, message)
+    this.winstonLogger.error(this.timeStamp(), tag, message, error)
   }
 
   fatal(tag: string, message: string, error: any): void {
-    this.winstonLogger.emerg(this.timeStamp(), tag, message)
+    this.winstonLogger.emerg(this.timeStamp(), tag, message, error)
   }
 
   /** @return the current timestamp. */
