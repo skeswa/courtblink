@@ -19,22 +19,40 @@ export class ProdLogger implements Logger {
   }
 
   debug(tag: string, message: string): void {
-    this.winstonLogger.debug(`[${tag}] ${message}`)
+    this.winstonLogger.debug(this.timeStamp(), tag, message)
   }
 
   info(tag: string, message: string): void {
-    this.winstonLogger.info(`[${tag}] ${message}`)
+    this.winstonLogger.info(this.timeStamp(), tag, message)
   }
 
   warn(tag: string, message: string): void {
-    this.winstonLogger.warn(`[${tag}] ${message}`)
+    this.winstonLogger.warn(this.timeStamp(), tag, message)
   }
 
   error(tag: string, message: string, error: any): void {
-    this.winstonLogger.error(`[${tag}] ${message}`, error)
+    this.winstonLogger.error(this.timeStamp(), tag, message)
   }
 
   fatal(tag: string, message: string, error: any): void {
-    this.winstonLogger.emerg(`[${tag}] ${message}`, error)
+    this.winstonLogger.emerg(this.timeStamp(), tag, message)
+  }
+
+  /** @return the current timestamp. */
+  private timeStamp(): string {
+    const now = new Date()
+    return (
+      now.getFullYear() +
+      '/' +
+      (now.getMonth() + 1) +
+      '/' +
+      now.getDate() +
+      ' ' +
+      now.getHours() +
+      ':' +
+      now.getMinutes() +
+      ':' +
+      now.getMilliseconds()
+    )
   }
 }

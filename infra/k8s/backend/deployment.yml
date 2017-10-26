@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend-deployment
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -11,4 +11,4 @@ spec:
     spec:
       containers:
       - name: backend
-        image: us.gcr.io/courtblink/backend:1.1.0
+        image: us.gcr.io/courtblink/backend:1.4.0
