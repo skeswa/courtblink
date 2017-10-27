@@ -3,6 +3,7 @@ import * as classNames from 'classnames'
 import { h, Component } from 'preact'
 
 import Loader from 'components/Loader'
+import { setStateAndWait, setTimeoutAndWait } from 'util/asyncUI'
 
 import * as style from './style.css'
 
@@ -11,6 +12,9 @@ const imageLoadDelay = 300 /* ms */
 
 // How long the shield fading animation takes to finish.
 const fadeAnimationDuration = 500 /* ms */
+
+// How long to wait after the `src` changes before taking it seriously.
+const srcChangeEventDebounceInterval = 1000 /* ms */
 
 /** Represents an image layer of this component. */
 type Layer = {
@@ -50,6 +54,7 @@ type State = {
 
 /** Transitions the background image when the `src` property changes. */
 class CyclingBackground extends Component<Props, State> {
+  private srcChangeDebounceTimeoutRef: number | null = null
   private rootElement: Element
   public state: State = {}
 
@@ -59,11 +64,12 @@ class CyclingBackground extends Component<Props, State> {
   }
 
   public componentWillReceiveProps(nextProps: Props): void {
-    // Only pay attention if the `src` changes.
-    if (!nextProps.src || nextProps.src === this.props.src) return
+    const nextSrc = nextProps.src
 
-    // It is clear that the `src` prop has changed at this point, so handle it.
-    this.onSrcChanged(nextProps.src)
+    // Only pay attention if the `src` changes.
+    if (nextSrc && nextSrc !== this.props.src) {
+      this.debounceSrcChangeEvent(nextSrc)
+    }
   }
 
   public componentWillUnmount(): void {
@@ -144,6 +150,26 @@ class CyclingBackground extends Component<Props, State> {
   }
 
   /**
+   * Buffer the `src` property change event so that too many don't happen at
+   * once.
+   * @param nextSrc the next value for the `src` property.
+   */
+  private debounceSrcChangeEvent(nextSrc: string): void {
+    // It is clear that the `src` prop has changed at this point, so handle it.
+    if (this.srcChangeDebounceTimeoutRef !== null) {
+      clearTimeout(this.srcChangeDebounceTimeoutRef)
+      this.srcChangeDebounceTimeoutRef = null
+    }
+
+    // Schedule the source change event to fire if there isn't another one in
+    // the next quarter of a second.
+    this.srcChangeDebounceTimeoutRef = window.setTimeout(
+      () => this.onSrcChanged(nextSrc),
+      srcChangeEventDebounceInterval
+    )
+  }
+
+  /**
    * Loades an image with the specified URL.
    * @param src URL of the image to load.
    */
@@ -187,11 +213,11 @@ class CyclingBackground extends Component<Props, State> {
     }
 
     // Give the DOM some time to reflect the image now loaded into the cache.
-    await this.setTimeoutAndWait(imageLoadDelay)
+    await setTimeoutAndWait(imageLoadDelay)
 
     // Kick off the animation that fades the shielding layer. Also, give the
     // next layer up some dimensions.
-    await this.setStateAndWait({
+    await setStateAndWait(this, {
       currentlyLoadingLayer: {
         ...currentlyLoadingLayer,
         height,
@@ -202,7 +228,7 @@ class CyclingBackground extends Component<Props, State> {
     })
 
     // Wait for the animation to finish.
-    await this.setTimeoutAndWait(fadeAnimationDuration)
+    await setTimeoutAndWait(fadeAnimationDuration)
 
     // Get the next layer up, and get started with it.
     let {
@@ -261,7 +287,7 @@ class CyclingBackground extends Component<Props, State> {
     if (currentlyLoadingLayer && currentlyLoadingLayer.isAnimating) {
       // If the current loading layer is animating, don't update anything. Just
       // add this layer as the next one up.
-      await this.setStateAndWait({
+      await setStateAndWait(this, {
         nextLayerToLoad: { src: nextSrc, isAnimating: false },
       })
 
@@ -271,45 +297,13 @@ class CyclingBackground extends Component<Props, State> {
 
     // Simply set the `currentlyLoadingLayer` since it has not been set. Also,
     // add a blank shielding layer if one doesn't exist already.
-    await this.setStateAndWait({
+    await setStateAndWait(this, {
       currentlyLoadingLayer: { src: nextSrc, isAnimating: false },
       shieldingLayer: shieldingLayer || { isAnimating: false },
     })
 
     // Wait for the image to load.
     return this.loadImage(nextSrc)
-  }
-
-  /**
-   * Wrapper for `this.setState` that returns a `Promise` instead of accepting a
-   * callback.
-   * @param stateDiff diff object used to change `this.state`.
-   */
-  private setStateAndWait<K extends keyof State>(
-    stateDiff: Pick<State, K>
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.setState(stateDiff, resolve)
-      } catch (err) {
-        reject(err)
-      }
-    })
-  }
-
-  /**
-   * Wrapper for `setTimeout` that returns a `Promise` instead of accepting a
-   * callback.
-   * @param duration how long to wait for.
-   */
-  private setTimeoutAndWait(duration: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        window.setTimeout(resolve, duration)
-      } catch (err) {
-        reject(err)
-      }
-    })
   }
 
   /**

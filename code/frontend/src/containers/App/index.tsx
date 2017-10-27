@@ -14,6 +14,7 @@ import * as style from './style.css'
 type Props = {}
 
 type State = {
+  currentlyViewedGame?: IGameSummary
   didFailToLoadSplashData: boolean
   games: IGameSummary[]
   isBackgroundLoaded: boolean
@@ -50,16 +51,18 @@ class App extends Component<Props, State> {
 
     try {
       // Attempt to fetch splash data from the backend.
-      const { games } = await this.apiClient.fetchSplashData(date)
+      const games = (await this.apiClient.fetchSplashData(date)).games || []
 
       // Auto-select the very first game once loaded.
+      let currentlyViewedGame: IGameSummary | undefined
       let selectedGame: IGameSummary | undefined
       if (games && games.length > 0) {
+        currentlyViewedGame = games[0]
         selectedGame = games[0]
       }
 
       // Update the app state to reflect the loaded splash data.
-      this.setState({ games: games || [], selectedGame })
+      this.setState({ currentlyViewedGame, selectedGame, games })
     } catch (err) {
       this.log('Failed to load splash data', err)
 
@@ -80,27 +83,38 @@ class App extends Component<Props, State> {
   }
 
   @bind
-  private onSelectedGameChanged(newlySelectedGame: IGameSummary): void {
-    this.setState({ selectedGame: newlySelectedGame })
+  private onCurrentlyViewedGameChanged(
+    currentlyViewedGame: IGameSummary
+  ): void {
+    this.setState({ currentlyViewedGame })
+  }
+
+  @bind
+  private onGameSelected(selectedGame: IGameSummary): void {
+    this.setState({ selectedGame })
   }
 
   public render(
     props: Props,
-    { games, isBackgroundLoaded, isSplashDataLoading, selectedGame }: State
+    {
+      currentlyViewedGame,
+      games,
+      isBackgroundLoaded,
+      isSplashDataLoading,
+      selectedGame,
+    }: State
   ) {
     const isReady =
       !isSplashDataLoading && games && games.length > 0 && isBackgroundLoaded
     const className = classNames(style.main, { [style.main__ready]: isReady })
     const splashUrl =
-      selectedGame && selectedGame.homeTeamStatus
-        ? selectedGame.homeTeamStatus.splashUrl
+      currentlyViewedGame && currentlyViewedGame.homeTeamStatus
+        ? currentlyViewedGame.homeTeamStatus.splashUrl
         : undefined
 
     return (
       <div className={className}>
-        <div className={style.loader}>
-          {!isReady ? <Loader /> : null}
-        </div>
+        <div className={style.loader}>{!isReady ? <Loader /> : null}</div>
         <div className={style.back}>
           <CyclingBackground
             shouldShowBlurredLeftSection={true}
@@ -112,7 +126,8 @@ class App extends Component<Props, State> {
           <div className={style.left}>
             <GameBoxList
               games={games}
-              onSelectedGameChanged={this.onSelectedGameChanged}
+              onCurrentlyViewedGameChanged={this.onCurrentlyViewedGameChanged}
+              onGameSelected={this.onGameSelected}
               selectedGame={selectedGame}
             />
           </div>

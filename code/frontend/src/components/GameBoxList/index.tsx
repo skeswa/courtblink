@@ -13,7 +13,8 @@ const expandedGameBoxHeight = (12.5 + 20) * rem
 type Props = {
   games: IGameSummary[]
   selectedGame?: IGameSummary
-  onSelectedGameChanged: (newlySelectedGame: IGameSummary) => void
+  onCurrentlyViewedGameChanged: (game: IGameSummary) => void
+  onGameSelected: (game: IGameSummary) => void
 }
 
 type State = {
@@ -67,22 +68,30 @@ class GameList extends Component<Props, State> {
   private renderGameBoxes(
     games: IGameSummary[],
     selectedIndex: number | undefined,
-    onSelectedGameChanged: (newlySelectedGame: IGameSummary) => void
+    onGameFinishedExpanding: (newlySelectedGame: IGameSummary) => void,
+    onGameSelected: (newlySelectedGame: IGameSummary) => void
   ): JSX.Element[] {
-    return games.map((game, i) => (
-      <GameBox
-        key={game.id}
-        game={game}
-        index={i}
-        isSelected={i === selectedIndex}
-        verticalDisplacementUnits={(i > (selectedIndex || 0) ? 1 : 0) - i}
-        onSelection={onSelectedGameChanged}
-      />
-    ))
+    return games.map((game, i) => {
+      const isAfterSelectedGameBox = i > (selectedIndex || 0)
+      const isSelected = i === selectedIndex
+      const verticalDisplacementOffset = isAfterSelectedGameBox ? 1 : 0
+      const verticalDisplacementUnits = verticalDisplacementOffset - i
+
+      return (
+        <GameBox
+          game={game}
+          isSelected={isSelected}
+          key={game.id}
+          onFinishedExpanding={onGameFinishedExpanding}
+          onSelect={onGameSelected}
+          verticalDisplacementUnits={verticalDisplacementUnits}
+        />
+      )
+    })
   }
 
   public render(
-    { games, onSelectedGameChanged }: Props,
+    { games, onCurrentlyViewedGameChanged, onGameSelected }: Props,
     { selectedIndex }: State
   ): JSX.Element {
     // Requisite variables for calculating CSS styling.
@@ -104,7 +113,12 @@ class GameList extends Component<Props, State> {
         <div className={style.heading} />
         <div className={style.gameBoxesContainer}>
           <div style={gameBoxesStyle} className={style.gameBoxes}>
-            {this.renderGameBoxes(games, selectedIndex, onSelectedGameChanged)}
+            {this.renderGameBoxes(
+              games,
+              selectedIndex,
+              onCurrentlyViewedGameChanged,
+              onGameSelected
+            )}
           </div>
           <div className={style.footer} />
         </div>

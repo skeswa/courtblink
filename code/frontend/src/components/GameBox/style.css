@@ -1,21 +1,26 @@
 :root {
   --bottom-height: 20rem;
-  --selected-text-color: rgba(0, 0, 0, .7);
-  --top-height: 12.5rem;
-  --transition-duration: 500ms;
-  --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
-  --unselected-text-color: rgba(255, 255, 255, .8);
+  --fade-transition-duration: 250ms;
+  --resize-transition-duration: 250ms;
+  --resize-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --selected-text-color: rgba(0, 0, 0, 0.8);
+  --top-section-height: 12.5rem;
+  --unselected-text-color: rgba(255, 255, 255, 0.8);
 }
 
 .main {
   border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
   position: relative;
-  transition: transform var(--transition-duration) var(--transition-easing);
+  transition: transform var(--resize-transition-duration)
+    var(--resize-transition-easing);
+}
+.main:first-child {
+  border-top: none;
 }
 
 .top {
-  height: var(--top-height);
+  height: var(--top-section-height);
   position: relative;
   z-index: 2;
 }
@@ -32,7 +37,7 @@
 .back {
   background: #fff;
   opacity: 0;
-  transition: opacity var(--transition-duration);
+  transition: opacity var(--resize-transition-duration);
 }
 .main__selected .back {
   opacity: 1;
@@ -48,10 +53,9 @@
 .bottom .front {
   display: flex;
   opacity: 0;
-  transition: opacity var(--transition-duration)
-    calc(1.2 * var(--transition-duration));
+  transition: opacity var(--fade-transition-duration);
 }
-.main__selected .bottom .front {
+.main__expanded .bottom .front {
   opacity: 1;
 }
 
@@ -67,8 +71,8 @@
   height: var(--bottom-height);
   opacity: 0;
   transform: translateY(calc(-1 * var(--bottom-height)));
-  transition: opacity var(--transition-duration),
-    transform var(--transition-duration) var(--transition-easing);
+  transition: opacity var(--resize-transition-duration),
+    transform var(--resize-transition-duration) var(--resize-transition-easing);
 }
 .main__selected .bottom {
   opacity: 1;
@@ -114,13 +118,17 @@
   font-size: 3.2rem;
   font-weight: 700;
   margin-left: 1rem;
-  transition: color var(--transition-duration);
+  text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.8);
+  transition: color var(--resize-transition-duration),
+    text-shadow var(--resize-transition-duration);
 }
 .main__selected .channel,
+.main__selected .record,
 .main__selected .score,
 .main__selected .startTime,
 .main__selected .triCode {
   color: var(--selected-text-color);
+  text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0);
 }
 
 .record {
@@ -157,4 +165,3 @@
 .channel .text {
   text-transform: uppercase;
 }
-

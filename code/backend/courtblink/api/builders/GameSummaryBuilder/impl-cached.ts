@@ -133,9 +133,9 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
         },
 
         homeTeamStatus: {
-          wins: homeTeamLosses,
+          wins: homeTeamWins,
           score: homeTeamScore,
-          losses: homeTeamWins,
+          losses: homeTeamLosses,
           teamId: game.hTeam.teamId,
           tricode: game.hTeam.triCode,
           name: homeTeam ? homeTeam.fullName : unknownTeamName,
@@ -153,9 +153,9 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
         },
 
         awayTeamStatus: {
-          wins: awayTeamLosses,
+          wins: awayTeamWins,
           score: awayTeamScore,
-          losses: awayTeamWins,
+          losses: awayTeamLosses,
           teamId: game.vTeam.teamId,
           tricode: game.vTeam.triCode,
           name: awayTeam ? awayTeam.fullName : unknownTeamName,
