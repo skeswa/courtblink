@@ -35,7 +35,7 @@ export class ProxiedSerialHttpClient implements HttpClient {
     this.torClient = torClient
   }
 
-  get(url: string): Promise<any> {
+  get(url: string, shouldParseJson: boolean = true): Promise<any> {
     // Check if there is already a request in flight. If so, just return a
     // reference to that, so we don't waste time.
     if (this.pendingRequests.has(url)) {
@@ -52,7 +52,7 @@ export class ProxiedSerialHttpClient implements HttpClient {
 
     try {
       // Ship the request using `fetch` and keep a handle of the promise.
-      const pendingRequest = this.request('GET', url)
+      const pendingRequest = this.request('GET', url, shouldParseJson)
 
       // Cache the request promise to prevent the next identical request from
       // unnecessarily repeating work.
@@ -76,12 +76,14 @@ export class ProxiedSerialHttpClient implements HttpClient {
    * then try again.
    * @param method HTTP method to use.
    * @param url the URL of the HTTP request to be made.
+   * @param shouldParseJson true if the response should be parsed as JSON.
    * @param initialAttempts number of attempts to start at.
    * @param maxAttempts number of attempts to stop at.
    */
   private async request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
+    shouldParseJson: boolean,
     attemptsBeforeRequestingANewIp: number = 3,
     maxAttempts: number = 10
   ): Promise<any> {
@@ -111,7 +113,7 @@ export class ProxiedSerialHttpClient implements HttpClient {
         }
 
         // Then, get the body of the response, and return it if possible.
-        return await response.json()
+        return shouldParseJson ? await response.json() : await response.text()
       } catch (err) {
         // If the error was due to a timeout, then try again. Otherwise,
         // fail immediately.

@@ -11,6 +11,7 @@
   "author": "Sandile Keswa",
   "license": "MIT",
   "dependencies": {
+    "@types/cheerio": "^0.22.4",
     "@types/mz": "^0.0.32",
     "@types/node": "^8.0.30",
     "@types/node-cleanup": "^2.1.0",
@@ -19,6 +20,7 @@
     "@types/raw-body": "^2.3.0",
     "@types/winston": "^2.3.6",
     "bind-decorator": "^1.0.11",
+    "cheerio": "^1.0.0-rc.2",
     "common": "file:../common",
     "mz": "^2.7.0",
     "node-cleanup": "^2.1.2",
