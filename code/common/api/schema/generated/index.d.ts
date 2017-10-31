@@ -389,6 +389,21 @@ export interface IGameTeamStatus {
 
     /** GameTeamStatus reboundsLeader */
     reboundsLeader?: IGameLeader;
+
+    /** GameTeamStatus defensiveRating */
+    defensiveRating?: number;
+
+    /** GameTeamStatus defensiveRank */
+    defensiveRank?: number;
+
+    /** GameTeamStatus offensiveRating */
+    offensiveRating?: number;
+
+    /** GameTeamStatus offensiveRank */
+    offensiveRank?: number;
+
+    /** GameTeamStatus overallRank */
+    overallRank?: number;
 }
 
 /** Represents a GameTeamStatus. */
@@ -438,6 +453,21 @@ export class GameTeamStatus {
 
     /** GameTeamStatus reboundsLeader. */
     public reboundsLeader?: (IGameLeader|null);
+
+    /** GameTeamStatus defensiveRating. */
+    public defensiveRating: number;
+
+    /** GameTeamStatus defensiveRank. */
+    public defensiveRank: number;
+
+    /** GameTeamStatus offensiveRating. */
+    public offensiveRating: number;
+
+    /** GameTeamStatus offensiveRank. */
+    public offensiveRank: number;
+
+    /** GameTeamStatus overallRank. */
+    public overallRank: number;
 
     /**
      * Creates a new GameTeamStatus instance using the specified properties.

@@ -1,4 +1,4 @@
-export { createNbaApiClient } from './factory'
+export { createBasketballReferenceApiClient } from './factory'
 export {
   BasketballReferenceApiClient,
   BasketballReferenceApiClientCreationStrategy,

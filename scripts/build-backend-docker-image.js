@@ -13,6 +13,10 @@ async function buildBackendDockerImage() {
     throw new Error('Docker must be installed to continue')
   }
 
+  console.log('Updating backend version...')
+  await yarn.version(path.join(__dirname, '..', 'code', 'backend'))
+
+  console.log('Executing docker build...')
   await docker.build(
     path.join(__dirname, '..', 'infra', 'docker', 'backend', 'Dockerfile'),
     'us.gcr.io/courtblink/backend',

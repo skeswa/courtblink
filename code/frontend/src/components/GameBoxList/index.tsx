@@ -6,14 +6,24 @@ import GameBox from 'components/GameBox'
 
 import * as style from './style.css'
 
+// Constants representing the dimensions of each and every game box.
 const rem = 10
 const collapsedGameBoxHeight = 12.5 * rem
-const expandedGameBoxHeight = (12.5 + 20) * rem
+const expandedGameBoxHeight =
+  collapsedGameBoxHeight + /* panel */ (20 + /* border */ 0.1) * rem
 
+/** Properties of the `GameBox` component. */
 type Props = {
+  /** Games to render as game boxes. */
   games: IGameSummary[]
+  /** The currently selected game. */
   selectedGame?: IGameSummary
-  onCurrentlyViewedGameChanged: (game: IGameSummary) => void
+  /**
+   * Callback that gets invoked when the selected game becomes visuall
+   * highlighted.
+   */
+  onSelectedGameHighlighted: (game: IGameSummary) => void
+  /** Callback that gets invoked when a game is selected. */
   onGameSelected: (game: IGameSummary) => void
 }
 
@@ -91,7 +101,7 @@ class GameList extends Component<Props, State> {
   }
 
   public render(
-    { games, onCurrentlyViewedGameChanged, onGameSelected }: Props,
+    { games, onSelectedGameHighlighted, onGameSelected }: Props,
     { selectedIndex }: State
   ): JSX.Element {
     // Requisite variables for calculating CSS styling.
@@ -116,7 +126,7 @@ class GameList extends Component<Props, State> {
             {this.renderGameBoxes(
               games,
               selectedIndex,
-              onCurrentlyViewedGameChanged,
+              onSelectedGameHighlighted,
               onGameSelected
             )}
           </div>

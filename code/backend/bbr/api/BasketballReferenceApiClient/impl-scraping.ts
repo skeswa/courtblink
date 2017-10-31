@@ -46,53 +46,86 @@ export class ScrapingBasketballReferenceApiClient
       )
 
       // Use cheerio to parse out the DOM of the page html.
-      const $ = cheerio.load(teamRatingsPageHtml)
+      const $ = loadHtml(teamRatingsPageHtml)
 
-      // Turn
-      return (
-        $('#ratings tbody tr')
-          .toArray()
-          // Turn each `tr` into a representative object.
-          .map(row =>
-            $(row)
-              .find('td')
-              .toArray()
-              // Turn each cell of the table row into a key-value pair
-              // representing one stat.
-              .map(tdEl => {
-                const td = $(tdEl)
-                return {
-                  key: td.attr('data-stat') as keyof TeamRatingsTableRow,
-                  value: td.text(),
-                }
-              })
-              // Compose all the key-value pairs together into one ratings
-              // object.
-              .reduce(
-                (entries, entry) => {
-                  entries[entry.key] = entry.value
-                  return entries
-                },
-                {} as TeamRatingsTableRow
-              )
-          )
-          // Massage each table row into a more scrictly typed version of
-          // itself.
-          .map(row => ({
-            adjustedDefensiveRating: toDouble(row.def_rtg_adj),
-            adjustedOffensiveRating: toDouble(row.off_rtg_adj),
-            adjustedMarginOfVictory: toDouble(row.off_rtg_adj),
-            adjustedNetRating: toDouble(row.net_rtg_adj),
-            defensiveRating: toDouble(row.def_rtg),
-            losses: toInt(row.losses),
-            marginOfVictory: toDouble(row.mov),
-            netRating: toDouble(row.net_rtg),
-            offensiveRating: toDouble(row.off_rtg),
-            teamName: row.team_name,
-            winLossPercentage: toDouble(row.win_loss_pct),
-            wins: toInt(row.wins),
-          }))
+      // Turn the raw table rows into ratings, but don't rank them yet.
+      const ratings = $('#ratings tbody tr')
+        .toArray()
+        // Turn each `tr` into a representative object.
+        .map(row =>
+          $(row)
+            .find('td')
+            .toArray()
+            // Turn each cell of the table row into a key-value pair
+            // representing one stat.
+            .map(tdEl => {
+              const td = $(tdEl)
+              return {
+                key: td.attr('data-stat') as keyof TeamRatingsTableRow,
+                value: td.text(),
+              }
+            })
+            // Compose all the key-value pairs together into one ratings
+            // object.
+            .reduce(
+              (entries, entry) => {
+                entries[entry.key] = entry.value
+                return entries
+              },
+              {} as TeamRatingsTableRow
+            )
+        )
+        // Massage each table row into a more scrictly typed version of
+        // itself.
+        .map(row => ({
+          adjustedDefensiveRating: toDouble(row.def_rtg_adj),
+          adjustedOffensiveRating: toDouble(row.off_rtg_adj),
+          adjustedMarginOfVictory: toDouble(row.off_rtg_adj),
+          adjustedNetRating: toDouble(row.net_rtg_adj),
+          defensiveRating: toDouble(row.def_rtg),
+          losses: toInt(row.losses),
+          marginOfVictory: toDouble(row.mov),
+          netRating: toDouble(row.net_rtg),
+          offensiveRating: toDouble(row.off_rtg),
+          teamName: row.team_name,
+          winLossPercentage: toDouble(row.win_loss_pct),
+          wins: toInt(row.wins),
+
+          defensiveRank: -1,
+          offensiveRank: -1,
+          overallRank: -1,
+        }))
+
+      // Sort all the ratings so that we can calculate rank.
+      const ratingsSortedByOffense = ratings
+        .slice(0)
+        .sort(
+          (a, b) =>
+            (b.adjustedOffensiveRating || 0) - (a.adjustedOffensiveRating || 0)
+        )
+      const ratingsSortedByDefense = ratings
+        .slice(0)
+        .sort(
+          (a, b) =>
+            (a.adjustedDefensiveRating || 200) -
+            (b.adjustedDefensiveRating || 200)
+        )
+      const ratingsSortedByOverall = ratings
+        .slice(0)
+        .sort((a, b) => (b.adjustedNetRating || 0) - (a.adjustedNetRating || 0))
+
+      // Mutate each rating in-place with rank metadata.
+      ratingsSortedByOffense.forEach(
+        (rating, i) => (rating.offensiveRank = i + 1)
       )
+      ratingsSortedByDefense.forEach(
+        (rating, i) => (rating.defensiveRank = i + 1)
+      )
+      ratingsSortedByOverall.forEach(
+        (rating, i) => (rating.overallRank = i + 1)
+      )
+
+      return ratings
     } catch (err) {
       throw new ContextualError(
         `Failed to fetch all team ratings for ${seasonEndingYear}`,

@@ -15,6 +15,9 @@ export type TeamRating = {
   /** Number representing the strength of this team's defense. */
   defensiveRating?: number
 
+  /** Rank among other teams defensively. */
+  defensiveRank: number
+
   /** Number of losses by this team. */
   losses?: number
 
@@ -26,6 +29,12 @@ export type TeamRating = {
 
   /** Offensive rating of this team. */
   offensiveRating?: number
+
+  /** Rank among other teams offensively. */
+  offensiveRank: number
+
+  /** Rank among other teams overall. */
+  overallRank: number
 
   /** Name of this team. */
   teamName?: string

@@ -16,6 +16,9 @@ async function buildFrontendDockerImage() {
   console.log('Compiling the latest frontend assets...')
   await yarn.run(path.join(__dirname, '..', 'code', 'frontend'), 'build')
 
+  console.log('Updating backend version...')
+  await yarn.version(path.join(__dirname, '..', 'code', 'backend'))
+
   console.log('Executing docker build...')
   await docker.build(
     path.join(__dirname, '..', 'infra', 'docker', 'frontend', 'Dockerfile'),

@@ -29,7 +29,7 @@ export function createHttpClient(
       return new ProxiedSerialHttpClient(torClient, logger)
 
     case HttpClientCreationStrategy.WithoutAnythingSpecial:
-      return new NormalHttpClient()
+      return new NormalHttpClient(logger)
 
     default:
       throw new Error(

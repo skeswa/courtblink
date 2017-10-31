@@ -1,6 +1,14 @@
 //#region imports
 
 import {
+  createBasketballReferenceApiClient,
+  BasketballReferenceApiClientCreationStrategy,
+} from '../../bbr/api/BasketballReferenceApiClient'
+import {
+  createTeamRatingsCache,
+  TeamRatingsCacheCreationStrategy,
+} from '../../bbr/caches/TeamRatingsCache'
+import {
   createApiService,
   ApiServiceCreationStrategy,
 } from '../../courtblink/api/ApiService'
@@ -117,8 +125,15 @@ export class AppImpl implements App {
       torExecutableName
     )
 
-    // Client used to make HTTP requests.
+    // Client used to make unproxied HTTP requests.
     const httpClient = createHttpClient(
+      HttpClientCreationStrategy.WithoutAnythingSpecial,
+      logger,
+      torClient
+    )
+
+    // Client used to make proxied HTTP requests.
+    const proxiedHttpClient = createHttpClient(
       HttpClientCreationStrategy.WithAProxy,
       logger,
       torClient
@@ -127,6 +142,13 @@ export class AppImpl implements App {
     // Client used to communicate with the NBA API.
     const nbaApiClient = createNbaApiClient(
       NbaApiClientCreationStrategy.UsingNbaHttpApi,
+      logger,
+      proxiedHttpClient
+    )
+
+    // Client to communicate with the Basketball Reference API.
+    const bbrApiClient = createBasketballReferenceApiClient(
+      BasketballReferenceApiClientCreationStrategy.UsingScrapedWebPages,
       logger,
       httpClient
     )
@@ -177,6 +199,13 @@ export class AppImpl implements App {
       nbaApiClient
     )
 
+    // Used to cache basketball ratings for NBA teams.
+    const teamRatingsCache = createTeamRatingsCache(
+      TeamRatingsCacheCreationStrategy.UpdateEveryDay,
+      bbrApiClient,
+      logger
+    )
+
     // Cleans up caches once an hour.
     const cacheJanitor = createEntityCacheJanitor(
       EntityCacheJanitorCreationStrategy.Hourly,
@@ -186,7 +215,8 @@ export class AppImpl implements App {
       scoreboardCache,
       playerDetailsCache,
       teamColorsCache,
-      teamDetailsCache
+      teamDetailsCache,
+      teamRatingsCache
     )
     //#endregion
 
@@ -207,7 +237,8 @@ export class AppImpl implements App {
       gameLeadersBuilder,
       playerDetailsCache,
       teamColorsCache,
-      teamDetailsCache
+      teamDetailsCache,
+      teamRatingsCache
     )
 
     // Builds splash data for the API to use.

@@ -14,7 +14,7 @@ import * as style from './style.css'
 type Props = {}
 
 type State = {
-  currentlyViewedGame?: IGameSummary
+  highlightedGame?: IGameSummary
   didFailToLoadSplashData: boolean
   games: IGameSummary[]
   isBackgroundLoaded: boolean
@@ -54,15 +54,15 @@ class App extends Component<Props, State> {
       const games = (await this.apiClient.fetchSplashData(date)).games || []
 
       // Auto-select the very first game once loaded.
-      let currentlyViewedGame: IGameSummary | undefined
+      let highlightedGame: IGameSummary | undefined
       let selectedGame: IGameSummary | undefined
       if (games && games.length > 0) {
-        currentlyViewedGame = games[0]
+        highlightedGame = games[0]
         selectedGame = games[0]
       }
 
       // Update the app state to reflect the loaded splash data.
-      this.setState({ currentlyViewedGame, selectedGame, games })
+      this.setState({ highlightedGame, selectedGame, games })
     } catch (err) {
       this.log('Failed to load splash data', err)
 
@@ -83,21 +83,19 @@ class App extends Component<Props, State> {
   }
 
   @bind
-  private onCurrentlyViewedGameChanged(
-    currentlyViewedGame: IGameSummary
-  ): void {
-    this.setState({ currentlyViewedGame })
+  private onGameSelected(selectedGame: IGameSummary): void {
+    this.setState({ selectedGame })
   }
 
   @bind
-  private onGameSelected(selectedGame: IGameSummary): void {
-    this.setState({ selectedGame })
+  private onSelectedGameHighlighted(highlightedGame: IGameSummary): void {
+    this.setState({ highlightedGame })
   }
 
   public render(
     props: Props,
     {
-      currentlyViewedGame,
+      highlightedGame,
       games,
       isBackgroundLoaded,
       isSplashDataLoading,
@@ -108,8 +106,8 @@ class App extends Component<Props, State> {
       !isSplashDataLoading && games && games.length > 0 && isBackgroundLoaded
     const className = classNames(style.main, { [style.main__ready]: isReady })
     const splashUrl =
-      currentlyViewedGame && currentlyViewedGame.homeTeamStatus
-        ? currentlyViewedGame.homeTeamStatus.splashUrl
+      highlightedGame && highlightedGame.homeTeamStatus
+        ? highlightedGame.homeTeamStatus.splashUrl
         : undefined
 
     return (
@@ -126,7 +124,7 @@ class App extends Component<Props, State> {
           <div className={style.left}>
             <GameBoxList
               games={games}
-              onCurrentlyViewedGameChanged={this.onCurrentlyViewedGameChanged}
+              onSelectedGameHighlighted={this.onSelectedGameHighlighted}
               onGameSelected={this.onGameSelected}
               selectedGame={selectedGame}
             />

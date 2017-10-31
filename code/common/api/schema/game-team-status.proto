@@ -16,4 +16,9 @@ message GameTeamStatus {
   GameLeader points_leader = 11;
   GameLeader assists_leader = 12;
   GameLeader rebounds_leader = 13;
+  float defensive_rating = 14;
+  int32 defensive_rank = 15;
+  float offensive_rating = 16;
+  int32 offensive_rank = 17;
+  int32 overall_rank = 18;
 }

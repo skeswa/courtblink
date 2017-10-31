@@ -890,6 +890,11 @@ $root.GameTeamStatus = (function() {
      * @property {IGameLeader} [pointsLeader] GameTeamStatus pointsLeader
      * @property {IGameLeader} [assistsLeader] GameTeamStatus assistsLeader
      * @property {IGameLeader} [reboundsLeader] GameTeamStatus reboundsLeader
+     * @property {number} [defensiveRating] GameTeamStatus defensiveRating
+     * @property {number} [defensiveRank] GameTeamStatus defensiveRank
+     * @property {number} [offensiveRating] GameTeamStatus offensiveRating
+     * @property {number} [offensiveRank] GameTeamStatus offensiveRank
+     * @property {number} [overallRank] GameTeamStatus overallRank
      */
 
     /**
@@ -1011,6 +1016,46 @@ $root.GameTeamStatus = (function() {
     GameTeamStatus.prototype.reboundsLeader = null;
 
     /**
+     * GameTeamStatus defensiveRating.
+     * @member {number}defensiveRating
+     * @memberof GameTeamStatus
+     * @instance
+     */
+    GameTeamStatus.prototype.defensiveRating = 0;
+
+    /**
+     * GameTeamStatus defensiveRank.
+     * @member {number}defensiveRank
+     * @memberof GameTeamStatus
+     * @instance
+     */
+    GameTeamStatus.prototype.defensiveRank = 0;
+
+    /**
+     * GameTeamStatus offensiveRating.
+     * @member {number}offensiveRating
+     * @memberof GameTeamStatus
+     * @instance
+     */
+    GameTeamStatus.prototype.offensiveRating = 0;
+
+    /**
+     * GameTeamStatus offensiveRank.
+     * @member {number}offensiveRank
+     * @memberof GameTeamStatus
+     * @instance
+     */
+    GameTeamStatus.prototype.offensiveRank = 0;
+
+    /**
+     * GameTeamStatus overallRank.
+     * @member {number}overallRank
+     * @memberof GameTeamStatus
+     * @instance
+     */
+    GameTeamStatus.prototype.overallRank = 0;
+
+    /**
      * Creates a new GameTeamStatus instance using the specified properties.
      * @function create
      * @memberof GameTeamStatus
@@ -1060,6 +1105,16 @@ $root.GameTeamStatus = (function() {
             $root.GameLeader.encode(message.assistsLeader, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
         if (message.reboundsLeader != null && message.hasOwnProperty("reboundsLeader"))
             $root.GameLeader.encode(message.reboundsLeader, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+        if (message.defensiveRating != null && message.hasOwnProperty("defensiveRating"))
+            writer.uint32(/* id 14, wireType 5 =*/117).float(message.defensiveRating);
+        if (message.defensiveRank != null && message.hasOwnProperty("defensiveRank"))
+            writer.uint32(/* id 15, wireType 0 =*/120).int32(message.defensiveRank);
+        if (message.offensiveRating != null && message.hasOwnProperty("offensiveRating"))
+            writer.uint32(/* id 16, wireType 5 =*/133).float(message.offensiveRating);
+        if (message.offensiveRank != null && message.hasOwnProperty("offensiveRank"))
+            writer.uint32(/* id 17, wireType 0 =*/136).int32(message.offensiveRank);
+        if (message.overallRank != null && message.hasOwnProperty("overallRank"))
+            writer.uint32(/* id 18, wireType 0 =*/144).int32(message.overallRank);
         return writer;
     };
 
@@ -1132,6 +1187,21 @@ $root.GameTeamStatus = (function() {
                 break;
             case 13:
                 message.reboundsLeader = $root.GameLeader.decode(reader, reader.uint32());
+                break;
+            case 14:
+                message.defensiveRating = reader.float();
+                break;
+            case 15:
+                message.defensiveRank = reader.int32();
+                break;
+            case 16:
+                message.offensiveRating = reader.float();
+                break;
+            case 17:
+                message.offensiveRank = reader.int32();
+                break;
+            case 18:
+                message.overallRank = reader.int32();
                 break;
             default:
                 reader.skipType(tag & 7);
@@ -1213,6 +1283,21 @@ $root.GameTeamStatus = (function() {
             if (error)
                 return "reboundsLeader." + error;
         }
+        if (message.defensiveRating != null && message.hasOwnProperty("defensiveRating"))
+            if (typeof message.defensiveRating !== "number")
+                return "defensiveRating: number expected";
+        if (message.defensiveRank != null && message.hasOwnProperty("defensiveRank"))
+            if (!$util.isInteger(message.defensiveRank))
+                return "defensiveRank: integer expected";
+        if (message.offensiveRating != null && message.hasOwnProperty("offensiveRating"))
+            if (typeof message.offensiveRating !== "number")
+                return "offensiveRating: number expected";
+        if (message.offensiveRank != null && message.hasOwnProperty("offensiveRank"))
+            if (!$util.isInteger(message.offensiveRank))
+                return "offensiveRank: integer expected";
+        if (message.overallRank != null && message.hasOwnProperty("overallRank"))
+            if (!$util.isInteger(message.overallRank))
+                return "overallRank: integer expected";
         return null;
     };
 
@@ -1263,6 +1348,16 @@ $root.GameTeamStatus = (function() {
                 throw TypeError(".GameTeamStatus.reboundsLeader: object expected");
             message.reboundsLeader = $root.GameLeader.fromObject(object.reboundsLeader);
         }
+        if (object.defensiveRating != null)
+            message.defensiveRating = Number(object.defensiveRating);
+        if (object.defensiveRank != null)
+            message.defensiveRank = object.defensiveRank | 0;
+        if (object.offensiveRating != null)
+            message.offensiveRating = Number(object.offensiveRating);
+        if (object.offensiveRank != null)
+            message.offensiveRank = object.offensiveRank | 0;
+        if (object.overallRank != null)
+            message.overallRank = object.overallRank | 0;
         return message;
     };
 
@@ -1293,6 +1388,11 @@ $root.GameTeamStatus = (function() {
             object.pointsLeader = null;
             object.assistsLeader = null;
             object.reboundsLeader = null;
+            object.defensiveRating = 0;
+            object.defensiveRank = 0;
+            object.offensiveRating = 0;
+            object.offensiveRank = 0;
+            object.overallRank = 0;
         }
         if (message.wins != null && message.hasOwnProperty("wins"))
             object.wins = message.wins;
@@ -1320,6 +1420,16 @@ $root.GameTeamStatus = (function() {
             object.assistsLeader = $root.GameLeader.toObject(message.assistsLeader, options);
         if (message.reboundsLeader != null && message.hasOwnProperty("reboundsLeader"))
             object.reboundsLeader = $root.GameLeader.toObject(message.reboundsLeader, options);
+        if (message.defensiveRating != null && message.hasOwnProperty("defensiveRating"))
+            object.defensiveRating = options.json && !isFinite(message.defensiveRating) ? String(message.defensiveRating) : message.defensiveRating;
+        if (message.defensiveRank != null && message.hasOwnProperty("defensiveRank"))
+            object.defensiveRank = message.defensiveRank;
+        if (message.offensiveRating != null && message.hasOwnProperty("offensiveRating"))
+            object.offensiveRating = options.json && !isFinite(message.offensiveRating) ? String(message.offensiveRating) : message.offensiveRating;
+        if (message.offensiveRank != null && message.hasOwnProperty("offensiveRank"))
+            object.offensiveRank = message.offensiveRank;
+        if (message.overallRank != null && message.hasOwnProperty("overallRank"))
+            object.overallRank = message.overallRank;
         return object;
     };
 

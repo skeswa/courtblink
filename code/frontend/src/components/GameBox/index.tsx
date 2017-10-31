@@ -127,8 +127,7 @@ class GameBox extends Component<Props, State> {
    */
   private formatGameTime(gameStartTimeInSeconds: number): string {
     // `gameStartTime` is sent over the wire in minutes.
-    const gameStartDate = new Date(gameStartTimeInSeconds * 60 * 1000)
-    return gameStartDate.toLocaleTimeString([], {
+    return new Date(gameStartTimeInSeconds * 60 * 1000).toLocaleTimeString([], {
       hour: '2-digit',
       hour12: true,
       minute: '2-digit',
@@ -152,8 +151,8 @@ class GameBox extends Component<Props, State> {
    */
   private renderTeamStatus(
     { losses, score, splashPrimaryColor, tricode, wins }: IGameTeamStatus,
-    isLive: boolean,
-    isSelected: boolean
+    isSelected: boolean,
+    isStarted: boolean
   ): JSX.Element {
     return (
       <div className={style.teamStatus}>
@@ -167,7 +166,7 @@ class GameBox extends Component<Props, State> {
             {tricode}
           </div>
 
-          {isLive ? (
+          {isStarted ? (
             <div className={style.score}>{score}</div>
           ) : (
             <div className={style.record}>
@@ -190,15 +189,13 @@ class GameBox extends Component<Props, State> {
     { awayTeamStatus, finished, homeTeamStatus, notStarted }: IGameSummary,
     isSelected: boolean
   ): JSX.Element {
-    const isLive = !notStarted && !finished
-
     return (
       <div className={style.teamStatuses}>
         {awayTeamStatus
-          ? this.renderTeamStatus(awayTeamStatus, isLive, isSelected)
+          ? this.renderTeamStatus(awayTeamStatus, isSelected, !notStarted)
           : null}
         {homeTeamStatus
-          ? this.renderTeamStatus(homeTeamStatus, isLive, isSelected)
+          ? this.renderTeamStatus(homeTeamStatus, isSelected, !notStarted)
           : null}
       </div>
     )

@@ -4,6 +4,7 @@ import { BoxScoreCache } from '../../../../nba/caches/BoxScoreCache'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
 import { TeamColorsCache } from '../../../../nba/caches/TeamColorsCache'
 import { TeamDetailsCache } from '../../../../nba/caches/TeamDetailsCache'
+import { TeamRatingsCache } from '../../../../bbr/caches/TeamRatingsCache'
 import { Clock } from '../../../../util/Clock'
 import {
   IGameLeader,
@@ -37,6 +38,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
   private playerDetailsCache: PlayerDetailsCache
   private teamColorsCache: TeamColorsCache
   private teamDetailsCache: TeamDetailsCache
+  private teamRatingsCache: TeamRatingsCache
 
   /**
    * Creates a new `CachedGameSummaryBuilder`.
@@ -47,6 +49,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
    * @param playerDetailsCache caches details about players.
    * @param teamColorsCache caches colors for teams.
    * @param teamDetailsCache caches details about teams.
+   * @param teamRatingsCache caches ratings stats for teams.
    */
   constructor(
     boxScoreCache: BoxScoreCache,
@@ -54,7 +57,8 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
     gameLeadersBuilder: GameLeadersBuilder,
     playerDetailsCache: PlayerDetailsCache,
     teamColorsCache: TeamColorsCache,
-    teamDetailsCache: TeamDetailsCache
+    teamDetailsCache: TeamDetailsCache,
+    teamRatingsCache: TeamRatingsCache
   ) {
     this.boxScoreCache = boxScoreCache
     this.clock = clock
@@ -62,6 +66,7 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
     this.playerDetailsCache = playerDetailsCache
     this.teamColorsCache = teamColorsCache
     this.teamDetailsCache = teamDetailsCache
+    this.teamRatingsCache = teamRatingsCache
   }
 
   async build(game: Game): Promise<IGameSummary> {
@@ -76,14 +81,25 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
         }),
       ])
 
-      // Get colors for both home and away teams.
-      const [homeTeamColors, awayTeamColors] = await Promise.all([
+      // Get colors & ratings for both home and away teams.
+      const [
+        homeTeamColors,
+        awayTeamColors,
+        homeTeamRatings,
+        awayTeamRatings,
+      ] = await Promise.all([
         homeTeam
           ? this.teamColorsCache.retrieveByName(homeTeam.fullName)
-          : unknownTeamColors,
+          : Promise.resolve(unknownTeamColors),
         awayTeam
           ? this.teamColorsCache.retrieveByName(awayTeam.fullName)
-          : unknownTeamColors,
+          : Promise.resolve(unknownTeamColors),
+        homeTeam
+          ? this.teamRatingsCache.retrieveByName(homeTeam.fullName)
+          : Promise.resolve(undefined),
+        awayTeam
+          ? this.teamRatingsCache.retrieveByName(awayTeam.fullName)
+          : Promise.resolve(undefined),
       ])
 
       // Create a JS date from the start time for easy time checks.
@@ -104,12 +120,42 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
         startTime.getTime() > this.clock.millisSinceEpoch()
 
       // Calculate home team numbers.
+      const homeTeamDefensiveRank = homeTeamRatings
+        ? homeTeamRatings.defensiveRank
+        : undefined
+      const homeTeamDefensiveRating = homeTeamRatings
+        ? homeTeamRatings.defensiveRating
+        : undefined
+      const homeTeamOffensiveRank = homeTeamRatings
+        ? homeTeamRatings.offensiveRank
+        : undefined
+      const homeTeamOffensiveRating = homeTeamRatings
+        ? homeTeamRatings.offensiveRating
+        : undefined
+      const homeTeamOverallRank = homeTeamRatings
+        ? homeTeamRatings.overallRank
+        : undefined
       const homeTeamLosses = parseIntOrReturnZero(game.hTeam.loss)
       const homeTeamScore = parseIntOrReturnZero(game.hTeam.score)
       const homeTeamWins = parseIntOrReturnZero(game.hTeam.win)
 
       // Calculate away team numbers.
+      const awayTeamDefensiveRank = awayTeamRatings
+        ? awayTeamRatings.defensiveRank
+        : undefined
+      const awayTeamDefensiveRating = awayTeamRatings
+        ? awayTeamRatings.defensiveRating
+        : undefined
       const awayTeamLosses = parseIntOrReturnZero(game.vTeam.loss)
+      const awayTeamOffensiveRank = awayTeamRatings
+        ? awayTeamRatings.offensiveRank
+        : undefined
+      const awayTeamOffensiveRating = awayTeamRatings
+        ? awayTeamRatings.offensiveRating
+        : undefined
+      const awayTeamOverallRank = awayTeamRatings
+        ? awayTeamRatings.overallRank
+        : undefined
       const awayTeamScore = parseIntOrReturnZero(game.vTeam.score)
       const awayTeamWins = parseIntOrReturnZero(game.vTeam.win)
 
@@ -150,6 +196,11 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
           pointsLeader: gameLeaders.homeTeam.pointsLeader,
           assistsLeader: gameLeaders.homeTeam.assistsLeader,
           reboundsLeader: gameLeaders.homeTeam.reboundsLeader,
+          defensiveRank: homeTeamDefensiveRank,
+          defensiveRating: homeTeamDefensiveRating,
+          offensiveRank: homeTeamOffensiveRank,
+          offensiveRating: homeTeamOffensiveRating,
+          overallRank: homeTeamOverallRank,
         },
 
         awayTeamStatus: {
@@ -170,6 +221,11 @@ export class CachedGameSummaryBuilder implements GameSummaryBuilder {
           pointsLeader: gameLeaders.awayTeam.pointsLeader,
           assistsLeader: gameLeaders.awayTeam.assistsLeader,
           reboundsLeader: gameLeaders.awayTeam.reboundsLeader,
+          defensiveRank: awayTeamDefensiveRank,
+          defensiveRating: awayTeamDefensiveRating,
+          offensiveRank: awayTeamOffensiveRank,
+          offensiveRating: awayTeamOffensiveRating,
+          overallRank: awayTeamOverallRank,
         },
       }
     } catch (err) {

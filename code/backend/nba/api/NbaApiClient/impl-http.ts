@@ -96,8 +96,8 @@ export class HttpNbaApiClient implements NbaApiClient {
       this.logger.debug(tag, 'The API was found to be reachable')
 
       return true
-    } catch (_) {
-      this.logger.debug(tag, 'The API was not found to be reachable')
+    } catch (err) {
+      this.logger.error(tag, 'The API was not found to be reachable', err)
 
       return false
     }

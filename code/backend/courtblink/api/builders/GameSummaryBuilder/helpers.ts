@@ -46,10 +46,7 @@ export function extractSplashUrl(teamDetails: TeamDetails | undefined): string {
   // Use the fallback if there are no team details to work off of.
   if (!teamDetails || !teamDetails.teamId) return fallbackSplashUrl
 
-  return (
-    `https://i.cdn.turner.com/nba/nba/assets/teams/spotlight/` +
-    `${teamDetails.teamId}.jpg`
-  )
+  return `https://i.cdn.turner.com/nba/nba/assets/teams/arena/640/${teamDetails.teamId}.jpg`
 }
 
 /**

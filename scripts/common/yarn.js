@@ -1,3 +1,4 @@
+const { join: joinPaths } = require('path')
 const { spawn } = require('child_process')
 
 const { doesCommandExist } = require('./does-command-exist')
@@ -47,6 +48,33 @@ module.exports = {
           code === 0
             ? resolve()
             : reject(new Error(`Failed to run "${script}" in "${packagePath}"`))
+      )
+    })
+  },
+
+  /**
+   * Versions the designated package.
+   * @param {string} packagePath the directory in which `yarn` should be
+   *     executed.
+   */
+  version(packagePath) {
+    // First print the current version.
+    console.log(
+      'Current version:',
+      require(joinPaths(packagePath, 'package.json')).version
+    )
+
+    return new Promise((resolve, reject) => {
+      const yarn = spawn('yarn', ['version'], {
+        cwd: packagePath,
+        stdio: 'inherit',
+      })
+      yarn.on(
+        'close',
+        code =>
+          code === 0
+            ? resolve()
+            : reject(new Error(`Failed to version "${packagePath}"`))
       )
     })
   },

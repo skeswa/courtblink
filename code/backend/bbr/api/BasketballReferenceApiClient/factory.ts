@@ -14,7 +14,7 @@ import { ScrapingBasketballReferenceApiClient } from './impl-scraping'
  * @param HttpClient the client used to send HTTP requests.
  * @return the newly created NBA API client.
  */
-export function createNbaApiClient(
+export function createBasketballReferenceApiClient(
   strategy: BasketballReferenceApiClientCreationStrategy.UsingScrapedWebPages,
   logger: Logger,
   httpClient: HttpClient

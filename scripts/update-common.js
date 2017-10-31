@@ -12,6 +12,12 @@ async function updateCommon() {
     throw new Error('Yarn must be installed to continue')
   }
 
+  console.log('Generating common generated files...')
+  await yarn.run(path.join(__dirname, '..', 'code', 'common'), 'generate')
+
+  console.log('Updating common version...')
+  await yarn.version(path.join(__dirname, '..', 'code', 'common'))
+
   console.log('Upgrading common in the backend...')
   await yarn.upgrade(path.join(__dirname, '..', 'code', 'backend'), 'common')
 

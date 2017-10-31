@@ -4,5 +4,5 @@ buffer compiler.
 
 ## How to generate
 ```bash
-$ npm run generate
+$ yarn run generate
 ```

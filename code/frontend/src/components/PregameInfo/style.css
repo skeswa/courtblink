@@ -1,0 +1,98 @@
+.main {
+  border-top: .1rem solid rgba(0, 0, 0, .2);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 2.4rem;
+}
+
+.bottom,
+.middle,
+.top {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.bottom,
+.top {
+  flex: 1;
+}
+
+.teamInfo {
+  align-items: center;
+  display: flex;
+  flex: 1;
+}
+
+.triCode {
+  font-size: 2.2rem;
+  max-width: 8rem;
+  min-width: 8rem;
+}
+
+.ratings {
+  align-items: flex-end;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  max-width: 7rem;
+  min-width: 7rem;
+  position: relative;
+}
+
+.triCode,
+.rating .label,
+.rating .rank,
+.rating .value,
+.vs {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.rating .label {
+  font-size: 1rem;
+}
+
+.rating .numbers {
+  align-items: baseline;
+  display: flex;
+}
+
+.rating .value {
+  font-size: 3.2rem;
+}
+
+.rating .rank {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 1.4rem;
+  margin-left: .5rem;
+}
+
+.vs {
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 1.4rem;
+  margin: 0 1rem;
+}
+
+.separator {
+  background: rgba(0, 0, 0, .2);
+  flex: 1;
+  max-height: 0.1rem;
+  min-height: 0.1rem;
+}
+
+.numberWithOrdinal {
+  display: flex;
+}
+
+.numberWithOrdinal .ordinal {
+  text-transform: lowercase;
+  transform: scale(.6) translateX(-21.5%) translateY(-20%);
+}

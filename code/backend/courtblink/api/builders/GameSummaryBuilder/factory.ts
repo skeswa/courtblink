@@ -3,6 +3,7 @@ import { BoxScoreCache } from '../../../../nba/caches/BoxScoreCache'
 import { PlayerDetailsCache } from '../../../../nba/caches/PlayerDetailsCache'
 import { TeamColorsCache } from '../../../../nba/caches/TeamColorsCache'
 import { TeamDetailsCache } from '../../../../nba/caches/TeamDetailsCache'
+import { TeamRatingsCache } from '../../../../bbr/caches/TeamRatingsCache'
 import { Clock } from '../../../../util/Clock'
 
 import { CachedGameSummaryBuilder } from './impl-cached'
@@ -17,6 +18,7 @@ import { GameSummaryBuilder, GameSummaryBuilderCreationStrategy } from './types'
  * @param playerDetailsCache caches details about players.
  * @param teamColorsCache caches colors for teams.
  * @param teamDetailsCache caches details about teams.
+ * @param teamRatingsCache caches ratings stats for teams.
  * @return the game leaders builder.
  */
 export function createGameSummaryBuilder(
@@ -26,7 +28,8 @@ export function createGameSummaryBuilder(
   gameLeadersBuilder: GameLeadersBuilder,
   playerDetailsCache: PlayerDetailsCache,
   teamColorsCache: TeamColorsCache,
-  teamDetailsCache: TeamDetailsCache
+  teamDetailsCache: TeamDetailsCache,
+  teamRatingsCache: TeamRatingsCache
 ): GameSummaryBuilder {
   return new CachedGameSummaryBuilder(
     boxScoreCache,
@@ -34,6 +37,7 @@ export function createGameSummaryBuilder(
     gameLeadersBuilder,
     playerDetailsCache,
     teamColorsCache,
-    teamDetailsCache
+    teamDetailsCache,
+    teamRatingsCache
   )
 }
