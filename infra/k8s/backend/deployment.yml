@@ -11,4 +11,4 @@ spec:
     spec:
       containers:
       - name: backend
-        image: us.gcr.io/courtblink/backend:1.6.2
+        image: us.gcr.io/courtblink/backend:1.8.4

@@ -26,6 +26,7 @@ async function runBackendDockerImage() {
   await docker.run(`${imageUrl}:${imageVersion}`)
 }
 
-runBackendDockerImage().catch(err =>
+runBackendDockerImage().catch(err => {
   console.error('Failed run the backend docker container:', err)
-)
+  process.exit(1)
+})

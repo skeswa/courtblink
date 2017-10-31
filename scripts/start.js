@@ -4,7 +4,7 @@ const path = require('path')
 const yarn = require('./common/yarn')
 
 /** Executes the development servers. */
-async function dev() {
+async function start() {
   // List of processes to be killed upon exiting.
   const childProcesses = []
 
@@ -52,7 +52,7 @@ async function dev() {
   ])
 }
 
-dev()
+start()
   .then(() => {
     console.log('Dev server stopped gracefully')
 

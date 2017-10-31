@@ -4,18 +4,25 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "code:common:update": "node ./update-common",
     "docker:backend:build": "node ./build-backend-docker-image",
+    "docker:backend:deploy": "node ./deploy-backend-docker-image",
     "docker:backend:run": "node ./run-backend-docker-container",
     "docker:build": "yarn run docker:backend:build; yarn run docker:frontend:build",
+    "docker:deploy": "yarn run docker:backend:deploy; yarn run docker:frontend:deploy",
     "docker:frontend:build": "node ./build-frontend-docker-image",
+    "docker:frontend:deploy": "node ./deploy-frontend-docker-image",
     "docker:frontend:run": "node ./run-frontend-docker-container",
-    "code:common:update": "node ./update-common",
+    "release": "yarn run release:backend; yarn run release:frontend",
+    "release:backend": "node ./release-backend",
+    "release:frontend": "node ./release-frontend",
     "setup": "node ./setup",
-    "start": "node ./dev"
+    "start": "node ./start"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.2.0"
+    "chalk": "^2.2.0",
+    "replace-in-file": "^3.0.0-beta.2"
   }
 }

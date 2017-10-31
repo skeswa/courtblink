@@ -18,9 +18,10 @@ module.exports = {
       return new Promise((resolve, reject) => {
         const gcloud = spawn('gcloud', ['docker', '--', 'push', image], {
           cwd: joinPaths(__dirname, '..', '..'),
+          env: process.env,
+          stdio: 'inherit',
+          shell: true,
         })
-        gcloud.stdout.on('data', data => console.log('-> ', data.toString()))
-        gcloud.stderr.on('data', data => console.log('-> ', data.toString()))
         gcloud.on(
           'close',
           code =>
@@ -28,7 +29,7 @@ module.exports = {
               ? resolve()
               : reject(
                   new Error(
-                    `Failed to execute gcloud docker upload in "${packagePath}"`
+                    `Failed to execute gcloud docker upload for "${image}"`
                   )
                 )
         )

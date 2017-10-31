@@ -31,6 +31,7 @@ async function setup() {
   console.log('Courtblink dependencies installed successfully')
 }
 
-setup().catch(err =>
+setup().catch(err =>{
   console.error('Failed to install Courtblink dependencies:', err)
-)
+  process.exit(1)
+})

@@ -26,6 +26,7 @@ async function runFrontendDockerImage() {
   await docker.run(`${imageUrl}:${imageVersion}`)
 }
 
-runFrontendDockerImage().catch(err =>
+runFrontendDockerImage().catch(err => {
   console.error('Failed run the frontend docker container:', err)
-)
+  process.exit(1)
+})

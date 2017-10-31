@@ -287,12 +287,15 @@ module.exports = {
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],
-      // Cache API calls and images from the turner CDN (added by @skeswa).
+      // Cache API calls, images & fonts (added by @skeswa).
       runtimeCaching: [{
         urlPattern: /\/api\//,
         handler: 'networkFirst'
       }, {
-        urlPattern: /^https:\/\/i\.cdn\.turner\.com\/nba/,
+        urlPattern: /^https:\/\/i\.cdn\.turner\.com\/nba\//,
+        handler: 'cacheFirst'
+      }, {
+        urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
         handler: 'cacheFirst'
       }],
       // Don't precache sourcemaps (they're large) and build asset manifest:

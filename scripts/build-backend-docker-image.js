@@ -1,6 +1,7 @@
 const path = require('path')
 
 const docker = require('./common/docker')
+const package = require('./common/package')
 const yarn = require('./common/yarn')
 
 /** Builds the backend docker images. */
@@ -16,17 +17,22 @@ async function buildBackendDockerImage() {
   console.log('Updating backend version...')
   await yarn.version(path.join(__dirname, '..', 'code', 'backend'))
 
-  console.log('Executing docker build...')
+  // Read the new package version.
+  const newVersion = (await package.read(
+    path.join(__dirname, '..', 'code', 'backend', 'package.json')
+  )).version
+
+  console.log(`Executing docker build for version ${newVersion}...`)
   await docker.build(
     path.join(__dirname, '..', 'infra', 'docker', 'backend', 'Dockerfile'),
     'us.gcr.io/courtblink/backend',
-    require(path.join(__dirname, '..', 'code', 'backend', 'package.json'))
-      .version
+    newVersion
   )
 
   console.log('Backend docker image built successfully')
 }
 
-buildBackendDockerImage().catch(err =>
+buildBackendDockerImage().catch(err => {
   console.error('Failed build the backend docker image:', err)
-)
+  process.exit(1)
+})

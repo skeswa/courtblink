@@ -13,7 +13,7 @@ What we all wanted NBA.com to be.
 $ git clone https://github.com/skeswa/courtblink
 $ cd ./scripts
 $ yarn run setup
-$ yarn run dev
+$ yarn start
 ```
 After running `yarn run dev`, the development server should come up on
 [http://localhost:3000](http://localhost:3000).

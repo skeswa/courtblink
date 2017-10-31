@@ -27,6 +27,7 @@ async function updateCommon() {
   console.log('Updated common successfully')
 }
 
-updateCommon().catch(err =>
+updateCommon().catch(err => {
   console.error('Failed to update common:', err)
-)
+  process.exit(1)
+})
