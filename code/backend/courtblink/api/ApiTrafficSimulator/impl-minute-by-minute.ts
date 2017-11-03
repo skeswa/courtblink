@@ -36,7 +36,7 @@ export class MinuteByMinuteApiTrafficSimulator implements ApiTrafficSimulator {
   /** Simulates traffic to the API splash endpoint referencing today. */
   @bind
   async simulateTrafficForTodaysSplash(): Promise<void> {
-    this.logger.debug(
+    this.logger.info(
       tag,
       'Simulating traffic to the API splash endpoint referencing today'
     )
@@ -58,7 +58,7 @@ export class MinuteByMinuteApiTrafficSimulator implements ApiTrafficSimulator {
   /** Simulates traffic to the API splash endpoint referencing tomorrow. */
   @bind
   async simulateTrafficForTomorrowsSplash(): Promise<void> {
-    this.logger.debug(
+    this.logger.info(
       tag,
       'Simulating traffic to the API splash endpoint referencing tomorrow'
     )
@@ -84,7 +84,7 @@ export class MinuteByMinuteApiTrafficSimulator implements ApiTrafficSimulator {
   /** Simulates traffic to the API splash endpoint referencing yesterday. */
   @bind
   async simulateTrafficForYesterdaysSplash(): Promise<void> {
-    this.logger.debug(
+    this.logger.info(
       tag,
       'Simulating traffic to the API splash endpoint referencing yesterday'
     )
