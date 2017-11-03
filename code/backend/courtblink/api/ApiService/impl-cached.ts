@@ -1,9 +1,10 @@
 import { SplashDataBuilder } from '../../../courtblink/api/builders/SplashDataBuilder'
 import { Scoreboard } from '../../../nba/api/schema'
 import { ScoreboardCache } from '../../../nba/caches/ScoreboardCache'
+import { TeamNewsCache } from '../../../nba/caches/TeamNewsCache'
 import { yyyymmdd } from '../../../../common/util/date/helpers'
 import { Logger } from '../../../util/Logger'
-import { SplashData } from 'common/api/schema/generated'
+import { IGameNews, ISplashData } from 'common/api/schema/generated'
 import { ContextualError } from 'common/util/ContextualError'
 
 import { ApiService } from './types'
@@ -16,6 +17,7 @@ export class CachedApiService implements ApiService {
   private logger: Logger
   private scoreboardCache: ScoreboardCache
   private splashDataBuilder: SplashDataBuilder
+  private teamNewsCache: TeamNewsCache
 
   /**
    * Creates a new `CachedApiService`.
@@ -23,18 +25,46 @@ export class CachedApiService implements ApiService {
    * @param logger logging utility.
    * @param scoreboardCache caches the NBA scoreboard.
    * @param splashDataBuilder constructs splash data.
+   * @param teamNewsCache caches team news.
    */
   constructor(
     logger: Logger,
     scoreboardCache: ScoreboardCache,
-    splashDataBuilder: SplashDataBuilder
+    splashDataBuilder: SplashDataBuilder,
+    teamNewsCache: TeamNewsCache
   ) {
     this.logger = logger
     this.scoreboardCache = scoreboardCache
     this.splashDataBuilder = splashDataBuilder
+    this.teamNewsCache = teamNewsCache
   }
 
-  async fetchSplashData(yyyymmdd: string): Promise<SplashData> {
+  async fetchGameNews(
+    awayTeamUrlName: string,
+    homeTeamUrlName: string
+  ): Promise<IGameNews> {
+    this.logger.debug(
+      tag,
+      `Fetching game news for "${awayTeamUrlName}@${homeTeamUrlName}"`
+    )
+
+    try {
+      // Fetch the news for both teams in parallel.
+      const [awayTeamArticles, homeTeamArticles] = await Promise.all([
+        this.teamNewsCache.retrieveByName(awayTeamUrlName),
+        this.teamNewsCache.retrieveByName(homeTeamUrlName),
+      ])
+
+      return { awayTeamArticles, homeTeamArticles }
+    } catch (err) {
+      throw new ContextualError(
+        `Failed to fetch game news for "${awayTeamUrlName}@${homeTeamUrlName}"`,
+        err
+      )
+    }
+  }
+
+  async fetchSplashData(yyyymmdd: string): Promise<ISplashData> {
     this.logger.debug(tag, `Fetching splash data for date "${yyyymmdd}"`)
 
     try {

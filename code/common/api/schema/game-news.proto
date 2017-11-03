@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "./news-article.proto";
+
+message GameNews {
+  repeated NewsArticle home_team_articles = 1;
+  repeated NewsArticle away_team_articles = 2;
+}

@@ -284,6 +284,532 @@ $root.GameLeader = (function() {
     return GameLeader;
 })();
 
+$root.GameNews = (function() {
+
+    /**
+     * Properties of a GameNews.
+     * @exports IGameNews
+     * @interface IGameNews
+     * @property {Array.<INewsArticle>} [homeTeamArticles] GameNews homeTeamArticles
+     * @property {Array.<INewsArticle>} [awayTeamArticles] GameNews awayTeamArticles
+     */
+
+    /**
+     * Constructs a new GameNews.
+     * @exports GameNews
+     * @classdesc Represents a GameNews.
+     * @constructor
+     * @param {IGameNews=} [properties] Properties to set
+     */
+    function GameNews(properties) {
+        this.homeTeamArticles = [];
+        this.awayTeamArticles = [];
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * GameNews homeTeamArticles.
+     * @member {Array.<INewsArticle>}homeTeamArticles
+     * @memberof GameNews
+     * @instance
+     */
+    GameNews.prototype.homeTeamArticles = $util.emptyArray;
+
+    /**
+     * GameNews awayTeamArticles.
+     * @member {Array.<INewsArticle>}awayTeamArticles
+     * @memberof GameNews
+     * @instance
+     */
+    GameNews.prototype.awayTeamArticles = $util.emptyArray;
+
+    /**
+     * Creates a new GameNews instance using the specified properties.
+     * @function create
+     * @memberof GameNews
+     * @static
+     * @param {IGameNews=} [properties] Properties to set
+     * @returns {GameNews} GameNews instance
+     */
+    GameNews.create = function create(properties) {
+        return new GameNews(properties);
+    };
+
+    /**
+     * Encodes the specified GameNews message. Does not implicitly {@link GameNews.verify|verify} messages.
+     * @function encode
+     * @memberof GameNews
+     * @static
+     * @param {IGameNews} message GameNews message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    GameNews.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.homeTeamArticles != null && message.homeTeamArticles.length)
+            for (var i = 0; i < message.homeTeamArticles.length; ++i)
+                $root.NewsArticle.encode(message.homeTeamArticles[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+        if (message.awayTeamArticles != null && message.awayTeamArticles.length)
+            for (var i = 0; i < message.awayTeamArticles.length; ++i)
+                $root.NewsArticle.encode(message.awayTeamArticles[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified GameNews message, length delimited. Does not implicitly {@link GameNews.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof GameNews
+     * @static
+     * @param {IGameNews} message GameNews message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    GameNews.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a GameNews message from the specified reader or buffer.
+     * @function decode
+     * @memberof GameNews
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {GameNews} GameNews
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    GameNews.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.GameNews();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                if (!(message.homeTeamArticles && message.homeTeamArticles.length))
+                    message.homeTeamArticles = [];
+                message.homeTeamArticles.push($root.NewsArticle.decode(reader, reader.uint32()));
+                break;
+            case 2:
+                if (!(message.awayTeamArticles && message.awayTeamArticles.length))
+                    message.awayTeamArticles = [];
+                message.awayTeamArticles.push($root.NewsArticle.decode(reader, reader.uint32()));
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a GameNews message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof GameNews
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {GameNews} GameNews
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    GameNews.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a GameNews message.
+     * @function verify
+     * @memberof GameNews
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    GameNews.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.homeTeamArticles != null && message.hasOwnProperty("homeTeamArticles")) {
+            if (!Array.isArray(message.homeTeamArticles))
+                return "homeTeamArticles: array expected";
+            for (var i = 0; i < message.homeTeamArticles.length; ++i) {
+                var error = $root.NewsArticle.verify(message.homeTeamArticles[i]);
+                if (error)
+                    return "homeTeamArticles." + error;
+            }
+        }
+        if (message.awayTeamArticles != null && message.hasOwnProperty("awayTeamArticles")) {
+            if (!Array.isArray(message.awayTeamArticles))
+                return "awayTeamArticles: array expected";
+            for (var i = 0; i < message.awayTeamArticles.length; ++i) {
+                error = $root.NewsArticle.verify(message.awayTeamArticles[i]);
+                if (error)
+                    return "awayTeamArticles." + error;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Creates a GameNews message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof GameNews
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {GameNews} GameNews
+     */
+    GameNews.fromObject = function fromObject(object) {
+        if (object instanceof $root.GameNews)
+            return object;
+        var message = new $root.GameNews();
+        if (object.homeTeamArticles) {
+            if (!Array.isArray(object.homeTeamArticles))
+                throw TypeError(".GameNews.homeTeamArticles: array expected");
+            message.homeTeamArticles = [];
+            for (var i = 0; i < object.homeTeamArticles.length; ++i) {
+                if (typeof object.homeTeamArticles[i] !== "object")
+                    throw TypeError(".GameNews.homeTeamArticles: object expected");
+                message.homeTeamArticles[i] = $root.NewsArticle.fromObject(object.homeTeamArticles[i]);
+            }
+        }
+        if (object.awayTeamArticles) {
+            if (!Array.isArray(object.awayTeamArticles))
+                throw TypeError(".GameNews.awayTeamArticles: array expected");
+            message.awayTeamArticles = [];
+            for (var i = 0; i < object.awayTeamArticles.length; ++i) {
+                if (typeof object.awayTeamArticles[i] !== "object")
+                    throw TypeError(".GameNews.awayTeamArticles: object expected");
+                message.awayTeamArticles[i] = $root.NewsArticle.fromObject(object.awayTeamArticles[i]);
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a GameNews message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof GameNews
+     * @static
+     * @param {GameNews} message GameNews
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    GameNews.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.arrays || options.defaults) {
+            object.homeTeamArticles = [];
+            object.awayTeamArticles = [];
+        }
+        if (message.homeTeamArticles && message.homeTeamArticles.length) {
+            object.homeTeamArticles = [];
+            for (var j = 0; j < message.homeTeamArticles.length; ++j)
+                object.homeTeamArticles[j] = $root.NewsArticle.toObject(message.homeTeamArticles[j], options);
+        }
+        if (message.awayTeamArticles && message.awayTeamArticles.length) {
+            object.awayTeamArticles = [];
+            for (var j = 0; j < message.awayTeamArticles.length; ++j)
+                object.awayTeamArticles[j] = $root.NewsArticle.toObject(message.awayTeamArticles[j], options);
+        }
+        return object;
+    };
+
+    /**
+     * Converts this GameNews to JSON.
+     * @function toJSON
+     * @memberof GameNews
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    GameNews.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return GameNews;
+})();
+
+$root.NewsArticle = (function() {
+
+    /**
+     * Properties of a NewsArticle.
+     * @exports INewsArticle
+     * @interface INewsArticle
+     * @property {string} [author] NewsArticle author
+     * @property {string} [description] NewsArticle description
+     * @property {string} [imageUrl] NewsArticle imageUrl
+     * @property {string} [link] NewsArticle link
+     * @property {string} [title] NewsArticle title
+     */
+
+    /**
+     * Constructs a new NewsArticle.
+     * @exports NewsArticle
+     * @classdesc Represents a NewsArticle.
+     * @constructor
+     * @param {INewsArticle=} [properties] Properties to set
+     */
+    function NewsArticle(properties) {
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * NewsArticle author.
+     * @member {string}author
+     * @memberof NewsArticle
+     * @instance
+     */
+    NewsArticle.prototype.author = "";
+
+    /**
+     * NewsArticle description.
+     * @member {string}description
+     * @memberof NewsArticle
+     * @instance
+     */
+    NewsArticle.prototype.description = "";
+
+    /**
+     * NewsArticle imageUrl.
+     * @member {string}imageUrl
+     * @memberof NewsArticle
+     * @instance
+     */
+    NewsArticle.prototype.imageUrl = "";
+
+    /**
+     * NewsArticle link.
+     * @member {string}link
+     * @memberof NewsArticle
+     * @instance
+     */
+    NewsArticle.prototype.link = "";
+
+    /**
+     * NewsArticle title.
+     * @member {string}title
+     * @memberof NewsArticle
+     * @instance
+     */
+    NewsArticle.prototype.title = "";
+
+    /**
+     * Creates a new NewsArticle instance using the specified properties.
+     * @function create
+     * @memberof NewsArticle
+     * @static
+     * @param {INewsArticle=} [properties] Properties to set
+     * @returns {NewsArticle} NewsArticle instance
+     */
+    NewsArticle.create = function create(properties) {
+        return new NewsArticle(properties);
+    };
+
+    /**
+     * Encodes the specified NewsArticle message. Does not implicitly {@link NewsArticle.verify|verify} messages.
+     * @function encode
+     * @memberof NewsArticle
+     * @static
+     * @param {INewsArticle} message NewsArticle message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    NewsArticle.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.author != null && message.hasOwnProperty("author"))
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.author);
+        if (message.description != null && message.hasOwnProperty("description"))
+            writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
+        if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+            writer.uint32(/* id 3, wireType 2 =*/26).string(message.imageUrl);
+        if (message.link != null && message.hasOwnProperty("link"))
+            writer.uint32(/* id 4, wireType 2 =*/34).string(message.link);
+        if (message.title != null && message.hasOwnProperty("title"))
+            writer.uint32(/* id 5, wireType 2 =*/42).string(message.title);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified NewsArticle message, length delimited. Does not implicitly {@link NewsArticle.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof NewsArticle
+     * @static
+     * @param {INewsArticle} message NewsArticle message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    NewsArticle.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a NewsArticle message from the specified reader or buffer.
+     * @function decode
+     * @memberof NewsArticle
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {NewsArticle} NewsArticle
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    NewsArticle.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.NewsArticle();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                message.author = reader.string();
+                break;
+            case 2:
+                message.description = reader.string();
+                break;
+            case 3:
+                message.imageUrl = reader.string();
+                break;
+            case 4:
+                message.link = reader.string();
+                break;
+            case 5:
+                message.title = reader.string();
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a NewsArticle message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof NewsArticle
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {NewsArticle} NewsArticle
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    NewsArticle.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a NewsArticle message.
+     * @function verify
+     * @memberof NewsArticle
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    NewsArticle.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.author != null && message.hasOwnProperty("author"))
+            if (!$util.isString(message.author))
+                return "author: string expected";
+        if (message.description != null && message.hasOwnProperty("description"))
+            if (!$util.isString(message.description))
+                return "description: string expected";
+        if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+            if (!$util.isString(message.imageUrl))
+                return "imageUrl: string expected";
+        if (message.link != null && message.hasOwnProperty("link"))
+            if (!$util.isString(message.link))
+                return "link: string expected";
+        if (message.title != null && message.hasOwnProperty("title"))
+            if (!$util.isString(message.title))
+                return "title: string expected";
+        return null;
+    };
+
+    /**
+     * Creates a NewsArticle message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof NewsArticle
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {NewsArticle} NewsArticle
+     */
+    NewsArticle.fromObject = function fromObject(object) {
+        if (object instanceof $root.NewsArticle)
+            return object;
+        var message = new $root.NewsArticle();
+        if (object.author != null)
+            message.author = String(object.author);
+        if (object.description != null)
+            message.description = String(object.description);
+        if (object.imageUrl != null)
+            message.imageUrl = String(object.imageUrl);
+        if (object.link != null)
+            message.link = String(object.link);
+        if (object.title != null)
+            message.title = String(object.title);
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a NewsArticle message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof NewsArticle
+     * @static
+     * @param {NewsArticle} message NewsArticle
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    NewsArticle.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.defaults) {
+            object.author = "";
+            object.description = "";
+            object.imageUrl = "";
+            object.link = "";
+            object.title = "";
+        }
+        if (message.author != null && message.hasOwnProperty("author"))
+            object.author = message.author;
+        if (message.description != null && message.hasOwnProperty("description"))
+            object.description = message.description;
+        if (message.imageUrl != null && message.hasOwnProperty("imageUrl"))
+            object.imageUrl = message.imageUrl;
+        if (message.link != null && message.hasOwnProperty("link"))
+            object.link = message.link;
+        if (message.title != null && message.hasOwnProperty("title"))
+            object.title = message.title;
+        return object;
+    };
+
+    /**
+     * Converts this NewsArticle to JSON.
+     * @function toJSON
+     * @memberof NewsArticle
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    NewsArticle.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return NewsArticle;
+})();
+
 $root.GameSummary = (function() {
 
     /**
@@ -1454,6 +1980,7 @@ $root.SplashData = (function() {
      * @exports ISplashData
      * @interface ISplashData
      * @property {Array.<IGameSummary>} [games] SplashData games
+     * @property {IGameNews} [firstGameNews] SplashData firstGameNews
      */
 
     /**
@@ -1478,6 +2005,14 @@ $root.SplashData = (function() {
      * @instance
      */
     SplashData.prototype.games = $util.emptyArray;
+
+    /**
+     * SplashData firstGameNews.
+     * @member {(IGameNews|null|undefined)}firstGameNews
+     * @memberof SplashData
+     * @instance
+     */
+    SplashData.prototype.firstGameNews = null;
 
     /**
      * Creates a new SplashData instance using the specified properties.
@@ -1506,6 +2041,8 @@ $root.SplashData = (function() {
         if (message.games != null && message.games.length)
             for (var i = 0; i < message.games.length; ++i)
                 $root.GameSummary.encode(message.games[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+        if (message.firstGameNews != null && message.hasOwnProperty("firstGameNews"))
+            $root.GameNews.encode(message.firstGameNews, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
         return writer;
     };
 
@@ -1544,6 +2081,9 @@ $root.SplashData = (function() {
                 if (!(message.games && message.games.length))
                     message.games = [];
                 message.games.push($root.GameSummary.decode(reader, reader.uint32()));
+                break;
+            case 2:
+                message.firstGameNews = $root.GameNews.decode(reader, reader.uint32());
                 break;
             default:
                 reader.skipType(tag & 7);
@@ -1589,6 +2129,11 @@ $root.SplashData = (function() {
                     return "games." + error;
             }
         }
+        if (message.firstGameNews != null && message.hasOwnProperty("firstGameNews")) {
+            error = $root.GameNews.verify(message.firstGameNews);
+            if (error)
+                return "firstGameNews." + error;
+        }
         return null;
     };
 
@@ -1614,6 +2159,11 @@ $root.SplashData = (function() {
                 message.games[i] = $root.GameSummary.fromObject(object.games[i]);
             }
         }
+        if (object.firstGameNews != null) {
+            if (typeof object.firstGameNews !== "object")
+                throw TypeError(".SplashData.firstGameNews: object expected");
+            message.firstGameNews = $root.GameNews.fromObject(object.firstGameNews);
+        }
         return message;
     };
 
@@ -1632,11 +2182,15 @@ $root.SplashData = (function() {
         var object = {};
         if (options.arrays || options.defaults)
             object.games = [];
+        if (options.defaults)
+            object.firstGameNews = null;
         if (message.games && message.games.length) {
             object.games = [];
             for (var j = 0; j < message.games.length; ++j)
                 object.games[j] = $root.GameSummary.toObject(message.games[j], options);
         }
+        if (message.firstGameNews != null && message.hasOwnProperty("firstGameNews"))
+            object.firstGameNews = $root.GameNews.toObject(message.firstGameNews, options);
         return object;
     };
 

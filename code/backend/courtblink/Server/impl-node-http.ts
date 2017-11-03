@@ -7,15 +7,19 @@ import {
 import * as parseUrl from 'parseurl'
 
 import { ApiService } from '../../courtblink/api/ApiService'
+import { TeamDetailsCache } from '../../nba/caches/TeamDetailsCache'
 import { Clock } from '../../util/Clock'
 import { Logger } from '../../util/Logger'
-import { SplashData } from 'common/api/schema/generated'
+import { GameNews, SplashData } from 'common/api/schema/generated'
 import { ContextualError } from 'common/util/ContextualError'
 
 import {
-  extractYYYYMMDDFromSplashRequest,
+  extractTeamIdsFromGameNewsRequestPath,
+  extractYYYYMMDDFromSplashRequestPath,
+  isGameNewsRoute,
   isSplashRoute,
   respondWithProto,
+  TeamIds,
 } from './helpers'
 import { Server, ServerEndpointRoutes } from './types'
 
@@ -31,6 +35,7 @@ export class NodeHttpServer implements Server {
   private logger: Logger
   private port: number
   private server: NodeServer | null
+  private teamDetailsCache: TeamDetailsCache
 
   /**
    * Creates a new `CourtblinkKoaServer`.
@@ -39,13 +44,15 @@ export class NodeHttpServer implements Server {
    * @param endpointRoutes routes to use for each server endpoint.
    * @param logger the logging utility to use.
    * @param port the port, over which, the server will respond to HTTP requests.
+   * @param teamDetailsCache caches team details.
    */
   constructor(
     apiService: ApiService,
     clock: Clock,
     endpointRoutes: ServerEndpointRoutes,
     logger: Logger,
-    port: number
+    port: number,
+    teamDetailsCache: TeamDetailsCache
   ) {
     this.apiService = apiService
     this.clock = clock
@@ -54,6 +61,7 @@ export class NodeHttpServer implements Server {
     this.logger = logger
     this.port = port
     this.server = null
+    this.teamDetailsCache = teamDetailsCache
   }
 
   start(): void {
@@ -154,7 +162,12 @@ export class NodeHttpServer implements Server {
       } else if (isSplashRoute(path, this.endpointRoutes)) {
         await this.serveSplash(
           response,
-          extractYYYYMMDDFromSplashRequest(path, this.endpointRoutes)
+          extractYYYYMMDDFromSplashRequestPath(path, this.endpointRoutes)
+        )
+      } else if (isGameNewsRoute(path, this.endpointRoutes)) {
+        await this.serveGameNews(
+          response,
+          extractTeamIdsFromGameNewsRequestPath(path, this.endpointRoutes)
         )
       } else {
         this.serve404(response)
@@ -178,7 +191,8 @@ export class NodeHttpServer implements Server {
     // Log how long it took to respond.
     this.logger.info(
       tag,
-      `Responded to request with path "${path}" in ${transactionDuration}ms`
+      `Responded to request with path "${path}" with ${response.statusCode} ` +
+        `in ${transactionDuration}ms`
     )
   }
 
@@ -198,6 +212,38 @@ export class NodeHttpServer implements Server {
   private serve404(response: ServerResponse): void {
     response.writeHead(404, 'Page not found')
     response.end()
+  }
+
+  /**
+   * Responds to game news requests.
+   * @param response the outgoing response to the corresponding request.
+   * @param teamIds ids of the teams for which news is being requested.
+   */
+  private async serveGameNews(
+    response: ServerResponse,
+    { awayTeamId, homeTeamId }: TeamIds
+  ): Promise<void> {
+    try {
+      // Get the team details in order to get the corresponding url names.
+      const [awayTeamDetails, homeTeamDetails] = await Promise.all([
+        this.teamDetailsCache.retrieveById(awayTeamId),
+        this.teamDetailsCache.retrieveById(homeTeamId),
+      ])
+
+      if (!awayTeamDetails || !homeTeamDetails) {
+        throw new Error('One or both of the provided team ids were invalid')
+      }
+
+      // Get game news using the NBA API.
+      const requestedGameNews = await this.apiService.fetchGameNews(
+        awayTeamDetails.urlName,
+        homeTeamDetails.urlName
+      )
+
+      respondWithProto(requestedGameNews, GameNews.encode, response)
+    } catch (err) {
+      throw new ContextualError('Failed to serve game news', err)
+    }
   }
 
   /**

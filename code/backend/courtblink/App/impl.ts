@@ -60,6 +60,10 @@ import {
   TeamDetailsCacheCreationStrategy,
 } from '../../nba/caches/TeamDetailsCache'
 import {
+  createTeamNewsCache,
+  TeamNewsCacheCreationStrategy,
+} from '../../nba/caches/TeamNewsCache'
+import {
   createNbaColorService,
   NbaColorServiceCreationStrategy,
 } from '../../nba/colors/NbaColorService'
@@ -206,6 +210,14 @@ export class AppImpl implements App {
       logger
     )
 
+    // Used to cache recent news for NBA teams.
+    const teamNewsCache = createTeamNewsCache(
+      TeamNewsCacheCreationStrategy.UpdateEveryDay,
+      clock,
+      logger,
+      nbaApiClient
+    )
+
     // Cleans up caches once an hour.
     const cacheJanitor = createEntityCacheJanitor(
       EntityCacheJanitorCreationStrategy.Hourly,
@@ -244,7 +256,10 @@ export class AppImpl implements App {
     // Builds splash data for the API to use.
     const splashDataBuilder = createSplashDataBuilder(
       SplashDataBuilderCreationStrategy.UsingCaches,
-      gameSummaryBuilder
+      clock,
+      gameSummaryBuilder,
+      teamDetailsCache,
+      teamNewsCache
     )
     //#endregion
 
@@ -255,7 +270,8 @@ export class AppImpl implements App {
       ApiServiceCreationStrategy.UsingCaches,
       logger,
       scoreboardCache,
-      splashDataBuilder
+      splashDataBuilder,
+      teamNewsCache
     )
 
     // Simulates traffic to the API to keep the caches hot.
@@ -273,7 +289,8 @@ export class AppImpl implements App {
       clock,
       endpoints,
       logger,
-      port
+      port,
+      teamDetailsCache
     )
     //#endregion
 

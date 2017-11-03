@@ -22,7 +22,7 @@ const logger = createLogger(
 const app = createApp({
   logger,
 
-  endpoints: { splash: '/api/splash' },
+  endpoints: { gameNews: '/api/news', splash: '/api/splash' },
   inProd: config.env === Env.Prod,
   port: config.port,
   torExecutableName: config.torExecutableName,

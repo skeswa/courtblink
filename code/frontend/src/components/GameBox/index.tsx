@@ -10,6 +10,7 @@ import {
 import GameLeaders from 'components/GameLeaders'
 import NbaImage from 'components/NbaImage'
 import PregameInfo from 'components/PregameInfo'
+import WhereToWatch from 'components/WhereToWatch'
 import { setStateAndWait, setTimeoutAndWait } from 'util/asyncUI'
 
 import * as style from './style.css'
@@ -119,21 +120,6 @@ class GameBox extends Component<Props, State> {
     }
   }
 
-  /**
-   * Formats the game start time to look like "8:00 PM".
-   * @param gameStartTimeInSeconds how many seconds after the epoch the game
-   *     will start.
-   * @return a formatted game time string.
-   */
-  private formatGameTime(gameStartTimeInSeconds: number): string {
-    // `gameStartTime` is sent over the wire in minutes.
-    return new Date(gameStartTimeInSeconds * 60 * 1000).toLocaleTimeString([], {
-      hour: '2-digit',
-      hour12: true,
-      minute: '2-digit',
-    })
-  }
-
   @bind
   private onSelection(): void {
     // Only unselected game boxes can be selected.
@@ -201,33 +187,6 @@ class GameBox extends Component<Props, State> {
     )
   }
 
-  /**
-   * Renders information about when & where a game can be watched.
-   * @param game game that this game box represents.
-   */
-  private renderWhereToWatch({
-    gameStartTime,
-    gameStartTimeTbd,
-    liveGameStats,
-  }: IGameSummary): JSX.Element {
-    const startTime =
-      !gameStartTimeTbd && gameStartTime
-        ? this.formatGameTime(gameStartTime)
-        : 'TBD'
-
-    return (
-      <div className={style.w2w}>
-        <div className={style.startTime}>{startTime}</div>
-        {liveGameStats && liveGameStats.channel ? (
-          <div className={style.channel}>
-            <span className={style.on}>on&nbsp;</span>
-            <span className={style.text}>{liveGameStats.channel}</span>
-          </div>
-        ) : null}
-      </div>
-    )
-  }
-
   public render(
     { game, isSelected, verticalDisplacementUnits }: Props,
     { isExpanded }: State
@@ -251,7 +210,16 @@ class GameBox extends Component<Props, State> {
           <div className={style.back} />
           <div className={style.front}>
             {this.renderTeamStatuses(game, isSelected)}
-            {game.notStarted ? this.renderWhereToWatch(game) : null}
+            {game.notStarted ? (
+              <WhereToWatch
+                channel={
+                  game.liveGameStats ? game.liveGameStats.channel : undefined
+                }
+                gameStartTime={game.gameStartTime}
+                isGameStartTimeTbd={game.gameStartTimeTbd}
+                isSelected={isSelected}
+              />
+            ) : null}
           </div>
         </div>
         <div className={style.bottomClippingMask}>

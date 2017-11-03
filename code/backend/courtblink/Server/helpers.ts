@@ -11,8 +11,38 @@ const protoHeaders = {
   'Content-Type': 'application/octet-stream',
 }
 
-// Constant repsenting the forward slash character.
-const slash = '/'
+// Regular expression for the suffix of the game news path.
+const gameNewsPathSuffixRegex = /\/([0-9]{10})@([0-9]{10})/
+
+// Regular expression for the suffix of the splash path.
+const splashPathSuffixRegex = /\/([0-9]{8})/
+
+/** Tuple of game team url names. */
+export type TeamIds = {
+  awayTeamId: string
+  homeTeamId: string
+}
+
+/**
+ * Extracts the team ids from the provided path. This method assumes that the
+ * provided path matches the game news route.
+ * @param path path from which the date will be extracted.
+ * @param endpointRoutes routes to use for each server endpoint.
+ * @return the extracted date.
+ */
+export function extractTeamIdsFromGameNewsRequestPath(
+  path: string,
+  endpointRoutes: ServerEndpointRoutes
+): TeamIds {
+  const pathSuffix = gameNewsPathSuffixRegex.exec(
+    path.substr(endpointRoutes.gameNews.length)
+  )
+
+  // Exit early if the regular expression couldn't parse `path`.
+  if (!pathSuffix) throw new Error(`Failed to parse path "${path}"`)
+
+  return { awayTeamId: pathSuffix[1], homeTeamId: pathSuffix[2] }
+}
 
 /**
  * Extracts a date from the YYYYMMDD-formatted date in the provided path. This
@@ -21,11 +51,36 @@ const slash = '/'
  * @param endpointRoutes routes to use for each server endpoint.
  * @return the extracted date.
  */
-export function extractYYYYMMDDFromSplashRequest(
+export function extractYYYYMMDDFromSplashRequestPath(
   path: string,
   endpointRoutes: ServerEndpointRoutes
 ): string {
-  return path.substr(endpointRoutes.splash.length + 1, 8)
+  const pathSuffix = splashPathSuffixRegex.exec(
+    path.substr(endpointRoutes.splash.length)
+  )
+
+  // Exit early if the regular expression couldn't parse `path`.
+  if (!pathSuffix) throw new Error(`Failed to parse path "${path}"`)
+
+  return pathSuffix[1]
+}
+
+/**
+ * Returns true if the provided path refers to the game news route.
+ * @param path path to test.
+ * @param endpointRoutes routes to use for each server endpoint.
+ * @return true if the provided path refers to the splash route.
+ */
+export function isGameNewsRoute(
+  path: string,
+  endpointRoutes: ServerEndpointRoutes
+): boolean {
+  const routePrefix = endpointRoutes.gameNews
+
+  // Ensure that the path starts with the right endpoint.
+  if (!path.startsWith(routePrefix)) return false
+
+  return gameNewsPathSuffixRegex.test(path.substr(routePrefix.length))
 }
 
 /**
@@ -40,18 +95,10 @@ export function isSplashRoute(
 ): boolean {
   const routePrefix = endpointRoutes.splash
 
-  // Ensure that the path starts with the splash endpoint route.
+  // Ensure that the path starts with the right endpoint.
   if (!path.startsWith(routePrefix)) return false
 
-  // Ensure that the path is the prefix + a slash + yyyymmdd in length.
-  const routePrefixLength = routePrefix.length
-  if (path.length < routePrefixLength + 1 + 8) return false
-
-  // Ensure that a slash follows the prefix.
-  if (path[routePrefixLength] != slash) return false
-
-  // Ensure that the remaining part of the path is a number
-  return !isNaN(parseInt(path.substr(routePrefixLength + 1, 8), 10))
+  return splashPathSuffixRegex.test(path.substr(routePrefix.length))
 }
 
 /**

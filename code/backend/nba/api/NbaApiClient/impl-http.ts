@@ -2,12 +2,14 @@ import {
   AllPlayerDetails,
   AllTeamDetails,
   BoxScore,
+  NewsArticle,
   Scoreboard,
 } from '../../../nba/api/schema'
 import { HttpClient } from '../../../networking/HttpClient'
 import { Logger } from '../../../util/Logger'
 import { ContextualError } from 'common/util/ContextualError'
 
+import { first, NbaRssFeed, parseNbaRssFeed } from './helpers'
 import { NbaApiClient } from './types'
 
 // Log tag that identifies this module.
@@ -81,6 +83,50 @@ export class HttpNbaApiClient implements NbaApiClient {
     } catch (err) {
       throw new ContextualError(
         `Failed to fetch the box score for "${gameId}" on ${yyyymmdd}`,
+        err
+      )
+    }
+  }
+
+  async fetchTeamNews(teamUrlName: string): Promise<NewsArticle[]> {
+    this.logger.debug(tag, `Fetching team news for "${teamUrlName}"`)
+
+    try {
+      const rssXml = await this.httpClient.get(
+        `http://www.nba.com/${teamUrlName}/rss.xml`,
+        false
+      )
+
+      // Use the resulting XML string to read the feed.
+      const feed = await parseNbaRssFeed(rssXml)
+
+      // Get the interesting bits of the feed.
+      const feedItems =
+        feed && feed.rss && feed.rss.channel && feed.rss.channel.length > 0
+          ? feed.rss.channel[0].item
+          : undefined
+
+      // Exit early if there is no interesting data.
+      if (!feedItems || feedItems.length < 1) return []
+
+      return feedItems.map(feedItem => {
+        const author = first(feedItem.author)
+        const description = first(feedItem.description)
+        const link = first(feedItem.link)
+        const title = first(feedItem.title)
+
+        const imageUrl =
+          feedItem.enclosure &&
+          feedItem.enclosure.length > 0 &&
+          feedItem.enclosure[0].$
+            ? feedItem.enclosure[0].$.url
+            : undefined
+
+        return { author, description, imageUrl, link, title }
+      })
+    } catch (err) {
+      throw new ContextualError(
+        `Failed to fetch team news for "${teamUrlName}"`,
         err
       )
     }

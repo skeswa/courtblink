@@ -26,5 +26,6 @@ export enum ServerCreationStrategy {
 
 /** Specifies the routes to use for different server endpoints. */
 export type ServerEndpointRoutes = {
+  gameNews: string
   splash: string
 }

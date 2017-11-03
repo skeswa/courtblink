@@ -114,6 +114,216 @@ export class GameLeader {
     public toJSON(): { [k: string]: any };
 }
 
+/** Properties of a GameNews. */
+export interface IGameNews {
+
+    /** GameNews homeTeamArticles */
+    homeTeamArticles?: INewsArticle[];
+
+    /** GameNews awayTeamArticles */
+    awayTeamArticles?: INewsArticle[];
+}
+
+/** Represents a GameNews. */
+export class GameNews {
+
+    /**
+     * Constructs a new GameNews.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: IGameNews);
+
+    /** GameNews homeTeamArticles. */
+    public homeTeamArticles: INewsArticle[];
+
+    /** GameNews awayTeamArticles. */
+    public awayTeamArticles: INewsArticle[];
+
+    /**
+     * Creates a new GameNews instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns GameNews instance
+     */
+    public static create(properties?: IGameNews): GameNews;
+
+    /**
+     * Encodes the specified GameNews message. Does not implicitly {@link GameNews.verify|verify} messages.
+     * @param message GameNews message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: IGameNews, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified GameNews message, length delimited. Does not implicitly {@link GameNews.verify|verify} messages.
+     * @param message GameNews message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: IGameNews, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a GameNews message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns GameNews
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): GameNews;
+
+    /**
+     * Decodes a GameNews message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns GameNews
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): GameNews;
+
+    /**
+     * Verifies a GameNews message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a GameNews message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns GameNews
+     */
+    public static fromObject(object: { [k: string]: any }): GameNews;
+
+    /**
+     * Creates a plain object from a GameNews message. Also converts values to other types if specified.
+     * @param message GameNews
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: GameNews, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this GameNews to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+}
+
+/** Properties of a NewsArticle. */
+export interface INewsArticle {
+
+    /** NewsArticle author */
+    author?: string;
+
+    /** NewsArticle description */
+    description?: string;
+
+    /** NewsArticle imageUrl */
+    imageUrl?: string;
+
+    /** NewsArticle link */
+    link?: string;
+
+    /** NewsArticle title */
+    title?: string;
+}
+
+/** Represents a NewsArticle. */
+export class NewsArticle {
+
+    /**
+     * Constructs a new NewsArticle.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: INewsArticle);
+
+    /** NewsArticle author. */
+    public author: string;
+
+    /** NewsArticle description. */
+    public description: string;
+
+    /** NewsArticle imageUrl. */
+    public imageUrl: string;
+
+    /** NewsArticle link. */
+    public link: string;
+
+    /** NewsArticle title. */
+    public title: string;
+
+    /**
+     * Creates a new NewsArticle instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns NewsArticle instance
+     */
+    public static create(properties?: INewsArticle): NewsArticle;
+
+    /**
+     * Encodes the specified NewsArticle message. Does not implicitly {@link NewsArticle.verify|verify} messages.
+     * @param message NewsArticle message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encode(message: INewsArticle, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Encodes the specified NewsArticle message, length delimited. Does not implicitly {@link NewsArticle.verify|verify} messages.
+     * @param message NewsArticle message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    public static encodeDelimited(message: INewsArticle, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a NewsArticle message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns NewsArticle
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): NewsArticle;
+
+    /**
+     * Decodes a NewsArticle message from the specified reader or buffer, length delimited.
+     * @param reader Reader or buffer to decode from
+     * @returns NewsArticle
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): NewsArticle;
+
+    /**
+     * Verifies a NewsArticle message.
+     * @param message Plain object to verify
+     * @returns `null` if valid, otherwise the reason why it is not
+     */
+    public static verify(message: { [k: string]: any }): (string|null);
+
+    /**
+     * Creates a NewsArticle message from a plain object. Also converts values to their respective internal types.
+     * @param object Plain object
+     * @returns NewsArticle
+     */
+    public static fromObject(object: { [k: string]: any }): NewsArticle;
+
+    /**
+     * Creates a plain object from a NewsArticle message. Also converts values to other types if specified.
+     * @param message NewsArticle
+     * @param [options] Conversion options
+     * @returns Plain object
+     */
+    public static toObject(message: NewsArticle, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+    /**
+     * Converts this NewsArticle to JSON.
+     * @returns JSON object
+     */
+    public toJSON(): { [k: string]: any };
+}
+
 /** Properties of a GameSummary. */
 export interface IGameSummary {
 
@@ -545,6 +755,9 @@ export interface ISplashData {
 
     /** SplashData games */
     games?: IGameSummary[];
+
+    /** SplashData firstGameNews */
+    firstGameNews?: IGameNews;
 }
 
 /** Represents a SplashData. */
@@ -558,6 +771,9 @@ export class SplashData {
 
     /** SplashData games. */
     public games: IGameSummary[];
+
+    /** SplashData firstGameNews. */
+    public firstGameNews?: (IGameNews|null);
 
     /**
      * Creates a new SplashData instance using the specified properties.

@@ -142,26 +142,3 @@
 .record .dash {
   padding: 0 0.2rem;
 }
-
-.w2w {
-  display: flex;
-  flex-direction: column;
-  padding-right: 0.8rem;
-  text-align: right;
-}
-
-.startTime {
-  font-size: 2.4rem;
-}
-
-.channel {
-  font-size: 2rem;
-}
-
-.channel .on {
-  font-size: 1.4rem;
-}
-
-.channel .text {
-  text-transform: uppercase;
-}

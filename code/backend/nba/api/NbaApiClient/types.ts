@@ -2,6 +2,7 @@ import {
   AllPlayerDetails,
   AllTeamDetails,
   BoxScore,
+  NewsArticle,
   Scoreboard,
 } from '../../../nba/api/schema'
 
@@ -36,6 +37,13 @@ export interface NbaApiClient {
    * @return game stats for the specified NBA game.
    */
   fetchBoxScore(yyyymmdd: string, gameId: string): Promise<BoxScore>
+
+  /**
+   * Fetches recent news articles for an NBA team.
+   * @param the `urlName` of the team.
+   * @return a list of relevant, recent news articles.
+   */
+  fetchTeamNews(teamUrlName: string): Promise<NewsArticle[]>
 
   /**
    * Checks if the NBA API is reachable.

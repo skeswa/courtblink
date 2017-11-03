@@ -14,4 +14,5 @@ export type TeamDetails = {
   confName: string
   altCityName: string
   isNBAFranchise: string
+  urlName: string
 }
