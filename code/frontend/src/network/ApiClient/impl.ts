@@ -1,6 +1,6 @@
 import * as debug from 'debug'
 
-import { ISplashData, SplashData } from 'common/api/schema/generated'
+import { SplashData } from 'common/api/schema/generated'
 import { ContextualError } from 'common/util/ContextualError'
 import { yyyymmdd } from 'common/util/date/helpers'
 
@@ -10,7 +10,7 @@ import { ApiClient } from './types'
 export class ApiClientImpl implements ApiClient {
   private log: debug.IDebugger = debug('api:client')
 
-  async fetchSplashData(date: Date): Promise<ISplashData> {
+  async fetchSplashData(date: Date): Promise<SplashData> {
     const dateStr = yyyymmdd(date)
 
     this.log(`Fetching splash data for "${dateStr}"`)

@@ -8,6 +8,7 @@ import {
   IGameSummary,
 } from 'common/api/schema/generated'
 import GameLeaders from 'components/GameLeaders'
+import LiveGameClock from 'components/LiveGameClock'
 import NbaImage from 'components/NbaImage'
 import PregameInfo from 'components/PregameInfo'
 import WhereToWatch from 'components/WhereToWatch'
@@ -201,6 +202,13 @@ class GameBox extends Component<Props, State> {
       transform: `translateY(${verticalDisplacement}px)`,
     }
 
+    const doesGameHaveLeaders =
+      !game.notStarted &&
+      game.awayTeamStatus &&
+      game.homeTeamStatus &&
+      game.awayTeamStatus.score &&
+      game.homeTeamStatus.score
+
     return (
       <div
         style={gameBoxStyle}
@@ -219,17 +227,32 @@ class GameBox extends Component<Props, State> {
                 isGameStartTimeTbd={game.gameStartTimeTbd}
                 isSelected={isSelected}
               />
-            ) : null}
+            ) : (
+              <LiveGameClock
+                channel={
+                  game.liveGameStats ? game.liveGameStats.channel : undefined
+                }
+                currentQuarter={
+                  game.liveGameStats ? game.liveGameStats.period : undefined
+                }
+                isSelected={isSelected}
+                timeRemaining={
+                  game.liveGameStats
+                    ? game.liveGameStats.timeRemaining
+                    : undefined
+                }
+              />
+            )}
           </div>
         </div>
         <div className={style.bottomClippingMask}>
           <div className={style.bottom}>
             <div className={style.back} />
             <div className={style.front}>
-              {game.notStarted ? (
-                <PregameInfo game={game} />
-              ) : (
+              {doesGameHaveLeaders ? (
                 <GameLeaders game={game} />
+              ) : (
+                <PregameInfo game={game} />
               )}
             </div>
           </div>

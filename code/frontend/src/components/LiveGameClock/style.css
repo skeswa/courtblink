@@ -1,0 +1,82 @@
+:root {
+  --resize-transition-duration: 250ms;
+  --selected-text-color: rgba(0, 0, 0, 0.8);
+  --unselected-text-color: rgba(255, 255, 255, 0.8);
+}
+
+.main {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  padding-right: 0.8rem;
+  text-align: right;
+}
+
+.status {
+  background: var(--unselected-text-color);
+  border-radius: 0.2rem;
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.1rem;
+  overflow: hidden;
+  padding: 0.3rem 0.6rem;
+  text-transform: uppercase;
+  transition: color var(--resize-transition-duration),
+    background var(--resize-transition-duration),
+    box-shadow var(--resize-transition-duration);
+}
+.main__selected .status {
+  background: #d32f2f;
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0);
+  color: #fff;
+}
+
+.channel,
+.clock,
+.clockText {
+  color: var(--unselected-text-color);
+  margin-left: 1rem;
+  text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.8);
+  transition: color var(--resize-transition-duration),
+    text-shadow var(--resize-transition-duration);
+}
+.main__selected .channel,
+.main__selected .clock,
+.main__selected .clockText {
+  color: var(--selected-text-color);
+  text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0);
+}
+
+.clock,
+.clockText {
+  font-size: 2.6rem;
+  margin-top: 0.75rem;
+  text-transform: uppercase;
+}
+.main__selected .clock,
+.main__selected .clockText {
+  color: #d32f2f;
+}
+
+.clockText {
+  transform: scale(0.8);
+  transform-origin: center right;
+}
+
+.quarter {
+  margin-right: 1rem;
+}
+
+.channel {
+  font-size: 1.6rem;
+}
+
+.channel .on {
+  font-size: 1.2rem;
+}
+
+.channel .text {
+  text-transform: uppercase;
+}

@@ -4,7 +4,7 @@
   --resize-transition-duration: 250ms;
   --resize-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --selected-text-color: rgba(0, 0, 0, 0.8);
-  --top-section-height: 12.5rem;
+  --top-section-height: 14rem;
   --unselected-text-color: rgba(255, 255, 255, 0.8);
 }
 
@@ -115,7 +115,7 @@
 .triCode {
   color: var(--unselected-text-color);
   font-family: 'Roboto', sans-serif;
-  font-size: 3.2rem;
+  font-size: 3.6rem;
   font-weight: 700;
   margin-left: 1rem;
   text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.8);

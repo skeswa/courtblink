@@ -1,5 +1,5 @@
 .main {
-  border-top: .1rem solid rgba(0, 0, 0, .2);
+  border-top: .1rem solid rgba(0, 0, 0, .1);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -27,8 +27,8 @@
 
 .triCode {
   font-size: 2.2rem;
-  max-width: 8rem;
-  min-width: 8rem;
+  max-width: 7rem;
+  min-width: 7rem;
 }
 
 .ratings {
@@ -39,6 +39,7 @@
 }
 
 .rating {
+  align-items: center;
   display: flex;
   flex-direction: column;
   max-width: 7rem;
@@ -48,11 +49,8 @@
 
 .triCode,
 .rating .label,
-.rating .rank,
 .rating .value,
 .vs {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -69,30 +67,30 @@
   font-size: 3.2rem;
 }
 
-.rating .rank {
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 1.4rem;
-  margin-left: .5rem;
-}
-
 .vs {
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, .8);
   font-size: 1.4rem;
   margin: 0 1rem;
 }
 
 .separator {
-  background: rgba(0, 0, 0, .2);
+  background: rgba(0, 0, 0, .1);
   flex: 1;
   max-height: 0.1rem;
   min-height: 0.1rem;
 }
 
 .numberWithOrdinal {
-  display: flex;
+  position: relative;
 }
 
 .numberWithOrdinal .ordinal {
+  position: absolute;
+  right: -5.2rem;
+  text-align: left;
   text-transform: lowercase;
-  transform: scale(.6) translateX(-21.5%) translateY(-20%);
+  top: .3rem;
+  transform-origin: 0 0;
+  transform: scale(.5);
+  width: 5rem;
 }

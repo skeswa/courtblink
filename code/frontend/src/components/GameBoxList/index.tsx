@@ -8,7 +8,7 @@ import * as style from './style.css'
 
 // Constants representing the dimensions of each and every game box.
 const rem = 10
-const collapsedGameBoxHeight = 12.5 * rem
+const collapsedGameBoxHeight = 14 * rem
 const expandedGameBoxHeight =
   collapsedGameBoxHeight + /* panel */ (20 + /* border */ 0.1) * rem
 
