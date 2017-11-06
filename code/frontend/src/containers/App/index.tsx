@@ -5,11 +5,14 @@ import { h, Component } from 'preact'
 
 import { ApiClient, createApiClient } from 'network/ApiClient'
 import { IGameSummary } from 'common/api/schema/generated'
-import Loader from 'components/Loader'
 import GameBoxList from 'components/GameBoxList'
 import CyclingBackground from 'components/CyclingBackground'
 
 import * as style from './style.css'
+
+// How long to wait before the initially highlighted game box appears to be
+// selected.
+const gameBoxSelectionDelay = 400 /* ms */
 
 type Props = {}
 
@@ -25,7 +28,7 @@ type State = {
 class App extends Component<Props, State> {
   private apiClient: ApiClient = createApiClient()
   private log: debug.IDebugger = debug('courtblink:app')
-  public state = {
+  public state: State = {
     didFailToLoadSplashData: false,
     games: [] as IGameSummary[],
     isBackgroundLoaded: false,
@@ -58,7 +61,7 @@ class App extends Component<Props, State> {
       let selectedGame: IGameSummary | undefined
       if (games && games.length > 0) {
         highlightedGame = games[0]
-        selectedGame = games[0]
+        // selectedGame = games[0]
       }
 
       // Update the app state to reflect the loaded splash data.
@@ -79,7 +82,29 @@ class App extends Component<Props, State> {
     // Exit early if the background is already loaded.
     if (this.state.isBackgroundLoaded) return
 
+    // Make sure that the backgroudn registers as loaded.
     this.setState({ isBackgroundLoaded: true })
+
+    // Check to see if there is a highlighted game without a selected game. If
+    // so, the initially highlighted game must become the selected game.
+    // This happens when the page is first loaded.
+    const hasHighlightedGameNotYetBeenSelected =
+      !this.state.selectedGame && this.state.highlightedGame
+
+    // Exit early if there is nothing left to do.
+    if (!hasHighlightedGameNotYetBeenSelected) return
+
+    // Schedule the highlighted game selection for later to make it look as
+    // though it has been selected.
+    requestAnimationFrame(() =>
+      setTimeout(
+        () =>
+          this.setState({
+            selectedGame: this.state.highlightedGame,
+          }),
+        gameBoxSelectionDelay
+      )
+    )
   }
 
   @bind
@@ -104,15 +129,13 @@ class App extends Component<Props, State> {
   ) {
     const isReady =
       !isSplashDataLoading && games && games.length > 0 && isBackgroundLoaded
-    const className = classNames(style.main, { [style.main__ready]: isReady })
     const splashUrl =
       highlightedGame && highlightedGame.homeTeamStatus
         ? highlightedGame.homeTeamStatus.splashUrl
         : undefined
 
     return (
-      <div className={className}>
-        <div className={style.loader}>{!isReady ? <Loader /> : null}</div>
+      <div className={style.main}>
         <div className={style.back}>
           <CyclingBackground
             shouldShowBlurredLeftSection={true}
@@ -124,6 +147,7 @@ class App extends Component<Props, State> {
           <div className={style.left}>
             <GameBoxList
               games={games}
+              isLoading={!isReady}
               onSelectedGameHighlighted={this.onSelectedGameHighlighted}
               onGameSelected={this.onGameSelected}
               selectedGame={selectedGame}

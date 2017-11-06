@@ -7,8 +7,8 @@ import {
   IGameTeamStatus,
   IGameSummary,
 } from 'common/api/schema/generated'
+import GameClock from 'components/GameClock'
 import GameLeaders from 'components/GameLeaders'
-import LiveGameClock from 'components/LiveGameClock'
 import NbaImage from 'components/NbaImage'
 import PregameInfo from 'components/PregameInfo'
 import WhereToWatch from 'components/WhereToWatch'
@@ -192,6 +192,38 @@ class GameBox extends Component<Props, State> {
     { game, isSelected, verticalDisplacementUnits }: Props,
     { isExpanded }: State
   ): JSX.Element {
+    const awayTeamScore =
+      game.awayTeamStatus && game.awayTeamStatus.score
+        ? game.awayTeamStatus.score
+        : 0
+    const awayTeamTriCode =
+      game.awayTeamStatus && game.awayTeamStatus.tricode
+        ? game.awayTeamStatus.tricode
+        : '???'
+    const channel = game.liveGameStats ? game.liveGameStats.channel : undefined
+    const currentQuarter = game.liveGameStats
+      ? game.liveGameStats.period
+      : undefined
+    const doesGameHaveLeaders =
+      !game.notStarted &&
+      game.awayTeamStatus &&
+      game.homeTeamStatus &&
+      game.awayTeamStatus.score &&
+      game.homeTeamStatus.score
+    const homeTeamScore =
+      game.homeTeamStatus && game.homeTeamStatus.score
+        ? game.homeTeamStatus.score
+        : 0
+    const homeTeamTriCode =
+      game.homeTeamStatus && game.homeTeamStatus.tricode
+        ? game.homeTeamStatus.tricode
+        : '???'
+    const timeRemaining = game.liveGameStats
+      ? game.liveGameStats.timeRemaining
+      : undefined
+    const winnerTriCode = game.finished
+      ? homeTeamScore > awayTeamScore ? homeTeamTriCode : awayTeamTriCode
+      : undefined
     const verticalDisplacement = verticalDisplacementUnits * bottomSectionHeight
 
     const className = classNames(style.main, {
@@ -202,13 +234,6 @@ class GameBox extends Component<Props, State> {
       transform: `translateY(${verticalDisplacement}px)`,
     }
 
-    const doesGameHaveLeaders =
-      !game.notStarted &&
-      game.awayTeamStatus &&
-      game.homeTeamStatus &&
-      game.awayTeamStatus.score &&
-      game.homeTeamStatus.score
-
     return (
       <div
         style={gameBoxStyle}
@@ -218,29 +243,21 @@ class GameBox extends Component<Props, State> {
           <div className={style.back} />
           <div className={style.front}>
             {this.renderTeamStatuses(game, isSelected)}
+
             {game.notStarted ? (
               <WhereToWatch
-                channel={
-                  game.liveGameStats ? game.liveGameStats.channel : undefined
-                }
+                channel={channel}
                 gameStartTime={game.gameStartTime}
                 isGameStartTimeTbd={game.gameStartTimeTbd}
                 isSelected={isSelected}
               />
             ) : (
-              <LiveGameClock
-                channel={
-                  game.liveGameStats ? game.liveGameStats.channel : undefined
-                }
-                currentQuarter={
-                  game.liveGameStats ? game.liveGameStats.period : undefined
-                }
+              <GameClock
+                channel={channel}
+                currentQuarter={currentQuarter}
                 isSelected={isSelected}
-                timeRemaining={
-                  game.liveGameStats
-                    ? game.liveGameStats.timeRemaining
-                    : undefined
-                }
+                timeRemaining={timeRemaining}
+                winnerTriCode={winnerTriCode}
               />
             )}
           </div>

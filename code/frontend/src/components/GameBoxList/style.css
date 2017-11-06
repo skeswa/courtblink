@@ -40,6 +40,9 @@
   flex-direction: column;
   overflow-y: auto;
 }
+.main__loading .gameBoxesContainer {
+  overflow: hidden;
+}
 
 .footer {
   border-top: 1px solid var(--borderColor);

@@ -1,0 +1,97 @@
+:root {
+  --shimmer-animation-duration: 2s;
+  --top-section-height: 14rem;
+  --unselected-text-color: rgba(255, 255, 255, 0.8);
+}
+
+.main {
+  align-items: center;
+  border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  height: var(--top-section-height);
+  padding: 2rem 2.5rem;
+}
+.main:first-child {
+  border-top: none;
+}
+
+.statuses {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.status {
+  align-items: center;
+  display: flex;
+  min-height: 4.25rem;
+}
+.status:last-child {
+  margin-top: 0.5rem;
+}
+
+.logo {
+  animation: shimmer var(--shimmer-animation-duration) infinite;
+  background: var(--unselected-text-color);
+  border-radius: 1.35rem;
+  min-height: 2.7rem;
+  min-width: 2.7rem;
+}
+
+.triCode {
+  animation: shimmer var(--shimmer-animation-duration) infinite;
+  background: var(--unselected-text-color);
+  margin-left: 2rem;
+  min-height: 3.5rem;
+  min-width: 5.75rem;
+  transform: skew(-5deg);
+}
+
+.score {
+  animation: shimmer var(--shimmer-animation-duration) infinite;
+  flex: 1;
+  background: var(--unselected-text-color);
+  margin-left: 1.5rem;
+  max-width: 5rem;
+  min-height: 3.5rem;
+  min-width: 5rem;
+  transform: skew(-5deg);
+}
+
+.clock {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+}
+
+.time {
+  animation: shimmer var(--shimmer-animation-duration) infinite;
+  background: var(--unselected-text-color);
+  min-height: 2.2rem;
+  min-width: 10rem;
+  transform: skew(-5deg);
+}
+
+.channel {
+  animation: shimmer var(--shimmer-animation-duration) infinite;
+  background: var(--unselected-text-color);
+  margin-top: 1rem;
+  min-height: 2rem;
+  min-width: 10rem;
+  transform: skew(-5deg);
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: .8;
+  }
+  33% {
+    opacity: .4;
+  }
+  67% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .8;
+  }
+}

@@ -12,26 +12,13 @@
   right: 0;
   position: absolute;
   top: 0;
-  transition: opacity 400ms;
-}
-.main__ready .front,
-.main__ready .back {
-  opacity: 1;
-}
-
-.loader {
-  background: #222;
-  opacity: 1;
-  z-index: 1;
 }
 
 .back {
-  opacity: 0;
   z-index: 2;
 }
 
 .front {
-  opacity: 0;
   z-index: 3;
 }
 

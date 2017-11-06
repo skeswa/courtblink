@@ -2,10 +2,18 @@ import bind from 'bind-decorator'
 import * as classNames from 'classnames'
 import { h, Component } from 'preact'
 
-import Loader from 'components/Loader'
 import { setStateAndWait, setTimeoutAndWait } from 'util/asyncUI'
 
 import * as style from './style.css'
+
+// Use webpack to include the default background image in the bundle.
+const defaultBackgroundImageSrc = require('./default-bg.jpg')
+
+// Height of the default background image.
+const defaultBackgroundImageHeight = 700 /* px */
+
+// Width of the default background image.
+const defaultBackgroundImageWidth = 1050 /* px */
 
 // Amount of time to wait before the image in the cache is visible on the page.
 const imageLoadDelay = 300 /* ms */
@@ -56,7 +64,14 @@ type State = {
 class CyclingBackground extends Component<Props, State> {
   private srcChangeDebounceTimeoutRef: number | null = null
   private rootElement: Element
-  public state: State = {}
+  public state: State = {
+    shieldingLayer: {
+      height: defaultBackgroundImageHeight,
+      isAnimating: false,
+      src: defaultBackgroundImageSrc,
+      width: defaultBackgroundImageWidth,
+    },
+  }
 
   public componentWillMount(): void {
     // Start listening for the window resizing.

@@ -1,8 +1,10 @@
 import bind from 'bind-decorator'
+import * as classNames from 'classnames'
 import { h, Component } from 'preact'
 
 import { IGameSummary } from 'common/api/schema/generated'
 import GameBox from 'components/GameBox'
+import GameBoxPlaceholder from 'components/GameBoxPlaceholder'
 
 import * as style from './style.css'
 
@@ -16,6 +18,8 @@ const expandedGameBoxHeight =
 type Props = {
   /** Games to render as game boxes. */
   games: IGameSummary[]
+  /** True if this component should show that data is loading. */
+  isLoading: boolean
   /** The currently selected game. */
   selectedGame?: IGameSummary
   /**
@@ -75,6 +79,16 @@ class GameList extends Component<Props, State> {
     }
   }
 
+  private renderGameBoxPlaceholders(): JSX.Element[] {
+    const gameBoxPlaceholders: JSX.Element[] = []
+
+    for (let i = 0; i < 10; i++) {
+      gameBoxPlaceholders.push(<GameBoxPlaceholder key={i} />)
+    }
+
+    return gameBoxPlaceholders
+  }
+
   private renderGameBoxes(
     games: IGameSummary[],
     selectedIndex: number | undefined,
@@ -82,7 +96,8 @@ class GameList extends Component<Props, State> {
     onGameSelected: (newlySelectedGame: IGameSummary) => void
   ): JSX.Element[] {
     return games.map((game, i) => {
-      const isAfterSelectedGameBox = i > (selectedIndex || 0)
+      const isAfterSelectedGameBox =
+        selectedIndex !== undefined ? i > (selectedIndex || 0) : false
       const isSelected = i === selectedIndex
       const verticalDisplacementOffset = isAfterSelectedGameBox ? 1 : 0
       const verticalDisplacementUnits = verticalDisplacementOffset - i
@@ -101,7 +116,7 @@ class GameList extends Component<Props, State> {
   }
 
   public render(
-    { games, onSelectedGameHighlighted, onGameSelected }: Props,
+    { games, isLoading, onSelectedGameHighlighted, onGameSelected }: Props,
     { selectedIndex }: State
   ): JSX.Element {
     // Requisite variables for calculating CSS styling.
@@ -113,22 +128,30 @@ class GameList extends Component<Props, State> {
 
     // Make sure that the game boxes div remains exactly as tall as it needs to
     // be.
-    const gameBoxesStyle = {
-      maxHeight: totalGameBoxHeight,
-      minHeight: totalGameBoxHeight,
-    }
+    const gameBoxesStyle = !isLoading
+      ? {
+          maxHeight: totalGameBoxHeight,
+          minHeight: totalGameBoxHeight,
+        }
+      : undefined
+
+    const className = classNames(style.main, {
+      [style.main__loading]: isLoading,
+    })
 
     return (
-      <div className={style.main}>
+      <div className={className}>
         <div className={style.heading} />
         <div className={style.gameBoxesContainer}>
           <div style={gameBoxesStyle} className={style.gameBoxes}>
-            {this.renderGameBoxes(
-              games,
-              selectedIndex,
-              onSelectedGameHighlighted,
-              onGameSelected
-            )}
+            {isLoading
+              ? this.renderGameBoxPlaceholders()
+              : this.renderGameBoxes(
+                  games,
+                  selectedIndex,
+                  onSelectedGameHighlighted,
+                  onGameSelected
+                )}
           </div>
           <div className={style.footer} />
         </div>

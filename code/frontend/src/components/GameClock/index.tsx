@@ -13,33 +13,38 @@ type Props = {
   isSelected?: boolean
   /** Time remaining in the current quarter. */
   timeRemaining?: string
+  /** Tricode of the team that won. */
+  winnerTriCode?: string
 }
 
-export default function LiveGameClock({
+
+export default function GameClock({
   channel,
   currentQuarter,
   timeRemaining,
   isSelected,
+  winnerTriCode,
 }: Props): JSX.Element {
-  const className = classNames(style.main, {
-    [style.main__selected]: isSelected,
-  })
 
   const isHalftime = currentQuarter === 2 && !timeRemaining
+  const isFinished = !!winnerTriCode
   const isPregame = currentQuarter === 0 && !timeRemaining
-  const isFinal = currentQuarter ? currentQuarter >= 4 && !timeRemaining : false
+  const shouldShowChannel = !isFinished && !!channel
+  const shouldShowClock = !isFinished && !isPregame && !isHalftime
+  const shouldShowClockText = isFinished || isHalftime || isPregame
 
-  const shouldShowChannel = !!channel
-  const shouldShowClock = !isFinal && !isPregame && !isHalftime
-  const shouldShowClockText = !isFinal && (isHalftime || isPregame)
+  const clockText = isPregame
+    ? 'Pregame'
+    : isHalftime ? 'Halftime' : isFinished ? `${winnerTriCode} wins` : undefined
+  const statusText = isFinished ? 'Finished' : 'In Progress'
 
-  const clockText = isPregame ? 'Pregame' : isHalftime ? 'Halftime' : undefined
-  const statusText = isFinal ? 'Final' : 'In Progress'
+  const className = classNames(style.main, {
+    [style.main__selected]: isSelected,
+    [style.main__live]: !isFinished,
+  })
 
   return (
     <div className={className}>
-      <div className={style.status}>{statusText}</div>
-
       {shouldShowClock ? (
         <div className={style.clock}>
           <span className={style.quarter}>{`Q${currentQuarter}`}</span>
@@ -51,12 +56,7 @@ export default function LiveGameClock({
         <div className={style.clockText}>{clockText}</div>
       ) : null}
 
-      {shouldShowChannel ? (
-        <div className={style.channel}>
-          <span className={style.on}>on&nbsp;</span>
-          <span className={style.text}>{channel}</span>
-        </div>
-      ) : null}
+      <div className={style.status}>{statusText}</div>
     </div>
   )
 }
